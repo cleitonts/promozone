@@ -1,0 +1,25 @@
+POST http://localhost:3000/auth/login 
+Content-Type: application/json
+
+{
+    "username": "teste@teste.com", 
+    "password": "abroba"
+}
+
+###
+# @name registerUser
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+    "name": "teste", 
+    "username": "teste@teste.com", 
+    "password": "abroba", 
+    "password_repeat": "abroba"
+}
+
+###
+@userId = {{registerUser.response.body.id}}
+
+###
+GET http://localhost:3000/users/teste@teste.com
