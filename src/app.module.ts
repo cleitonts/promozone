@@ -20,8 +20,4 @@ import { UsersModule } from './users/users.module';
     UsersModule,
   ],
 })
-export class AppModule {
-  constructor() {
-    console.log('JWT_SECRET:', process.env.JWT_SECRET); // Verifique se a variável de ambiente está sendo carregada
-  }
-}
+export class AppModule {}

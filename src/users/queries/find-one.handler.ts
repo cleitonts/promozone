@@ -11,24 +11,6 @@ export class findOneHandler implements IQueryHandler<FindOneModel> {
     private repository: Repository<User>,
   ) {}
 
-  // private readonly users = [
-  //   new User(crypto.randomUUID(), {
-  //     name: 'michael',
-  //     username: 'michael@teste.com',
-  //     password: 'teste',
-  //   }),
-  //   new User(crypto.randomUUID(), {
-  //     name: 'john',
-  //     username: 'john@teste.com',
-  //     password: 'teste',
-  //   }),
-  //   new User(crypto.randomUUID(), {
-  //     name: 'maria',
-  //     username: 'maria@teste.com',
-  //     password: 'teste',
-  //   }),
-  // ];
-
   async execute(query: FindOneModel): Promise<User> {
     return this.repository.findOneOrFail({
       where: { username: query.username },
