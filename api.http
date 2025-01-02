@@ -5,14 +5,14 @@ Content-Type: application/json
 
 {
     "name": "teste", 
-    "username": "teste@teste.com", 
+    "email": "teste2@teste.com", 
     "password": "abroba", 
     "password_repeat": "abroba"
 }
 
 ###
 # Salvar o ID do usuário na variável @userId
-@userId = {{registerUser.response.body.id}}
+@userId = {{registerUser.response.body}}
 
 # Login do usuário
 # @name loginUser

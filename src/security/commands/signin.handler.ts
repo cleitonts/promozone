@@ -13,7 +13,10 @@ export class SignInHandler implements ICommandHandler<SignInModel> {
   ) {}
   async execute(command: SignInModel): Promise<SigninResponse> {
     const user = await this.queryBus.execute(
-      new ValidateUserModel(command.username, command.password),
+      new ValidateUserModel({
+        email: command.username,
+        password: command.password,
+      }),
     );
 
     if (!user) {

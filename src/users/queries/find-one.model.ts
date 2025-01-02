@@ -1,3 +1,11 @@
+import { IsEmail, IsNotEmpty } from 'class-validator';
+
 export class FindOneModel {
-  constructor(public readonly username: string) {}
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  constructor(props: { email: string }) {
+    Object.assign(this, props);
+  }
 }

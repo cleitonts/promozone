@@ -13,7 +13,7 @@ export class ValidateUserHandler implements IQueryHandler<ValidateUserModel> {
   ) {}
   async execute(query: ValidateUserModel): Promise<UserResponse | null> {
     const user = await this.repository.findOneOrFail({
-      where: { username: query.username },
+      where: { email: query.email },
     });
     if (user && user.password === query.password) {
       return UserResponse.createFromEntity(user);

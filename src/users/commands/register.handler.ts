@@ -12,19 +12,23 @@ export class RegisterHandler implements ICommandHandler<RegisterModel> {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async execute(command: RegisterModel): Promise<User> {
+  async execute(command: RegisterModel): Promise<string> {
     let user = await this.userRepository.findOne({
-      where: { username: command.username },
+      where: { email: command.email },
     });
 
     if (user) {
       throw new ConflictException('Username already exists');
     }
     if (command.password_repeat !== command.password) {
-      throw new BadRequestException('Passwords do not match');
+      throw new BadRequestException('Passwords does not match');
     }
 
-    user = new User(crypto.randomUUID(), command);
-    return await this.userRepository.save(user);
+    user = new User(crypto.randomUUID(), {
+      email: command.email,
+      password: command.password,
+      name: command.name,
+    });
+    return (await this.userRepository.save(user)).id;
   }
 }

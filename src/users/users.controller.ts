@@ -20,7 +20,7 @@ export class UsersController {
   }
 
   @Get(':username')
-  async getByUsername(@Param('username') username: string) {
-    return await this.queryBus.execute(new FindOneModel(username));
+  async getByUsername(@Param('username') email: string) {
+    return await this.queryBus.execute(new FindOneModel({ email }));
   }
 }

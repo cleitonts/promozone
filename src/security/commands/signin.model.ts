@@ -1,8 +1,7 @@
 export class SignInModel {
-  public readonly username: string;
-  public readonly password: string;
-  constructor(username: string, password: string) {
-    this.username = username;
-    this.password = password;
+  username: string;
+  password: string;
+  constructor(props: { username?: string; password?: string }) {
+    Object.assign(this, props);
   }
 }

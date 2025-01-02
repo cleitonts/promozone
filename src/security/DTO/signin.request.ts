@@ -1,6 +1,7 @@
 export class SigninRequest {
-  constructor(
-    public readonly username: string,
-    public readonly password: string,
-  ) {}
+  username: string;
+  password: string;
+  constructor(props: { username?: string; password?: string }) {
+    Object.assign(this, props);
+  }
 }

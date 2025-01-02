@@ -1,8 +1,32 @@
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+
 export class RegisterRequest {
-  constructor(
-    public readonly username: string,
-    public readonly name: string,
-    public readonly password: string,
-    public readonly password_repeat: string,
-  ) {}
+  @IsEmail()
+  @IsNotEmpty()
+  readonly email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly password_repeat: string;
+
+  @IsString()
+  readonly profilePicture?: string;
+
+  constructor(props: {
+    email: string;
+    name: string;
+    password: string;
+    password_repeat: string;
+    profilePicture?: string;
+  }) {
+    Object.assign(this, props);
+  }
 }

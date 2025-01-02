@@ -16,7 +16,7 @@ export class findOneHandler
 
   async execute(query: FindOneModel): Promise<UserResponse> {
     const user = await this.repository.findOneOrFail({
-      where: { username: query.username },
+      where: { email: query.email },
     });
     return UserResponse.createFromEntity(user);
   }

@@ -13,7 +13,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(username: string, password: string): Promise<UserResponse> {
     const user = await this.queryBus.execute<ValidateUserModel, UserResponse>(
-      new ValidateUserModel(username, password),
+      new ValidateUserModel({ email: username, password }),
     );
 
     if (!user) {

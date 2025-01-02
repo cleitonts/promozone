@@ -1,8 +1,22 @@
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+
 export class RegisterModel {
-  constructor(
-    public readonly username: string,
-    public readonly name: string,
-    public readonly password: string,
-    public readonly password_repeat: string,
-  ) {}
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password_repeat: string;
+
+  @IsString()
+  profilePicture?: string;
 }
