@@ -1,0 +1,77 @@
+**Guidelines for Generating Code with NestJS and Node.js using TypeScript**
+1.0. **Task Approach**
+    - Break down complex tasks into smaller, manageable steps unless requested to solve the task at once.
+    - If a task is large or complex, outline your approach before diving into details unless using a tool.
+    - Use tools to gather necessary information before proposing solutions.
+
+1.1. **Project Structure**
+   - **Modules**: Modules are located directly under the `/src` directory. There is no dedicated `modules` folder; each module resides in its own subdirectory within `/src`.
+   - **Configuration**: Manage multiple `.env` files using the `@nestjs/config` package, organizing variables in directories like `/config/packages` and `/config/env`.
+
+1.2. **Code Analysis and Refactoring**
+    - When analysing existing code, consider its structure, efficiency, and adherence to best practices.
+    - Suggest refactoring when you see opportunities for improvement, explaining the benefits of your suggestions unless using a tool.
+    - If you encounter or anticipate potential errors, explain them clearly and suggest solutions unless using a tool.
+    - When providing code solutions, include relevant comments to explain complex logic.
+    - Adhere to coding standards and best practices specific to each programming language or framework.
+    - Suggest optimisations and improvements where applicable.
+
+2. **File Indexing**
+   - Ensure that the project indexes and maintains references to all files relevant to specific tasks. These files should be clearly organized by module and functionality.
+   - When generating or modifying files, include them in appropriate directories under `/src` and update any related documentation or configurations.
+
+3. **Database Integration**
+   - Use `TypeORM` as the standard ORM:
+     - Configure entities, migrations, and repositories following NestJS conventions.
+     - Prefer explicit relations and avoid automatic cascades unless necessary.
+   - Add transactions and query logs for better control in testing and production environments.
+
+4. **Testing**
+   - **Unit Tests**: Test services and handlers using `Jest` with mocked database connections.
+   - **Integration Tests**: Use an in-memory database (e.g., SQLite) or Docker containers for real testing scenarios.
+   - Structure integration tests to cover complete use cases (end-to-end within domain layers).
+
+5. **CQRS**
+   - Standardize CQRS usage across all modules.
+   - Structure:
+     - **Commands**: For operations that modify the system’s state.
+     - **Queries**: For read operations.
+     - **Event Handlers**: For reactive logic responding to state changes.
+
+6. **Authentication**
+   - Configure JWT authentication for standard endpoints.
+   - Add OAuth 2.0 for social login using Google.
+   - Separate authentication logic into a dedicated module, supporting custom strategies with `@nestjs/passport`.
+
+7. **Validation and Typing**
+   - Use `class-validator` in DTOs combined with NestJS’s validation middleware.
+   - Implement explicit types to ensure consistency in inputs and outputs.
+
+8. **Configuration and Environment**
+   - Centralize environment variables in `.env` files located at the project root:
+     - `.env.local`
+     - `.env.production`
+     - Common values should reside in a shared `.env` file.
+   - Leverage NestJS’s dependency injection to access configuration settings.
+
+9. **Documentation**
+   - Use `Swagger` to document the REST API:
+     - Include payload examples for commands and queries.
+     - Document authentication strategies (JWT and OAuth).
+   - Add a `README.md` file detailing how to run and test the project, including integration scenarios.
+
+10. **Modular Code**
+   - Keep each module small with minimal external dependencies.
+   - Divide large modules into submodules for better readability.
+
+11. **Logging and Monitoring**
+    - Use NestJS’s `Logger` service for basic logging.
+    - Set up a monitoring system, such as Prometheus or Sentry, to capture and track errors.
+
+12. **Information Gathering**
+    - Before generating code, ensure all necessary details are available. If critical information is missing, ask clarifying questions to the user to avoid incorrect or incomplete implementations.
+
+13. **Code Formatting**
+    - Enforce consistent code formatting using ESLint and Prettier.
+    - Use the `.eslintrc` and `.prettierrc` configuration files located in the project root.
+    - Include linting and formatting checks as part of the CI/CD pipeline.

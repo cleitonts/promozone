@@ -5,10 +5,11 @@ import { findOneHandler } from './queries/find-one.handler';
 import { UsersController } from './users.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RegisterHandler } from './commands/register.handler';
+import { ValidateUserHandler } from './queries/validate-user.handler';
 
 @Module({
   imports: [CqrsModule, TypeOrmModule.forFeature([User])],
-  providers: [findOneHandler, RegisterHandler],
+  providers: [findOneHandler, RegisterHandler, ValidateUserHandler],
   controllers: [UsersController],
 })
 export class UsersModule {}

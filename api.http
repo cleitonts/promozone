@@ -1,12 +1,4 @@
-POST http://localhost:3000/auth/login 
-Content-Type: application/json
-
-{
-    "username": "teste@teste.com", 
-    "password": "abroba"
-}
-
-###
+# Registro do usuário
 # @name registerUser
 POST http://localhost:3000/users/register
 Content-Type: application/json
@@ -19,7 +11,25 @@ Content-Type: application/json
 }
 
 ###
+# Salvar o ID do usuário na variável @userId
 @userId = {{registerUser.response.body.id}}
 
+# Login do usuário
+# @name loginUser
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "username": "teste@teste.com", 
+    "password": "abroba"
+}
+
 ###
-GET http://localhost:3000/users/teste@teste.com
+# Salvar o JWT retornado na variável @jwt
+@jwt = {{loginUser.response.body.access_token}}
+
+
+###
+GET http://localhost:3000/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{jwt}}

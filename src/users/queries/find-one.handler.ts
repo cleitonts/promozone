@@ -3,17 +3,21 @@ import { FindOneModel } from './find-one.model';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserResponse } from '../DTO/user.response';
 
 @QueryHandler(FindOneModel)
-export class findOneHandler implements IQueryHandler<FindOneModel> {
+export class findOneHandler
+  implements IQueryHandler<FindOneModel, UserResponse>
+{
   constructor(
     @InjectRepository(User)
     private repository: Repository<User>,
   ) {}
 
-  async execute(query: FindOneModel): Promise<User> {
-    return this.repository.findOneOrFail({
+  async execute(query: FindOneModel): Promise<UserResponse> {
+    const user = await this.repository.findOneOrFail({
       where: { username: query.username },
     });
+    return UserResponse.createFromEntity(user);
   }
 }

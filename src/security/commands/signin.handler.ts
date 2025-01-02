@@ -2,7 +2,8 @@ import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { SignInModel } from './signin.model';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { FindOneModel } from 'src/users/queries/find-one.model';
+import { ValidateUserModel } from 'src/users/queries/validate-user.model';
+import { SigninResponse } from '../DTO/signin.response';
 
 @CommandHandler(SignInModel)
 export class SignInHandler implements ICommandHandler<SignInModel> {
@@ -10,17 +11,15 @@ export class SignInHandler implements ICommandHandler<SignInModel> {
     private readonly jwtService: JwtService,
     private readonly queryBus: QueryBus,
   ) {}
-  async execute(command: SignInModel): Promise<any> {
+  async execute(command: SignInModel): Promise<SigninResponse> {
     const user = await this.queryBus.execute(
-      new FindOneModel(command.username),
+      new ValidateUserModel(command.username, command.password),
     );
 
-    if (user?.password !== command.password) {
+    if (!user) {
       throw new UnauthorizedException();
     }
     const payload = { sub: user.id, username: user.username };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+    return new SigninResponse(this.jwtService.sign(payload));
   }
 }

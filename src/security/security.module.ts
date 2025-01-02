@@ -3,14 +3,17 @@ import { UsersModule } from '../users/users.module';
 import { SignInHandler } from './commands/signin.handler';
 import { SecurityController } from './security.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtStrategy } from './jwt.strategy';
+import { LocalStrategy } from './local.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     CqrsModule,
     UsersModule,
+    PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -20,7 +23,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
   ],
-  providers: [SignInHandler, Repository],
+  providers: [SignInHandler, JwtStrategy, LocalStrategy],
   controllers: [SecurityController],
 })
 export class SecurityModule {}
