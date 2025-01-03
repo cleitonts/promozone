@@ -1,7 +1,8 @@
-@import '../variables/colors.scss';
+@use '../variables/colors.scss' as *;
+@use 'sass:string';
 
 :export {
   @each $key, $value in $theme-colors {
-    #{unquote($key)}: $value;
+    #{string.unquote($key)}: $value;
   }
 }

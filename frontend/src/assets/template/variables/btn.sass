@@ -1,4 +1,5 @@
-@import colors
+@use './colors' as *
+@use "sass:color"
 
 $btn-list: ('primary': $primary, 'success': $success, 'info': $info, 'warning': $warning, 'danger': $danger, 'secondary': $secondary, 'dark': $dark)
 
@@ -6,7 +7,7 @@ $btn-list: ('primary': $primary, 'success': $success, 'info': $info, 'warning': 
   .bg-#{$name}-gradient, .v-btn.#{$name}
     color: $text-light
     background-color: $value
-    background-image: linear-gradient(195deg, $value, lighten($value, 10%))
+    background-image: linear-gradient(195deg, $value, color.scale($value, $lightness: 10%))
 
   .bg-#{$name}-gradient, .v-btn.#{$name}.v-btn--elevated
     box-shadow: 0 3px 3px 0 rgba($value, .15), 0 3px 1px -2px rgba($value, .2), 0 1px 5px 0 rgba($value, .15)

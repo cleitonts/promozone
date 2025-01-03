@@ -20,6 +20,7 @@
         "sourceMaps": true,
         "stopOnEntry": false,
         "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}/backend"
       }
     ]
 }
