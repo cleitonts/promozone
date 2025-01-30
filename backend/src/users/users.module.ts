@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { findOneHandler } from './queries/find-one.handler';
+import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { CqrsModule } from '@nestjs/cqrs';
-import { RegisterHandler } from './commands/register.handler';
-import { ValidateUserHandler } from './queries/validate-user.handler';
+import { User } from './user.entity';
+import { AdminSeeder } from './scripts/admin.seed';
 
 @Module({
-  imports: [CqrsModule, TypeOrmModule.forFeature([User])],
-  providers: [findOneHandler, RegisterHandler, ValidateUserHandler],
+  imports: [TypeOrmModule.forFeature([User])],
+  providers: [UsersService, AdminSeeder],
   controllers: [UsersController],
+  exports: [UsersService],
 })
 export class UsersModule {}

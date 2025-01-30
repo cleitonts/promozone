@@ -1,26 +1,32 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { RegisterRequest } from './DTO/register.request';
-import { RegisterModel } from './commands/register.model';
-import { plainToClass } from 'class-transformer';
-import { FindOneModel } from './queries/find-one.model';
+import { Body, Controller, Post, Param, UseGuards, Get } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserRequest } from './dto/create-user.request';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guards';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { UserRole } from './user-role.enum';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  @Post('register')
-  async register(@Body() registerDTO: RegisterRequest) {
-    return await this.commandBus.execute(
-      plainToClass(RegisterModel, registerDTO),
-    );
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async create(@Body() createUserRequest: CreateUserRequest) {
+    return this.usersService.create(createUserRequest);
   }
 
-  @Get(':username')
-  async getByUsername(@Param('username') email: string) {
-    return await this.queryBus.execute(new FindOneModel({ email }));
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
+  }
+
+  @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.USER)
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
   }
 }

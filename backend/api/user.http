@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### [1] Login (Obter JWT Token)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@admin.com",
+  "password": "admin"
+}
+
+###
+@auth_token = {{login.response.body.access_token}}
+
+### [2] Criar Usuário
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+Authorization: Bearer {{auth_token}}
+
+{
+  "email": "user2@example.com",
+  "password": "senhaSegura123",
+  "roles": ["admin", "editor"]
+}
+
+### [3] Listar Usuários (Se implementado)
+GET {{baseUrl}}/users
+Authorization: Bearer {{auth_token}}

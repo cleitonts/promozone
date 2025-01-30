@@ -1,0 +1,72 @@
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### [1] Login (Obter JWT Token)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@admin.com",
+  "password": "admin"
+}
+
+###
+@auth_token = {{login.response.body.access_token}}
+
+### [2] Criar Post (Autenticado)
+# @name createPost
+POST {{baseUrl}}/posts
+Authorization: Bearer {{auth_token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Notebook Gamer em Promoção",
+  "content": "<p>Confira esta oferta incrível na <a href='https://exemplo.com'>Loja X</a></p>",
+  "originalUrl": "https://amazon.com/produto/123",
+  "currentPrice": 4500,
+  "originalPrice": 5999,
+  "discountPercentage": 25
+}
+
+###
+@post_id = {{createPost.response.body.id}}
+### [4] Listar Posts Não Autenticado
+GET {{baseUrl}}/posts
+
+### [5] Detalhes do Post
+GET {{baseUrl}}/posts/{{post_id}}
+
+### [6] Votar no Post (👍)
+POST {{baseUrl}}/posts/{{post_id}}/vote/up
+Authorization: Bearer {{auth_token}}
+
+### [7] Votar no Post (👎)
+POST {{baseUrl}}/posts/{{post_id}}/vote/down
+Authorization: Bearer {{auth_token}}
+
+### [8] Buscar Engajamento
+GET {{baseUrl}}/posts/{{post_id}}/engagement
+
+### [9] Listar Usuários (Apenas Admin)
+GET {{baseUrl}}/users
+Authorization: Bearer {{auth_token}}
+
+### [10] Erro: Criar Post sem Autenticação
+POST {{baseUrl}}/posts
+Content-Type: {{contentType}}
+
+{
+  "title": "Post Não Autorizado",
+  "content": "Conteúdo inválido"
+}
+
+### [11] Erro: Email Duplicado
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "novo.user@example.com",
+  "password": "outrasenha",
+  "role": "user"
+}

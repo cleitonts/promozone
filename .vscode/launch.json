@@ -21,6 +21,13 @@
         "stopOnEntry": false,
         "console": "integratedTerminal",
         "cwd": "${workspaceFolder}/backend"
+      },
+      {
+        "name": "Frontend Debug",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:5173",
+        "webRoot": "${workspaceFolder}/frontend"
       }
     ]
 }

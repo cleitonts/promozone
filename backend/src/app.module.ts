@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SecurityModule } from './security/security.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './posts/posts.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    UsersModule,
+    AuthModule,
+    PostsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.prod', '.env.local', '.env', '.env.dist'],
@@ -20,13 +24,11 @@ import { UsersModule } from './users/users.module';
         username: configService.get('DATABASE_USER'),
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
-        entities: [__dirname + '/**/entities/*.entity.js'],
-        // autoLoadEntities: true, // Carrega automaticamente entidades registradas
+        entities: [__dirname + '/**/*.entity.js'],
+        autoLoadEntities: true, // Carrega automaticamente entidades registradas
         synchronize: configService.get('DATABASE_ORM_SYNC'), // NÃO use em produção!
       }),
     }),
-    SecurityModule,
-    UsersModule,
   ],
 })
 export class AppModule {}
