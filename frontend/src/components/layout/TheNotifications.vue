@@ -11,20 +11,11 @@
     </the-notification>
   </div>
 </template>
-<script>
-import { defineComponent } from "vue";
-import TheNotification from "./TheNotification.vue";
-import { useNotificationStore } from "@/stores/";
+<script setup lang="ts">
+import { useInterfaceStore } from '@/stores/interfaceStore'
+// import TheNotification from './TheNotification.vue'
 
-export default defineComponent({
-  components: { TheNotification },
-  // name: "TheNotifications",
-  setup: async function () {
-    const notificationStore = useNotificationStore();
-    const messages = notificationStore.messages;
-    return { messages };
-  },
-});
+const messages = useInterfaceStore().messages
 </script>
 
 <style lang="scss">

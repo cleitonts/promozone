@@ -20,50 +20,24 @@
   </v-snackbar>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-import { EMessageType, useNotificationStore } from "@/stores";
+<script setup lang="ts">
+import { EMessageType, useInterfaceStore } from '@/stores/interfaceStore'
+import { ref, watchEffect } from 'vue'
 
-export default defineComponent({
-  name: "TheNotification",
-  props: {
-    text: {
-      type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-      default: "",
-    },
-    lastId: {
-      type: Number,
-      required: true,
-    },
-    type: {
-      type: String,
-      default: "info",
-      validator: (value) => {
-        const acceptedValues = Object.values(EMessageType);
-        return acceptedValues.indexOf(value) !== -1;
-      },
-    },
-    timeout: {
-      type: Number,
-      default: 5000,
-    },
-  },
-  data() {
-    return {
-      snackbar: true,
-    };
-  },
-  watch: {
-    snackbar(e) {
-      if (!e) {
-        const { removeMessage } = useNotificationStore();
-        removeMessage(this.lastId);
-      }
-    },
-  },
-});
+const props = defineProps<{
+  text: string
+  title?: string
+  lastId: number
+  type?: EMessageType
+  timeout?: number
+}>()
+
+const snackbar = ref(true)
+
+watchEffect(() => {
+  if (!snackbar.value) {
+    const { removeMessage } = useInterfaceStore()
+    removeMessage(props.lastId)
+  }
+})
 </script>
