@@ -4,7 +4,7 @@
       <router-view v-slot="{ Component, route }" name="default">
         <transition
           :key="route.path"
-          :name="route.meta.transition"
+          :name="route.meta.transition as string"
           mode="out-in"
           :duration="300"
         >
@@ -25,22 +25,15 @@
   </v-main>
 </template>
 
-<script>
-import TheNotifications from "./TheNotifications.vue";
-import { ref, defineComponent } from "vue";
+<script lang="ts" setup>
+import type { VContainer } from 'vuetify/components'
+import TheNotifications from './TheNotifications.vue'
+import { ref, onMounted } from 'vue'
 
-export default defineComponent({
-  name: "TheEmptyLayout",
-  components: { TheNotifications },
-  setup() {
-    const data = {
-      mainContainer: ref(null),
-      containerHeight: ref(0),
-    };
-    return { ...data };
-  },
-  mounted() {
-    this.containerHeight = this.mainContainer.$vuetify.display.height - 152;
-  },
-});
+const mainContainer = ref<VContainer | null>(null)
+const containerHeight = ref(0)
+
+onMounted(() => {
+  if (mainContainer.value) containerHeight.value = mainContainer.value.$vuetify.display.height - 152
+})
 </script>

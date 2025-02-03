@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { backOfficeRoutes } from '@/router/backOfficeRoutes.js'
-import { AuthRoutes } from '@/router/authRoutes.js'
-import { TheMainLayout } from '@/components/index.js'
+import { backOfficeRoutes } from '@/router/backOfficeRoutes'
+import { AuthRoutes } from '@/router/authRoutes'
+import { TheMainLayout } from '@/components/index'
 import TheIndex from '@/views/TheIndex.vue'
 import { useInterfaceStore } from '@/stores/interfaceStore'
 
@@ -31,9 +31,17 @@ export const router = createRouter({
   ],
 })
 
-// router.beforeEach(async (to, from, next) => {
-//   next();
-// });
+router.beforeEach((to) => {
+  const auth = useInterfaceStore()
+
+  if (to.meta.requiresAuth && !auth.token) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+
+  if (to.meta.guestOnly && auth.token) {
+    return { path: '/' }
+  }
+})
 
 router.afterEach((to) => {
   const interfaceStore = useInterfaceStore()

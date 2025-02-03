@@ -13,7 +13,7 @@ export const useAuthApi = () => {
   const apiClient = axiosApiCreate().apiClient
 
   const login = async (credentials: TCredentials) => {
-    return await apiClient.post('/auth/login', { credentials })
+    return await apiClient.post('/auth/login', { ...credentials })
   }
 
   const register = (data: TRegister) => {

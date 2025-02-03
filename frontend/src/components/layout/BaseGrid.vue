@@ -9,7 +9,7 @@
           item-value="value"
           required
           :items="profiles"
-          :rules="[(v) => !!v || 'Le type doit être renseignée']"
+          :rules="[(v) => !!v || 'Select a valid limit']"
           @input="$emit('update:limit', $event)"
         />
       </v-col>
@@ -28,19 +28,13 @@
         <tbody>
           <tr v-for="(item, index) in getCleanedMatrix" :key="index">
             <template v-for="(r, i) in item">
-              <slot
-                :item="item"
-                :index="index"
-                :element="item"
-                :text="r"
-                :name="i"
-              >
+              <slot :item="item" :index="index" :element="item" :text="r" :name="i">
                 <td :key="i" :title="r">
                   <span v-if="i === 'id'">
-                    {{ r ? r.substring(0, 4) + " .." : "-" }}
+                    {{ r ? r.substring(0, 4) + ' ..' : '-' }}
                   </span>
                   <span v-else>
-                    {{ r ? r : "-" }}
+                    {{ r ? r : '-' }}
                   </span>
                 </td>
               </slot>
@@ -70,93 +64,92 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, ref } from 'vue'
 
-export default defineComponent({
-  name: "BaseGrid",
-  props: {
-    matrix: Array,
-    // this order the columns in the table, you can switch with the given array
-    header: Object,
-    formatter: Object,
-    page: {
-      type: Number,
-    },
-    limit: {
-      type: Number,
-    },
-  },
-  emits: ["update:page", "updateSearch", "update:limit"],
-  data: () => ({
-    profiles: [10, 50, 100, 500],
-  }),
-  computed: {
-    internalPage: {
-      get() {
-        return this.page;
-      },
-      set(e) {
-        this.$emit("update:page", e);
-        this.$emit("updateSearch");
-      },
-    },
-    internalLimit: {
-      get() {
-        return this.limit;
-      },
-      set(e) {
-        this.$emit("update:limit", e);
-        this.$emit("updateSearch");
-      },
-    },
-    getCleanedMatrix: function () {
-      const array = [];
-      const formatter = this.formatter;
-      const header = this.header;
-      if (typeof this.matrix === "undefined") {
-        return [];
-      }
-      for (const element of this.matrix) {
-        const item = element;
-        const temp = {};
-        for (const headerKey in header) {
-          temp[headerKey] = item[headerKey];
-        }
-        // formatter
-        for (const formatterKey in formatter) {
-          temp[formatterKey] = this.doFormat(
-            formatter[formatterKey],
-            temp[formatterKey]
-          );
-        }
-        array.push(temp);
-      }
-      return array;
-    },
-    getHeader: function () {
-      if (this.header) {
-        return this.header;
-      }
-      if (typeof this.matrix !== "undefined" && this.matrix.length) {
-        return Object.keys(this.matrix[0]);
-      }
-      return 0;
-    },
-  },
-  methods: {
-    doFormat: function (type, value) {
-      if (!value) {
-        return value;
-      }
+interface Formatter {
+  [key: string]: string
+}
 
-      switch (type) {
-        case "date":
-          return Date.formatDate(value);
-        default:
-          return value;
-      }
-    },
+interface Header {
+  [key: string]: string
+}
+
+interface MatrixItem {
+  [key: string]: any
+  totalItems?: number
+}
+
+interface Props {
+  matrix?: MatrixItem[]
+  header?: Header
+  formatter?: Formatter
+  page?: number
+  limit?: number
+}
+
+const props = defineProps<Props>()
+
+const emit = defineEmits<{
+  (event: 'update:page', value: number): void
+  (event: 'updateSearch'): void
+  (event: 'update:limit', value: number): void
+}>()
+
+const profiles = ref([10, 50, 100, 500])
+
+const internalPage = computed<number>({
+  get: () => props.page ?? 1,
+  set: (value) => {
+    emit('update:page', value)
+    emit('updateSearch')
   },
-});
+})
+
+const internalLimit = computed<number>({
+  get: () => props.limit ?? 10,
+  set: (value) => {
+    emit('update:limit', value)
+    emit('updateSearch')
+  },
+})
+
+const getCleanedMatrix = computed(() => {
+  if (!props.matrix) return []
+
+  return props.matrix.map((item) => {
+    const temp: Record<string, any> = {}
+
+    if (props.header) {
+      for (const headerKey in props.header) {
+        temp[headerKey] = item[headerKey]
+      }
+    }
+
+    if (props.formatter) {
+      for (const formatterKey in props.formatter) {
+        temp[formatterKey] = doFormat(props.formatter[formatterKey], temp[formatterKey])
+      }
+    }
+
+    return temp
+  })
+})
+
+const getHeader = computed(() => {
+  if (props.header) return props.header
+  if (props.matrix?.length) return Object.keys(props.matrix[0])
+  return []
+})
+
+function doFormat(type: string, value: any): any {
+  if (!value) return value
+
+  switch (type) {
+    case 'date':
+      return new Date(value).toLocaleDateString()
+    default:
+      return value
+  }
+}
 </script>

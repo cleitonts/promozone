@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 // Vuetify
-import vuetify from './plugins/vuetify'
+import vuetify from '@/plugins/vuetify'
 import App from './App.vue'
 import { router } from './router'
 import { TheSpinner } from './components'

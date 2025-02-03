@@ -44,19 +44,22 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthApi } from '@/api/auth.api'
+import { useInterfaceStore } from '@/stores/interfaceStore'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const form = ref(false)
 const password = ref('')
 const passwordRules = [(v: string) => !!v || 'Password is required']
 const email = ref('')
 const emailRules = [
-    (v: string) => !!v || 'E-mail is required',
-    (v: string) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
-  ],
-  onSubmit = async function () {
-    await useAuthApi().login({ email, password })
-    router.push('/dashboard')
-  }
+  (v: string) => !!v || 'E-mail is required',
+  (v: string) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
+]
+
+const onSubmit = async function () {
+  useInterfaceStore().login(email.value, password.value)
+  router.push('/dashboard')
+}
 </script>

@@ -1,10 +1,10 @@
-import { TheMainLayout } from '@/components/index.js'
-import { BackOfficeHomeView, UserEditView, UserListView } from '@/views/index.js'
+import { TheMainLayout } from '@/components'
+import { BackOfficeHomeView, UserEditView, UserListView } from '@/views'
 
 export const backOfficeRoutes = {
   path: '/bo',
   meta: {
-    middleware: { requiresAuth: true },
+    requiresAuth: true,
   },
   children: [
     {

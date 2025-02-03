@@ -23,13 +23,14 @@
 </template>
 
 <script lang="ts" setup>
-import TheMenuItem from '@/components/layout/TheMenuItem.vue'
+import { type IMenuItem } from '@/components/layout/TheMenuItem.vue'
 import { useInterfaceStore } from '@/stores/interfaceStore'
 import { ref } from 'vue'
+import TheMenuItem from '@/components/layout/TheMenuItem.vue'
 
 const interfaceStore = useInterfaceStore()
 const mini = ref(true)
-const items = ref([
+const items = ref<IMenuItem[]>([
   {
     title: 'Users',
     icon: 'fa fa-user',

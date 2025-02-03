@@ -17,22 +17,17 @@
   </v-card-title>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "TheCardTitle",
-  props: {
-    icon: String,
-    text: String,
-    bgColor: {
-      type: String,
-      default: "bg-primary",
-    },
-    textColor: {
-      type: String,
-      default: "grey-darken-4",
-    },
+<script lang="ts" setup>
+withDefaults(
+  defineProps<{
+    icon: string
+    text: string
+    bgColor: string
+    textColor: string
+  }>(),
+  {
+    bgColor: 'bg-primary',
+    textColor: 'grey-darken-3',
   },
-});
+)
 </script>

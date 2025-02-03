@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
-import { useLocalStorage } from '@/plugins/localStorage.js'
 import { ref } from 'vue'
+import { useLocalStorage } from '@/plugins/localStorage'
+import { useAuthApi } from '@/api/auth.api'
+import { router } from '@/router'
 
 export enum EMessageType {
   Danger = 'error',
@@ -9,21 +11,30 @@ export enum EMessageType {
   Info = 'info',
 }
 
+export interface IMessage {
+  text: string
+  type: EMessageType
+  time: number
+  id: number
+}
+
 export const useInterfaceStore = defineStore('interface', () => {
   const STATE = {
-    menuOpen: ref(useLocalStorage('menuOpen', 'false')),
+    menuOpen: useLocalStorage('menuOpen', false),
     pageTitle: ref(''),
     lastId: ref(0),
-    messages: ref([]),
+    loading: ref(0),
+    messages: ref<IMessage[]>([]),
+    token: ref<string | null>(null),
   }
-
   const ACTIONS = {
-    switchMenu: function () {
+    switchMenu(): void {
       STATE.menuOpen.value = !STATE.menuOpen.value
     },
-    addMessage: function ({ text, type, time = 5000 }) {
+
+    addMessage(text: string, type: EMessageType, time: number = 5000): void {
       STATE.lastId.value++
-      const message = {
+      const message: IMessage = {
         text,
         type,
         time,
@@ -31,18 +42,50 @@ export const useInterfaceStore = defineStore('interface', () => {
       }
       STATE.messages.value.unshift(message)
     },
-    removeMessage: function (id) {
+
+    removeMessage(id: number): void {
       const indexToDelete = STATE.messages.value.findIndex((n) => n.id === id)
       if (indexToDelete !== -1) {
         STATE.messages.value.splice(indexToDelete, 1)
       }
     },
-    processReturn: function (arr) {
-      for (const r in arr) {
-        this.addMessage({ text: arr[r].text, type: arr[r].type })
+
+    processReturn(arr: { text: string; type: EMessageType }[]): void {
+      arr.forEach(({ text, type }) => {
+        ACTIONS.addMessage(text, type)
+      })
+    },
+
+    dcrLoading(): void {
+      STATE.loading.value--
+    },
+
+    addLoading(): void {
+      STATE.loading.value++
+    },
+
+    async login(email: string, password: string): Promise<void> {
+      try {
+        const response = await useAuthApi().login({ email, password })
+        if (response.status === 201) {
+          STATE.token.value = response.data.access_token
+          return
+        }
+
+        throw new Error('Not possible to login')
+      } catch (error) {
+        console.log(error)
       }
+    },
+
+    async logout(): Promise<void> {
+      await useAuthApi().logout()
+      router.push({ name: 'login' })
     },
   }
 
-  return { ...STATE, ...ACTIONS }
+  return {
+    ...STATE,
+    ...ACTIONS,
+  }
 })

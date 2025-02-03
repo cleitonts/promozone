@@ -1,20 +1,17 @@
-import { TheEmptyLayout } from '@/components/index.js'
-import { LoginView, RegisterView } from '@/views/index.js'
+import { TheEmptyLayout } from '@/components'
+import { LoginView, RegisterView } from '@/views'
 
 export const AuthRoutes = {
   path: '/auth',
   component: TheEmptyLayout,
   meta: {
-    middleware: { requiresAuth: false },
+    requiresAuth: false,
   },
   children: [
     {
       path: '',
       redirect: () => {
         return { name: 'login' }
-      },
-      meta: {
-        pageTitle: 'Authentication',
       },
     },
     {

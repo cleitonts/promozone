@@ -6,14 +6,10 @@
       <v-btn class="fa fa-plus info mr-3" size="small" icon title="New" />
     </router-link>
 
-    <v-btn
-      class="fa fa-sign-out"
-      icon
-      title="Logout"
-    />
+    <v-btn class="fa fa-sign-out" icon title="Logout" />
   </v-app-bar>
 </template>
 
-<script setup>
-const imgUrl = new URL("/logo.png", import.meta.url).href;
+<script setup lang="ts">
+const imgUrl = new URL('/logo.png', import.meta.url).href
 </script>

@@ -1,30 +1,46 @@
-import axios from 'axios'
-import { useInterfaceStore } from '@/stores/interfaceStore'
+import axios, { type AxiosResponse } from 'axios'
+import { EMessageType, useInterfaceStore } from '@/stores/interfaceStore'
 
-export const useApiProvider = (resourceSingular: string, resourcePlural: string) => {
+export const useApiProvider = (
+  resourceSingular: string,
+  resourcePlural: string,
+  page: number = 1,
+  limit: number = 10,
+) => {
   const apiClient = axiosApiCreate().apiClient
 
-  const getAll = () => {
-    return apiClient.get(`/${resourcePlural}`)
+  apiClient.interceptors.request.use((config) => {
+    const token = useInterfaceStore().token
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    useInterfaceStore().addLoading()
+    return config
+  })
+
+  const getAll = (): Promise<AxiosResponse> => {
+    return apiClient.get(`/${resourcePlural}`, {
+      params: { page, limit },
+    })
   }
 
-  const getSingle = (id: string) => {
+  const getSingle = (id: string): Promise<AxiosResponse> => {
     return apiClient.get(`/${resourceSingular}/${id}`)
   }
 
-  const post = <T>(model: T) => {
+  const post = <T>(model: T): Promise<AxiosResponse> => {
     return apiClient.post(`/${resourceSingular}`, model)
   }
 
-  const put = <T>(model: T) => {
+  const put = <T>(model: T): Promise<AxiosResponse> => {
     return apiClient.put(`/${resourceSingular}`, model)
   }
 
-  const patch = <T>(model: T) => {
+  const patch = <T>(model: T): Promise<AxiosResponse> => {
     return apiClient.patch(`/${resourceSingular}`, model)
   }
 
-  const remove = (id: string) => {
+  const remove = (id: string): Promise<AxiosResponse> => {
     return apiClient.delete(`/${resourceSingular}/${id}`)
   }
 
@@ -33,17 +49,13 @@ export const useApiProvider = (resourceSingular: string, resourcePlural: string)
 
 export const axiosApiCreate = () => {
   const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_APP_API_URL ?? window.location.origin + '/api/v1',
+    baseURL: (import.meta.env.VITE_APP_API_URL ?? window.location.origin) + '/api/v1',
     withCredentials: true,
     timeout: 60000,
   })
 
   apiClient.interceptors.request.use(
     (config) => {
-      const token = localStorage.getItem('token')
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-      }
       useInterfaceStore().addLoading()
       return config
     },
@@ -55,7 +67,6 @@ export const axiosApiCreate = () => {
 
   apiClient.interceptors.response.use(
     (response) => {
-      console.log(1)
       const { addMessage, dcrLoading } = useInterfaceStore()
       if (response.data.notify) {
         if (response.data.notify.length > 0) {
@@ -66,37 +77,30 @@ export const axiosApiCreate = () => {
         response.data = response.data.data
       }
 
-      addMessage({
-        text: EMessageText.Success,
-        type: EMessageType.Success,
-        time: 2000,
-      })
+      addMessage('Success', EMessageType.Success, 2000)
 
       dcrLoading()
       return response
     },
     async (error) => {
-      console.log(2)
+      debugger
       const { addMessage, dcrLoading } = useInterfaceStore()
       dcrLoading()
 
-      if (error.response.status === 500) {
-        addMessage({ text: error.response.data.title, type: EMessageType.Error })
+      if (error.response?.status === 500) {
+        addMessage(error.response.data.title, EMessageType.Danger)
         return Promise.reject(error)
       }
       if (error.response?.data?.notify?.length > 0) {
         const { processReturn } = useInterfaceStore()
         processReturn(error.response.data.notify)
       }
-      if ([401, 403].includes(error.response.status)) {
+      if ([401, 403].includes(error.response?.status)) {
         // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-        // await useInterfaceStore().logout()
+        await useInterfaceStore().logout()
       }
 
       return Promise.reject(error)
-    },
-    () => {
-      console.log(3)
     },
   )
 

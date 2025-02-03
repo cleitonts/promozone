@@ -16,4 +16,3 @@
     <v-card-text> Hi this is home!</v-card-text>
   </v-card>
 </template>
-<script setup lang="ts"></script>

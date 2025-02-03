@@ -13,7 +13,7 @@
     </template>
 
     <template #actions>
-      <v-btn icon color="white" text @click="snackbar = false">
+      <v-btn icon color="white" variant="text" @click="snackbar = false">
         <i class="fa fa-times" />
       </v-btn>
     </template>

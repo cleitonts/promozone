@@ -9,16 +9,16 @@
   </v-list-item>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup lang="ts">
+export interface IMenuItem {
+  title?: string
+  routeName?: string
+  icon?: string
+  group?: boolean
+  items?: IMenuItem[]
+}
 
-export default defineComponent({
-  name: "TheMenuItem",
-  props: {
-    item: {
-      type: Object,
-      required: true,
-    },
-  },
-});
+defineProps<{
+  item: IMenuItem
+}>()
 </script>

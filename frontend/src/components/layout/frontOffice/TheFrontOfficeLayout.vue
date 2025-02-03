@@ -1,10 +1,15 @@
 <template>
-  <TheFOAppBar />
+  <TheFrontOfficeAppBar />
 
   <v-main ref="mainView">
     <v-container ref="mainContainer">
       <router-view v-slot="{ Component, route }" name="default">
-        <transition :key="route.path" :name="route.meta.transition" mode="out-in" :duration="300">
+        <transition
+          :key="route.path"
+          :name="route.meta.transition as string"
+          mode="out-in"
+          :duration="300"
+        >
           <suspense>
             <template #default>
               <component :is="Component" :key="route.path" />
@@ -25,8 +30,9 @@
 <script setup lang="ts">
 import { TheNotifications } from '@/components'
 import { ref } from 'vue'
-import TheFOAppBar from '@/components/layout/frontOffice/TheFrontOfficeAppBar.vue'
+import TheFrontOfficeAppBar from '@/components/layout/frontOffice/TheFrontOfficeAppBar.vue'
+import type { VContainer } from 'vuetify/components'
 
-const mainContainer = ref(null)
+const mainContainer = ref<VContainer | null>(null)
 const containerHeight = ref(0)
 </script>

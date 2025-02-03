@@ -3,7 +3,10 @@ import { AuthService } from './auth.service';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LoginRequest } from './dto/login.request';
 
-@Controller('auth')
+@Controller({
+  version: '1',
+  path: 'auth',
+})
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -32,5 +35,10 @@ export class AuthController {
   })
   async login(@Body() body: LoginRequest) {
     return this.authService.login(body.email, body.password);
+  }
+
+  @Post('logout')
+  async logout(@Body() body: LoginRequest) {
+    return 'success';
   }
 }

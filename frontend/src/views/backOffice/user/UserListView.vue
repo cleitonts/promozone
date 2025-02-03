@@ -19,14 +19,11 @@
     </the-card-title>
 
     <v-card-text>
-      <v-form ref="searchForm" @submit.prevent="updateList()">
+      <v-form ref="searchForm" @submit.prevent="getList()">
         <v-row>
           <v-btn type="submit" class="d-none"></v-btn>
           <v-col cols="6">
             <v-text-field v-model="email" :rules="emailRules" label="E-mail" required />
-          </v-col>
-          <v-col cols="6">
-            <v-select v-model="profile" label="Profile" required :items="profileList"> </v-select>
           </v-col>
         </v-row>
       </v-form>
@@ -36,8 +33,8 @@
         class="collaborators-table"
         :matrix="users"
         :header="headers"
-        @update:limit="updateList()"
-        @update:page="updateList()"
+        @update:limit="getList()"
+        @update:page="getList()"
       >
         <template #action="{ element }">
           <td class="actions to-none pa-1">
@@ -65,16 +62,14 @@
 </template>
 
 <script setup lang="ts">
+import { useUserApi } from '@/api/user.api'
 import { BaseGrid, TheCardTitle } from '@/components'
-import { getUsers } from '@/api/users'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { page, limit } from '@/api/user.api'
 
-const limit = ref(10)
-const page = ref(1)
 const searchForm = ref(null)
 const email = ref('')
-const profile = ref('')
-
+const users = ref([])
 const headers = {
   action: '#',
   id: 'Id',
@@ -89,13 +84,13 @@ const emailRules = [
     ) || 'E-mail must be valid',
 ]
 
-const updateList = async function () {
-  const users = await getUsers({
-    limit,
-    page,
-    email,
-    profile,
-  })
+const getList = async function () {
+  const response = await useUserApi().getAll()
+  console.log(response)
   console.log(users)
 }
+
+onMounted(() => {
+  getList()
+})
 </script>

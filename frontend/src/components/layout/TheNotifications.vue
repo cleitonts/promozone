@@ -13,8 +13,7 @@
 </template>
 <script setup lang="ts">
 import { useInterfaceStore } from '@/stores/interfaceStore'
-// import TheNotification from './TheNotification.vue'
-
+import theNotification from '@/components/layout/TheNotification.vue'
 const messages = useInterfaceStore().messages
 </script>
 

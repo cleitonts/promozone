@@ -1,9 +1,9 @@
-import "@fortawesome/fontawesome-free/css/all.css";
-import "@/assets/base.sass";
-import customColors from "@/assets/template/exports/colors.module.scss";
-import "vuetify/styles";
-import { createVuetify } from "vuetify";
-import { aliases, fa } from "vuetify/iconsets/fa";
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@/assets/base.sass'
+import customColors from '@/assets/template/exports/colors.module.scss'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import { aliases, fa } from 'vuetify/iconsets/fa'
 
 const customLightTheme = {
   dark: false,
@@ -20,47 +20,47 @@ const customLightTheme = {
     accent: customColors.accent,
     textDark: customColors.textDark,
   },
-};
+}
 
 export default createVuetify({
   blueprint: {
     defaults: {
       VCombobox: {
-        variant: "underlined",
+        variant: 'underlined',
       },
       VSelect: {
-        variant: "underlined",
-        color: "textDark",
-        density: "compact",
+        variant: 'underlined',
+        color: 'textDark',
+        density: 'compact',
       },
       VTextarea: {
-        variant: "underlined",
-        color: "textDark",
+        variant: 'underlined',
+        color: 'textDark',
       },
       VTextField: {
-        variant: "underlined",
-        density: "compact",
-        color: "textDark",
+        variant: 'underlined',
+        density: 'compact',
+        color: 'textDark',
       },
       VTabs: {
-        density: "compact",
+        density: 'compact',
       },
       VTable: {
-        density: "compact",
+        density: 'compact',
       },
     },
   },
   icons: {
-    defaultSet: "fa",
+    defaultSet: 'fa',
     aliases,
     sets: {
       fa,
     },
   },
   theme: {
-    defaultTheme: "customLightTheme",
+    defaultTheme: 'customLightTheme',
     themes: {
       customLightTheme,
     },
   },
-});
+})
