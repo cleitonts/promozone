@@ -1,5 +1,6 @@
 import axios, { type AxiosResponse } from 'axios'
 import { EMessageType, useInterfaceStore } from '@/stores/interfaceStore'
+import { useAuthApi } from '../auth.api'
 
 export const useApiProvider = (
   resourceSingular: string,
@@ -9,10 +10,27 @@ export const useApiProvider = (
 ) => {
   const apiClient = axiosApiCreate().apiClient
 
-  apiClient.interceptors.request.use((config) => {
+  apiClient.interceptors.request.use(async (config) => {
     const token = useInterfaceStore().token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
+
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      const isExpired = payload.exp * 1000 < Date.now()
+
+      if (isExpired && useInterfaceStore().refreshToken) {
+        try {
+          const response = await useAuthApi().refresh(useInterfaceStore().refreshToken as string)
+          useInterfaceStore().setTokens(
+            response.data.data.accessToken,
+            response.data.data.refreshToken,
+          )
+          config.headers.Authorization = `Bearer ${useInterfaceStore().token}`
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          useInterfaceStore().logout()
+        }
+      }
     }
     useInterfaceStore().addLoading()
     return config

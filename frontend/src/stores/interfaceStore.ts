@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useLocalStorage } from '@/plugins/localStorage'
 import { useAuthApi } from '@/api/auth.api'
-import { router } from '@/router'
 
 export enum EMessageType {
   Danger = 'error',
@@ -25,7 +24,8 @@ export const useInterfaceStore = defineStore('interface', () => {
     lastId: ref(0),
     loading: ref(0),
     messages: ref<IMessage[]>([]),
-    token: ref<string | null>(null),
+    token: useLocalStorage<string | null>('token', null),
+    refreshToken: useLocalStorage<string | null>('refreshToken', null),
   }
   const ACTIONS = {
     switchMenu(): void {
@@ -68,7 +68,8 @@ export const useInterfaceStore = defineStore('interface', () => {
       try {
         const response = await useAuthApi().login({ email, password })
         if (response.status === 201) {
-          STATE.token.value = response.data.access_token
+          STATE.token.value = response.data.data.accessToken
+          STATE.refreshToken.value = response.data.data.refreshToken
           return
         }
 
@@ -80,7 +81,14 @@ export const useInterfaceStore = defineStore('interface', () => {
 
     async logout(): Promise<void> {
       await useAuthApi().logout()
-      router.push({ name: 'login' })
+      STATE.token.value = null
+      document.cookie = 'refreshToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+      window.location.reload()
+    },
+
+    setTokens(accessToken: string, refreshToken: string) {
+      STATE.token.value = accessToken
+      STATE.refreshToken.value = refreshToken
     },
   }
 

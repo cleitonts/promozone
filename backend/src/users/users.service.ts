@@ -2,7 +2,7 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { User } from './user.entity';
 import { CreateUserRequest } from './dto/create-user.request';
 import { ConfigService } from '@nestjs/config';
-import { UserRole } from './user-role.enum';
+import { EUserRole } from './user-role.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -84,7 +84,7 @@ export class UsersService {
       await this.create({
         email: adminEmail,
         password: adminPassword,
-        roles: [UserRole.ADMIN],
+        roles: [EUserRole.ADMIN],
       });
     } catch (error) {
       throw new Error('Error seeding admin user: ' + error.message);

@@ -1,5 +1,5 @@
 import { Post } from 'src/posts/post.entity';
-import { UserRole } from './user-role.enum';
+import { EUserRole } from './user-role.enum';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
@@ -15,10 +15,10 @@ export class User {
 
   @Column({
     type: 'simple-array',
-    enum: UserRole,
-    default: [UserRole.USER],
+    enum: EUserRole,
+    default: [EUserRole.USER],
   })
-  roles: UserRole[];
+  roles: EUserRole[];
 
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];

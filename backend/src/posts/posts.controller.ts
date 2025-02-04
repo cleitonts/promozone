@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../users/user-role.enum';
+import { EUserRole } from '../users/user-role.enum';
 import {
   ApiTags,
   ApiOperation,
@@ -25,8 +25,8 @@ import { RolesGuard } from 'src/auth/guards/roles.guards';
 import { CreatePostRequest } from './dto/create-post.request';
 import { UpdatePostRequest } from './dto/update-post.request';
 import { CreatePostResponse } from './dto/create-post.response';
-import { ErrorResponse } from 'src/common/dto/error.response';
 import { ApiRequest } from 'src/common/types/request';
+import { ErrorResponse } from 'src/common/dto/api.response';
 
 @ApiTags('Posts')
 @ApiBearerAuth()
@@ -76,7 +76,7 @@ export class PostsController {
   }
 
   @Get(':id')
-  @Roles(UserRole.ADMIN, UserRole.USER)
+  @Roles(EUserRole.ADMIN, EUserRole.USER)
   @ApiOperation({ summary: 'Obter post por ID' })
   @ApiResponse({ status: 200, description: 'Post encontrado' })
   @ApiResponse({ status: 404, description: 'Post não encontrado' })
@@ -89,7 +89,7 @@ export class PostsController {
   }
 
   @Put(':id')
-  @Roles(UserRole.ADMIN, UserRole.USER)
+  @Roles(EUserRole.ADMIN, EUserRole.USER)
   @ApiOperation({ summary: 'Atualizar post' })
   @ApiResponse({ status: 200, description: 'Post atualizado' })
   @ApiResponse({ status: 403, description: 'Acesso negado' })
@@ -105,7 +105,7 @@ export class PostsController {
     }
     if (
       post.author.id !== req.user.userId &&
-      req.user.roles.includes(UserRole.ADMIN)
+      req.user.roles.includes(EUserRole.ADMIN)
     ) {
       throw new NotFoundException('Acesso negado');
     }
@@ -114,7 +114,7 @@ export class PostsController {
   }
 
   @Delete(':id')
-  @Roles(UserRole.ADMIN, UserRole.USER)
+  @Roles(EUserRole.ADMIN, EUserRole.USER)
   @ApiOperation({ summary: 'Deletar post' })
   @ApiResponse({ status: 200, description: 'Post deletado' })
   @ApiResponse({ status: 403, description: 'Acesso negado' })
@@ -128,7 +128,7 @@ export class PostsController {
     // Verificar se o usuário é o autor ou admin
     if (
       post.author.id !== req.user.userId &&
-      req.user.roles.includes(UserRole.ADMIN)
+      req.user.roles.includes(EUserRole.ADMIN)
     ) {
       throw new NotFoundException('Acesso negado');
     }

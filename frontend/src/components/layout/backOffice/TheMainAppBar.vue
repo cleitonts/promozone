@@ -3,7 +3,7 @@
     <img :width="150" :src="imgUrl" />
     <v-btn class="fa fa-bars" icon title="Switch menu" @click.stop="switchMenu()" />
     <v-spacer />
-    <v-btn class="fa fa-sign-out" icon title="Logout" />
+    <v-btn class="fa fa-sign-out" icon title="Logout" @click="useInterfaceStore().logout()" />
   </v-app-bar>
 </template>
 

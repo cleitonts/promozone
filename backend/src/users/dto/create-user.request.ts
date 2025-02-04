@@ -1,6 +1,6 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserRole } from '../user-role.enum';
+import { EUserRole } from '../user-role.enum';
 
 export class CreateUserRequest {
   @IsEmail()
@@ -11,11 +11,11 @@ export class CreateUserRequest {
   password: string;
 
   @ApiProperty({
-    example: UserRole.USER,
+    example: EUserRole.USER,
     description: 'User role on the system',
-    enum: UserRole,
-    examples: Object.values(UserRole),
+    enum: EUserRole,
+    examples: Object.values(EUserRole),
   })
-  @IsEnum(UserRole, { each: true })
-  roles: UserRole[];
+  @IsEnum(EUserRole, { each: true })
+  roles: EUserRole[];
 }

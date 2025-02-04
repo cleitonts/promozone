@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { AuthService, ITokenPair } from './auth.service';
 import { LoginRequest } from './dto/login.request';
+import { ApiResponse } from 'src/common/dto/api.response';
 
 @Controller({
   version: '1',
@@ -11,34 +11,23 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-  @ApiOperation({ summary: 'User Authentication' })
-  @ApiBody({ type: LoginRequest })
-  @ApiResponse({
-    status: 200,
-    description: 'User logged in',
-    schema: {
-      example: {
-        access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-        expires_in: 3600,
-      },
-    },
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Invalid credentials',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  async login(@Body() body: LoginRequest) {
-    return this.authService.login(body.email, body.password);
+  async login(@Body() body: LoginRequest): Promise<ApiResponse<ITokenPair>> {
+    return ApiResponse.success(
+      await this.authService.login(body.email, body.password),
+    );
+  }
+
+  @Post('refresh')
+  async refresh(
+    @Body('refreshToken') refreshToken: string,
+  ): Promise<ApiResponse<ITokenPair>> {
+    return ApiResponse.success(
+      await this.authService.refreshTokens(refreshToken),
+    );
   }
 
   @Post('logout')
-  async logout(@Body() body: LoginRequest) {
+  async logout() {
     return 'success';
   }
 }

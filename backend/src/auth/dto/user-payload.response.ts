@@ -1,7 +1,7 @@
-import { UserRole } from 'src/users/user-role.enum';
+import { EUserRole } from 'src/users/user-role.enum';
 
 export class UserPayloadResponse {
   userId: string;
   username: string;
-  roles: UserRole[];
+  roles: EUserRole[];
 }

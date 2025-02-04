@@ -24,5 +24,9 @@ export const useAuthApi = () => {
     return apiClient.post('/auth/logout')
   }
 
-  return { login, register, logout }
+  const refresh = async (refreshToken: string) => {
+    return await apiClient.post('/auth/refresh', { refreshToken })
+  }
+
+  return { login, register, logout, refresh }
 }

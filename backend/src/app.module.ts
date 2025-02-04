@@ -4,6 +4,8 @@ import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { WinstonModule } from 'nest-winston';
+import { AppLogger } from './common/logger.service';
 
 @Module({
   imports: [
@@ -28,6 +30,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         autoLoadEntities: true, // Carrega automaticamente entidades registradas
         synchronize: configService.get('DATABASE_ORM_SYNC'), // NÃO use em produção!
       }),
+    }),
+    WinstonModule.forRootAsync({
+      useClass: AppLogger,
     }),
   ],
 })

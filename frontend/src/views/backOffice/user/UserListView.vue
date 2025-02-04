@@ -86,8 +86,7 @@ const emailRules = [
 
 const getList = async function () {
   const response = await useUserApi().getAll()
-  console.log(response)
-  console.log(users)
+  users.value = response.data.data
 }
 
 onMounted(() => {
