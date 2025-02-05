@@ -1,4 +1,4 @@
-import { axiosApiCreate } from './provider/api.provider'
+import { axiosApiCreate } from './provider/api.create'
 
 export type TCredentials = {
   email: string

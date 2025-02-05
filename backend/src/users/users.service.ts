@@ -91,6 +91,11 @@ export class UsersService {
     }
   }
 
+  listRoles(user: User) {
+    console.log('listRoles', user);
+    return Object.values(EUserRole);
+  }
+
   private async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 10);
   }

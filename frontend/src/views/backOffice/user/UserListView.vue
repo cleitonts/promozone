@@ -62,14 +62,14 @@
 </template>
 
 <script setup lang="ts">
-import { useUserApi } from '@/api/user.api'
+import { IUser, useUserApi } from '@/api/user.api'
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref } from 'vue'
 import { page, limit } from '@/api/user.api'
 
 const searchForm = ref(null)
 const email = ref('')
-const users = ref([])
+const users = ref<IUser[]>([])
 const headers = {
   action: '#',
   id: 'Id',

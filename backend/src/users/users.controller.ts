@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Param, UseGuards, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Param,
+  UseGuards,
+  Get,
+  Request,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserRequest } from './dto/create-user.request';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -13,6 +21,7 @@ import { User } from './user.entity';
   version: '1',
   path: 'users',
 })
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
@@ -20,14 +29,12 @@ export class UsersController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(EUserRole.ADMIN)
   async create(@Body() createUserRequest: CreateUserRequest) {
     this.logger.debug('Listing users');
     return this.usersService.create(createUserRequest);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(EUserRole.ADMIN)
   @Get()
   async findAll(): Promise<ApiResponse<User[]>> {
@@ -35,8 +42,17 @@ export class UsersController {
   }
 
   @Get(':id')
-  @Roles(EUserRole.ADMIN, EUserRole.USER)
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  @Roles(EUserRole.USER)
+  async findOne(@Param('id') id: string) {
+    return ApiResponse.success(await this.usersService.findOne(id));
+  }
+
+  @Get('roles')
+  @Roles(EUserRole.USER)
+  async ListRoles(@Request() req: Request) {
+    console.log(req);
+    return ApiResponse.success(
+      this.usersService.listRoles(req as unknown as User),
+    );
   }
 }

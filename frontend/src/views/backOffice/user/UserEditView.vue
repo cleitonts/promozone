@@ -31,11 +31,15 @@
 import { useRoute } from 'vue-router'
 import { TheCardTitle } from '@/components'
 import { ref } from 'vue'
+import { IUser, useUserApi } from '@/api/user.api'
 
 const route = useRoute()
-
+const user = ref<IUser | null>(null)
 if (route.name !== 'usersNew') {
-  console.log('getusers')
+  const response = await useUserApi().getSingle(route.params.id as string)
+  user.value = response.data.data
+  const rolesResponse = await useUserApi().getRoles()
+  console.log(rolesResponse)
 }
 
 const usersForm = ref(null)
@@ -48,7 +52,8 @@ const emailRules = [
 ]
 
 const validate = async function () {
-  const user = await this.usersSend(this.user.email)
-  this.$router.push({ name: 'usersEdit', params: { id: user.id } })
+  const response = await this.usersSend(this.user.email)
+  user.value = response.data.data
+  this.$router.push({ name: 'usersEdit', params: { id: user.value.id } })
 }
 </script>
