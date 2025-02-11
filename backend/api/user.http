@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3000/api/v1
 @contentType = application/json
 
 ### [1] Login (Obter JWT Token)
@@ -7,12 +7,12 @@ POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
 
 {
-  "email": "admin@admin.com",
-  "password": "admin"
+  "email": "user32@example.com",
+  "password": "senhaSegura123"
 }
 
 ###
-@auth_token = {{login.response.body.access_token}}
+@auth_token = {{login.response.body.data.accessToken}}
 
 ### [2] Criar Usuário
 # @name createUser
@@ -21,9 +21,9 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{auth_token}}
 
 {
-  "email": "user2@example.com",
+  "email": "user32@example.com",
   "password": "senhaSegura123",
-  "roles": ["admin", "editor"]
+  "perfilId": "4988bada-794e-48a2-b78e-a88328c324c6"
 }
 
 ### [3] Listar Usuários (Se implementado)

@@ -1,0 +1,50 @@
+@baseUrl = http://localhost:3000/api/v1
+@contentType = application/json
+
+### [1] Login (Obter JWT Token)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@admin.com",
+  "password": "admin"
+}
+
+###
+@auth_token = {{login.response.body.data.accessToken}}
+
+### [2] Criar (Autenticado)
+# @name create
+POST {{baseUrl}}/perfil
+Authorization: Bearer {{auth_token}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Usuario123"
+}
+
+###
+@perfilId = {{create.response.body.data.id}}
+
+### [2] Criar (Autenticado)
+# @name update
+PUT {{baseUrl}}/perfil/{{perfilId}}
+Authorization: Bearer {{auth_token}}
+Content-Type: {{contentType}}
+
+{
+  "name": "User",
+  "permissions": [
+    "users:create",
+    "users:update",
+    "users:delete",
+    "users:read"
+  ]
+}
+
+
+### [4] Listar Todos (Autenticado)
+GET {{baseUrl}}/perfil
+Authorization: Bearer {{auth_token}}
+Content-Type: {{contentType}}

@@ -5,5 +5,5 @@ import { CreateUserRequest } from './create-user.request';
 export class UpdateUserRequest extends PartialType(CreateUserRequest) {
   @IsOptional()
   @IsString()
-  currentPassword?: string; // Para alteração segura de senha
+  currentPassword?: string;
 }

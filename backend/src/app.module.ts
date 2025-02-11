@@ -6,12 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { AppLogger } from './common/logger.service';
+import { PerfilModule } from './perfil/perfil.module';
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     PostsModule,
+    PerfilModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.prod', '.env.local', '.env', '.env.dist'],

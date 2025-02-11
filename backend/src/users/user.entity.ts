@@ -1,6 +1,12 @@
 import { Post } from 'src/posts/post.entity';
-import { EUserRole } from './user-role.enum';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
+import { Perfil } from 'src/perfil/perfil.entity';
 
 @Entity()
 export class User {
@@ -13,12 +19,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column({
-    type: 'simple-array',
-    enum: EUserRole,
-    default: [EUserRole.USER],
-  })
-  roles: EUserRole[];
+  @ManyToOne(() => Perfil, (perfil) => perfil.users)
+  perfil: Perfil;
 
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];

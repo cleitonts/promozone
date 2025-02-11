@@ -1,13 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppLogger } from './common/logger.service';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ApiResponseInterceptor } from './common/interceptors/Api-response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new AppLogger(),
   });
+
+  app.useGlobalInterceptors(new ApiResponseInterceptor());
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -34,6 +37,14 @@ async function bootstrap() {
 
   const logger = app.get(AppLogger);
   app.useGlobalFilters(new HttpExceptionFilter(logger));
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, // Habilita transformações nos DTOs
+      // whitelist: true, // Remove propriedades não definidas no DTO
+      // forbidNonWhitelisted: true, // Rejeita requisições com propriedades extras
+    }),
+  );
 
   await app.listen(process.env.PORT ?? 3000);
 }

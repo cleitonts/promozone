@@ -1,7 +1,7 @@
-import { EUserRole } from 'src/users/user-role.enum';
+import { Perfil } from '../../perfil/perfil.entity';
 
 export class UserPayloadResponse {
   userId: string;
   username: string;
-  roles: EUserRole[];
+  perfil: Perfil;
 }

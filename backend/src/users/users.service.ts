@@ -1,12 +1,17 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { User } from './user.entity';
 import { CreateUserRequest } from './dto/create-user.request';
 import { ConfigService } from '@nestjs/config';
-import { EUserRole } from './user-role.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserRequest } from './dto/update-user.request';
+import { PerfilService } from 'src/perfil/perfil.service';
 
 @Injectable()
 export class UsersService {
@@ -14,11 +19,12 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private configService: ConfigService,
+    private perfilService: PerfilService,
   ) {}
 
   async findAll(): Promise<User[]> {
     return this.usersRepository.find({
-      select: ['id', 'email', 'roles', 'createdAt'], // Não inclui password
+      select: ['id', 'email', 'perfil', 'createdAt'], // Não inclui password
     });
   }
 
@@ -30,7 +36,10 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { email } });
+    return this.usersRepository.findOne({
+      where: { email },
+      relations: ['perfil'],
+    });
   }
 
   async update(
@@ -60,12 +69,17 @@ export class UsersService {
       throw new ConflictException('Email already exists');
     }
 
-    const uniqueRoles = [...new Set(createUserRequest.roles)];
+    let perfil = await this.perfilService.findOneBy({
+      id: createUserRequest.perfilId,
+    });
+    if (!perfil) {
+      throw new ConflictException('Perfil not found');
+    }
 
     const user = this.usersRepository.create({
       ...createUserRequest,
       password: await this.hashPassword(createUserRequest.password),
-      roles: uniqueRoles,
+      perfil,
     });
 
     return this.usersRepository.save(user);
@@ -81,19 +95,21 @@ export class UsersService {
         throw new Error('Credentials not defined');
       }
 
+      let perfil = await this.perfilService.findOneBy({ name: 'admin' });
+      if (!perfil) {
+        perfil = await this.perfilService.create({
+          name: 'admin',
+        });
+      }
+
       await this.create({
         email: adminEmail,
         password: adminPassword,
-        roles: [EUserRole.ADMIN],
+        perfilId: perfil.id,
       });
     } catch (error) {
       throw new Error('Error seeding admin user: ' + error.message);
     }
-  }
-
-  listRoles(user: User) {
-    console.log('listRoles', user);
-    return Object.values(EUserRole);
   }
 
   private async hashPassword(password: string): Promise<string> {

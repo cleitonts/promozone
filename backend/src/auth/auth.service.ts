@@ -1,15 +1,20 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 import { User } from 'src/users/user.entity';
-import { EUserRole } from 'src/users/user-role.enum';
+import { Perfil } from '../perfil/perfil.entity';
 
 export interface ITokenPayload {
   username: string;
-  roles: EUserRole[];
+  perfil: Perfil;
   sub: string;
   jti?: string;
   type: 'access' | 'refresh';
@@ -23,12 +28,16 @@ export interface ITokenPair {
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
     private jwtService: JwtService,
     private config: ConfigService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<Omit<User, 'password'>> {
     const user = await this.usersService.findOneByEmail(email);
     if (user && (await bcrypt.compare(pass, user.password))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -43,17 +52,19 @@ export class AuthService {
     return await this.generateTokenPair(user);
   }
 
-  async generateTokenPair(user: User): Promise<ITokenPair> {
+  async generateTokenPair(user: Omit<User, 'password'>): Promise<ITokenPair> {
     return {
       accessToken: await this.generateAccessToken(user),
       refreshToken: await this.generateRefreshToken(user),
     };
   }
 
-  private async generateAccessToken(user: User): Promise<string> {
+  private async generateAccessToken(
+    user: Omit<User, 'password'>,
+  ): Promise<string> {
     const payload: ITokenPayload = {
       username: user.email,
-      roles: user.roles,
+      perfil: user.perfil,
       sub: user.id,
       type: 'access',
     };
@@ -64,12 +75,14 @@ export class AuthService {
     });
   }
 
-  private async generateRefreshToken(user: User): Promise<string> {
+  private async generateRefreshToken(
+    user: Omit<User, 'password'>,
+  ): Promise<string> {
     const tokenId = randomUUID();
 
     const payload: ITokenPayload = {
       username: user.email,
-      roles: user.roles,
+      perfil: user.perfil,
       sub: user.id,
       jti: tokenId,
       type: 'refresh',
