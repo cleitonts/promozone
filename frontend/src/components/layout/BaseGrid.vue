@@ -1,24 +1,31 @@
 <template>
   <div>
-    <v-row v-if="limit" class="justify-content-between px-0">
-      <v-col cols="3" md="2" class="ml-auto">
-        <v-select
-          v-model="internalLimit"
-          label="Page limit"
-          item-text="text"
-          item-value="value"
-          required
-          :items="profiles"
-          :rules="[(v) => !!v || 'Select a valid limit']"
-          @input="$emit('update:limit', $event)"
-        />
-      </v-col>
-    </v-row>
+    <slot name="prepend">
+      <v-row v-if="limit" class="justify-content-between px-0">
+        <v-col cols="3" md="2" class="ml-auto">
+          <v-select
+            :model-value="limit"
+            label="Page limit"
+            item-text="text"
+            item-value="value"
+            required
+            :items="itemsPerPage"
+            :rules="[(v) => !!v || 'Select a valid limit']"
+            @update:modelValue="
+              (e) => {
+                $emit('update:limit', e)
+                $emit('update', e)
+              }
+            "
+          />
+        </v-col>
+      </v-row>
+    </slot>
     <v-table v-if="getCleanedMatrix.length">
       <slot name="thead">
         <thead>
           <tr>
-            <th v-for="item in getHeader" :key="item">
+            <th v-for="(item, key) in getHeader" :key="key">
               {{ item }}
             </th>
           </tr>
@@ -49,17 +56,21 @@
       </div>
     </div>
     <v-row v-if="page" class="justify-center mt-0">
-      <slot name="pagination">
-        <div class="text-center mt-4">
-          <v-pagination
-            v-model="internalPage"
-            density="comfortable"
-            active-color="secondary"
-            :length="Math.ceil(matrix?.[0]?.totalItems / limit) || page + 6"
-            :total-visible="7"
-          />
-        </div>
-      </slot>
+      <div class="text-center mt-4">
+        <v-pagination
+          :value="page"
+          density="comfortable"
+          active-color="secondary"
+          :length="Math.ceil(totalItems / limit) || page + 4"
+          :total-visible="7"
+          @update:modelValue="
+            (e) => {
+              $emit('update:page', e)
+              $emit('update', e)
+            }
+          "
+        />
+      </div>
     </v-row>
   </div>
 </template>
@@ -67,58 +78,30 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-interface Formatter {
-  [key: string]: string
-}
-
-interface Header {
-  [key: string]: string
-}
-
-interface MatrixItem {
-  [key: string]: any
-  totalItems?: number
-}
-
 interface Props {
-  matrix?: MatrixItem[]
-  header?: Header
-  formatter?: Formatter
+  matrix?: Record<string, string>[]
+  header?: Record<string, string>
+  formatter?: Record<string, string>
   page?: number
   limit?: number
+  totalItems?: number
 }
 
 const props = defineProps<Props>()
 
-const emit = defineEmits<{
+defineEmits<{
   (event: 'update:page', value: number): void
-  (event: 'updateSearch'): void
+  (event: 'update', value: number): void
   (event: 'update:limit', value: number): void
 }>()
 
-const profiles = ref([10, 50, 100, 500])
-
-const internalPage = computed<number>({
-  get: () => props.page ?? 1,
-  set: (value) => {
-    emit('update:page', value)
-    emit('updateSearch')
-  },
-})
-
-const internalLimit = computed<number>({
-  get: () => props.limit ?? 10,
-  set: (value) => {
-    emit('update:limit', value)
-    emit('updateSearch')
-  },
-})
+const itemsPerPage = ref([10, 50, 100, 500])
 
 const getCleanedMatrix = computed(() => {
   if (!props.matrix) return []
 
   return props.matrix.map((item) => {
-    const temp: Record<string, any> = {}
+    const temp: Record<string, string> = {}
 
     if (props.header) {
       for (const headerKey in props.header) {
@@ -142,7 +125,7 @@ const getHeader = computed(() => {
   return []
 })
 
-function doFormat(type: string, value: any): any {
+function doFormat(type: string, value: string): string {
   if (!value) return value
 
   switch (type) {

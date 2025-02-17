@@ -7,6 +7,7 @@ export interface IApiResponse<T> {
   data: T
   message: string
   success: boolean
+  totalItems: number
   timestamp: string
 }
 
@@ -38,7 +39,7 @@ apiClient.interceptors.request.use(async (config) => {
         config.headers.Authorization = `Bearer ${useInterfaceStore().token}`
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        useInterfaceStore().logout()
+        await useInterfaceStore().logout()
       }
     }
   }

@@ -6,6 +6,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guards';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AppLogger } from 'src/common/logger.service';
 import { User } from './user.entity';
+import { PaginationResponse } from 'src/common/dto/api.response';
 
 @Controller({
   version: '1',
@@ -27,7 +28,7 @@ export class UsersController {
 
   @Roles('USERS:READ')
   @Get()
-  async findAll() {
+  async findAll(): Promise<PaginationResponse<User>> {
     return await this.usersService.findAll();
   }
 

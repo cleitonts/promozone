@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useLocalStorage } from '@/plugins/localStorage'
 import { useAuthApi } from '@/api/auth.api'
+import { router } from '@/router'
 
 export enum EMessageType {
   Danger = 'error',
@@ -70,6 +71,7 @@ export const useInterfaceStore = defineStore('interface', () => {
         if (response.status === 201) {
           STATE.token.value = response.data.data.accessToken
           STATE.refreshToken.value = response.data.data.refreshToken
+          await router.push('/dashboard')
           return
         }
 
@@ -79,11 +81,21 @@ export const useInterfaceStore = defineStore('interface', () => {
       }
     },
 
-    async logout(): Promise<void> {
-      await useAuthApi().logout()
+    /** this must continue the flow even with error */
+    async logout(): Promise<boolean> {
+      let error = false
+      try {
+        await useAuthApi().logout()
+      } catch {
+        console.log('backend seems to be down')
+        error = true
+      }
+
       STATE.token.value = null
+      STATE.refreshToken.value = null
       document.cookie = 'refreshToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-      window.location.reload()
+      await router.push({ name: 'login' })
+      return error
     },
 
     setTokens(accessToken: string, refreshToken: string) {

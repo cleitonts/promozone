@@ -1,13 +1,12 @@
 {
   "eslint.workingDirectories": ["./backend", "./frontend"],
-  "files.exclude": {
-    "**/node_modules": true,
-    "backend/node_modules": true,
-    "frontend/node_modules": true
-  },
-  "search.exclude": {
-    "**/node_modules": true
-  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue"
+  ],
   "editor.tabSize": 2,
   "eslint.enable": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",

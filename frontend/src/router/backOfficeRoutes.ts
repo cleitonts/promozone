@@ -1,5 +1,11 @@
 import { TheMainLayout } from '@/components'
-import { BackOfficeHomeView, UserEditView, UserListView } from '@/views'
+import {
+  BackOfficeHomeView,
+  UserEditView,
+  UserListView,
+  PerfilListView,
+  PerfilEditView,
+} from '@/views'
 
 export const backOfficeRoutes = {
   path: '/bo',
@@ -47,6 +53,36 @@ export const backOfficeRoutes = {
           component: UserEditView,
           meta: {
             pageTitle: 'Edit user',
+          },
+        },
+      ],
+    },
+    {
+      path: 'perfil',
+      component: TheMainLayout,
+      children: [
+        {
+          path: '',
+          name: 'perfilList',
+          component: PerfilListView,
+          meta: {
+            pageTitle: 'Perfil list',
+          },
+        },
+        {
+          path: 'new',
+          name: 'perfilNew',
+          component: PerfilEditView,
+          meta: {
+            pageTitle: 'Create perfil',
+          },
+        },
+        {
+          path: 'edit/:id',
+          name: 'perfilEdit',
+          component: PerfilEditView,
+          meta: {
+            pageTitle: 'Edit perfil',
           },
         },
       ],

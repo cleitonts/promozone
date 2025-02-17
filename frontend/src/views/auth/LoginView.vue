@@ -46,9 +46,7 @@
 <script setup lang="ts">
 import { useInterfaceStore } from '@/stores/interfaceStore'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const form = ref(false)
 const password = ref('')
 const passwordRules = [(v: string) => !!v || 'Password is required']
@@ -59,7 +57,6 @@ const emailRules = [
 ]
 
 const onSubmit = async function () {
-  useInterfaceStore().login(email.value, password.value)
-  router.push('/dashboard')
+  await useInterfaceStore().login(email.value, password.value)
 }
 </script>

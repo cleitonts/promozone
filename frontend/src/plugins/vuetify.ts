@@ -3,7 +3,7 @@ import '@/assets/base.sass'
 import customColors from '@/assets/template/exports/colors.module.scss'
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
-import { aliases, fa } from 'vuetify/iconsets/fa'
+import { iconifyAdapter } from './iconify'
 
 const customLightTheme = {
   dark: false,
@@ -51,10 +51,9 @@ export default createVuetify({
     },
   },
   icons: {
-    defaultSet: 'fa',
-    aliases,
+    defaultSet: 'iconify',
     sets: {
-      fa,
+      iconify: iconifyAdapter,
     },
   },
   theme: {

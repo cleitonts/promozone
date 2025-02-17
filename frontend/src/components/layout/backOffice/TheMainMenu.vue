@@ -2,12 +2,12 @@
   <v-navigation-drawer v-model="mini" permanent :rail="!interfaceStore.menuOpen" expand-on-hover>
     <v-list dense class="main-menu">
       <template v-for="item in items" :key="item.title">
-        <template v-if="item.group">
+        <template v-if="item.items">
           <v-list-group
             :value="item.title"
             color="primary"
-            expand-icon="fa-solid fa-sort-down fa-sm"
-            collapse-icon="fa-solid fa-sort-up fa-sm"
+            expand-icon="fa6-solid:fa-sort-down"
+            collapse-icon="fa-solid fa-sort-up"
           >
             <template #activator="{ props }">
               <v-list-item v-bind="props" :prepend-icon="item.icon" :title="item.title" />
@@ -32,10 +32,24 @@ const interfaceStore = useInterfaceStore()
 const mini = ref(true)
 const items = ref<IMenuItem[]>([
   {
-    title: 'Users',
-    icon: 'fa fa-user',
-    routeName: 'usersList',
+    title: 'Admin',
+    icon: 'fa6-solid:user',
+    items: [
+      {
+        title: 'Users',
+        routeName: 'usersList',
+      },
+      {
+        title: 'Perfil',
+        routeName: 'perfilList',
+      },
+    ],
   },
+  // {
+  //   title: 'Users',
+  //   icon: 'fa6-solid:user',
+  //   routeName: 'usersList',
+  // },
 ])
 </script>
 

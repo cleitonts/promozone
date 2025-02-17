@@ -17,6 +17,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ApiRequest } from 'src/common/types/request';
 import { UpdateRequest } from './dto/update.request';
 import { CreateRequest } from './dto/create.request';
+import { PerfilPermissions } from './perfil-permissions';
 
 @Controller({
   version: '1',
@@ -37,14 +38,20 @@ export class PerfilController {
 
   @Get()
   @Roles('PERFIL:READ')
-  findAll() {
+  list() {
     return this.perfilService.findAll();
+  }
+
+  @Get('/permissions')
+  @Roles('PERFIL:READ')
+  async listPermissions() {
+    return PerfilPermissions;
   }
 
   @Get(':id')
   @Roles('PERFIL:READ')
   async findOne(@Param('id') id: string) {
-    const perfil = await this.perfilService.findBy({ id });
+    const perfil = await this.perfilService.findOneBy({ id });
     if (!perfil) {
       throw new NotFoundException('Perfil not found');
     }

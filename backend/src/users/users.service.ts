@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  ConflictException,
-  forwardRef,
-  Inject,
-} from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { User } from './user.entity';
 import { CreateUserRequest } from './dto/create-user.request';
 import { ConfigService } from '@nestjs/config';
@@ -12,6 +7,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserRequest } from './dto/update-user.request';
 import { PerfilService } from 'src/perfil/perfil.service';
+import { PaginationResponse } from 'src/common/dto/api.response';
 
 @Injectable()
 export class UsersService {
@@ -22,9 +18,10 @@ export class UsersService {
     private perfilService: PerfilService,
   ) {}
 
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find({
-      select: ['id', 'email', 'perfil', 'createdAt'], // Não inclui password
+  async findAll(): Promise<PaginationResponse<User>> {
+    return await this.usersRepository.findAndCount({
+      select: ['id', 'email', 'perfil', 'createdAt'],
+      take: 10,
     });
   }
 

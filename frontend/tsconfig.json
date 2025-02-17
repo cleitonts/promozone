@@ -12,5 +12,5 @@
     "types": ["vite/client"],
     "moduleResolution": "bundler"
   },
-  "include": ["src/**/*"]
+  "include": ["src"]
 }

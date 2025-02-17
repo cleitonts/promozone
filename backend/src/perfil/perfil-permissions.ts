@@ -1,6 +1,4 @@
-export type TPerfilPermissions = {
-  [module: string]: string[];
-};
+export type TPerfilPermissions = Record<string, string[]>;
 
 export const PerfilPermissions: TPerfilPermissions = {
   USERS: ['CREATE', 'READ', 'UPDATE', 'DELETE'],

@@ -6,7 +6,8 @@
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*",
-    "eslint.config.*"
+    "eslint.config.*",
+    "src/**/*"
   ],
   "compilerOptions": {
     "composite": true,
@@ -16,7 +17,7 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["../src/*"]
+      "@/*": ["./src/*"]
     }
   }
 }
