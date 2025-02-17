@@ -61,7 +61,7 @@
           :value="page"
           density="comfortable"
           active-color="secondary"
-          :length="Math.ceil(totalItems / limit) || page + 4"
+          :length="Math.ceil(totalItems / limit || page + 4)"
           :total-visible="7"
           @update:modelValue="
             (e) => {
@@ -79,7 +79,7 @@
 import { computed, ref } from 'vue'
 
 interface Props {
-  matrix?: Record<string, string>[]
+  matrix?: Record<string, string | number>[]
   header?: Record<string, string>
   formatter?: Record<string, string>
   page?: number
@@ -87,7 +87,10 @@ interface Props {
   totalItems?: number
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  limit: 10,
+  totalItems: 0,
+})
 
 defineEmits<{
   (event: 'update:page', value: number): void
@@ -105,7 +108,7 @@ const getCleanedMatrix = computed(() => {
 
     if (props.header) {
       for (const headerKey in props.header) {
-        temp[headerKey] = item[headerKey]
+        temp[headerKey] = item[headerKey].toString()
       }
     }
 

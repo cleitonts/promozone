@@ -19,7 +19,7 @@
     </the-card-title>
 
     <v-card-text>
-      <v-form ref="searchForm" @submit.prevent="getList()">
+      <v-form @submit.prevent="getList()">
         <v-row>
           <v-btn type="submit" class="d-none"></v-btn>
           <v-col cols="6">
@@ -53,12 +53,12 @@
 </template>
 
 <script setup lang="ts">
-import { IUser, useUserApi } from '@/api/user.api'
+import { type IUser, useUserApi } from '@/api/user.api'
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref } from 'vue'
 import { page, limit } from '@/api/user.api'
+import type { VForm } from 'vuetify/lib/components/index.mjs'
 
-const searchForm = ref(null)
 const email = ref('')
 const users = ref<IUser[]>([])
 const totalItems = ref(0)
@@ -69,8 +69,8 @@ const headers = {
 }
 
 const emailRules = [
-  (v) => !!v || 'E-mail is required',
-  (v) =>
+  (v: string) => !!v || 'E-mail is required',
+  (v: string) =>
     /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
       v,
     ) || 'E-mail must be valid',

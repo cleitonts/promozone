@@ -6,8 +6,9 @@ import {
   PerfilListView,
   PerfilEditView,
 } from '@/views'
+import type { RouteRecordRaw } from 'vue-router'
 
-export const backOfficeRoutes = {
+export const backOfficeRoutes: RouteRecordRaw = {
   path: '/bo',
   meta: {
     requiresAuth: true,

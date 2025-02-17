@@ -1,7 +1,8 @@
 import { TheEmptyLayout } from '@/components'
 import { LoginView, RegisterView } from '@/views'
+import type { RouteRecordRaw } from 'vue-router'
 
-export const AuthRoutes = {
+export const AuthRoutes: RouteRecordRaw = {
   path: '/auth',
   component: TheEmptyLayout,
   meta: {

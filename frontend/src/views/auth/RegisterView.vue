@@ -61,9 +61,9 @@ const email = ref('')
 
 const password = ref('')
 const terms = ref(false)
-const passwordRules = [(v) => !!v || 'Password is required']
+const passwordRules = [(v: string) => !!v || 'Password is required']
 const emailRules = [
-  (v) => !!v || 'E-mail is required',
-  (v) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
+  (v: string) => !!v || 'E-mail is required',
+  (v: string) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
 ]
 </script>

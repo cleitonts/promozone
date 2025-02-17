@@ -20,7 +20,7 @@
     </the-card-title>
 
     <v-card-text>
-      <v-form ref="searchForm" @submit.prevent="getList()">
+      <v-form @submit.prevent="getList()">
         <v-row>
           <v-btn type="submit" class="d-none"></v-btn>
           <v-col cols="6">
@@ -59,11 +59,12 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref } from 'vue'
-import { IPerfil, usePerfilApi, page, limit } from '@/api/perfil.api'
+import { type IPerfil, usePerfilApi, page, limit } from '@/api/perfil.api'
 
-const searchForm = ref(null)
+type perfilList = Overwrite<IPerfil, { permissions: number }>[]
+
 const email = ref('')
-const perfils = ref<Overwrite<IPerfil, 'permissions'> & { permissions: number }[]>([])
+const perfils = ref<perfilList>([] as perfilList)
 
 const getList = async function () {
   const response = await usePerfilApi().getAll()

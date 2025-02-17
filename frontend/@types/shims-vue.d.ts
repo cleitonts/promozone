@@ -12,3 +12,12 @@ declare module '@/components/*' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
+
+declare namespace JSX {
+  import type { VNode, ComponentPublicInstance } from 'vue'
+  interface Element extends VNode {}
+  interface ElementClass extends ComponentPublicInstance {}
+  interface IntrinsicElements {
+    [elem: string]: any
+  }
+}

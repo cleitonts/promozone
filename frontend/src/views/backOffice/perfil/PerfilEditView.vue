@@ -8,7 +8,7 @@
     />
 
     <v-card-text>
-      <v-form ref="perfilForm">
+      <v-form @submit.prevent="validate($event)">
         <v-row>
           <v-col cols="12">
             <v-text-field v-model="perfil.name" label="Name" required />
@@ -43,10 +43,12 @@
 import { useRoute } from 'vue-router'
 import { TheCardTitle } from '@/components'
 import { ref } from 'vue'
-import { IPerfil, usePerfilApi } from '@/api/perfil.api'
+import { type IPerfil, usePerfilApi } from '@/api/perfil.api'
+import type { VForm } from 'vuetify/lib/components/index.mjs'
+import type { SubmitEventPromise } from 'vuetify/lib/framework.mjs'
 
 const route = useRoute()
-const perfil = ref<IPerfil | null>(null)
+const perfil = ref<IPerfil>({} as IPerfil)
 
 const permissionsResponse = await usePerfilApi().getPermissions()
 const permissions = permissionsResponse.data.data
@@ -58,9 +60,8 @@ if (route.name !== 'perfilNew') {
   selectedPermissions.value = response.data.data.permissions
 }
 
-const perfilForm = ref(null)
-
-const validate = async function () {
+const validate = async function (e: SubmitEventPromise) {
+  console.log(e)
   // const response = await usePerfilApi().post(this.user.email)
   // user.value = response.data.data
   // this.$router.push({ name: 'usersEdit', params: { id: user.value.id } })

@@ -1,5 +1,10 @@
 import { ref } from 'vue'
-import { apiClient, useApiProvider, IApiResponse, TApiModels } from './provider/api.provider'
+import {
+  apiClient,
+  useApiProvider,
+  type IApiResponse,
+  type TApiModels,
+} from './provider/api.provider'
 import type { AxiosResponse } from 'axios'
 
 const plural = 'perfil'
