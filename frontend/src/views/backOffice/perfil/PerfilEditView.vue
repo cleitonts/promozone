@@ -8,10 +8,15 @@
     />
 
     <v-card-text>
-      <v-form @submit.prevent="validate($event)">
+      <v-form @submit.prevent="submit">
         <v-row>
           <v-col cols="12">
-            <v-text-field v-model="perfil.name" label="Name" required />
+            <v-text-field
+              v-model="perfil.name"
+              label="Name"
+              required
+              :rules="[(v: string) => !!v || 'Name is required']"
+            />
           </v-col>
           <v-col cols="12">
             <label>Permissions</label>
@@ -26,16 +31,14 @@
               v-model="selectedPermissions"
               :label="p"
               :value="`${index}:${p}`"
-              @update:model-value="console.log(selectedPermissions)"
             />
           </v-col>
         </v-row>
+        <div class="justify-end d-flex">
+          <v-btn class="success" type="submit"> Send </v-btn>
+        </div>
       </v-form>
     </v-card-text>
-
-    <v-container fluid class="justify-end d-flex">
-      <v-btn class="success" @click="validate"> Send </v-btn>
-    </v-container>
   </v-card>
 </template>
 
@@ -46,6 +49,7 @@ import { ref } from 'vue'
 import { type IPerfil, usePerfilApi } from '@/api/perfil.api'
 import type { VForm } from 'vuetify/lib/components/index.mjs'
 import type { SubmitEventPromise } from 'vuetify/lib/framework.mjs'
+import { router } from '@/router'
 
 const route = useRoute()
 const perfil = ref<IPerfil>({} as IPerfil)
@@ -57,13 +61,25 @@ const selectedPermissions = ref<string[]>([])
 if (route.name !== 'perfilNew') {
   const response = await usePerfilApi().getSingle(route.params.id as string)
   perfil.value = response.data.data
-  selectedPermissions.value = response.data.data.permissions
+  selectedPermissions.value = response.data.data.permissions || []
 }
 
-const validate = async function (e: SubmitEventPromise) {
-  console.log(e)
-  // const response = await usePerfilApi().post(this.user.email)
-  // user.value = response.data.data
-  // this.$router.push({ name: 'usersEdit', params: { id: user.value.id } })
+async function submit(submitEventPromise: SubmitEventPromise) {
+  const { valid } = await submitEventPromise
+  if (valid) {
+    if (route.name !== 'perfilNew') {
+      await usePerfilApi().put(route.params.id as string, {
+        name: perfil.value.name,
+        permissions: selectedPermissions.value,
+      })
+    } else {
+      const response = await usePerfilApi().post({
+        name: perfil.value.name,
+        permissions: selectedPermissions.value,
+      })
+
+      router.push({ name: 'perfilEdit', params: { id: response.data.data.id } })
+    }
+  }
 }
 </script>

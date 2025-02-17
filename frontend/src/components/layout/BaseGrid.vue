@@ -108,7 +108,7 @@ const getCleanedMatrix = computed(() => {
 
     if (props.header) {
       for (const headerKey in props.header) {
-        temp[headerKey] = item[headerKey].toString()
+        temp[headerKey] = item[headerKey]?.toString()
       }
     }
 

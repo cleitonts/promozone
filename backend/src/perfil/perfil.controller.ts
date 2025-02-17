@@ -50,7 +50,7 @@ export class PerfilController {
 
   @Get(':id')
   @Roles('PERFIL:READ')
-  async findOne(@Param('id') id: string) {
+  async find(@Param('id') id: string) {
     const perfil = await this.perfilService.findOneBy({ id });
     if (!perfil) {
       throw new NotFoundException('Perfil not found');

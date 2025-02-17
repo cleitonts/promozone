@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { Perfil } from './perfil.entity';
@@ -13,6 +17,9 @@ export class PerfilService {
   ) {}
 
   async create(createPerfilRequest: CreateRequest): Promise<Perfil> {
+    if (createPerfilRequest.name.toLowerCase() === 'admin') {
+      throw new NotAcceptableException('Invalid perfil name');
+    }
     const perfil = this.perfilRepository.create(createPerfilRequest);
     return await this.perfilRepository.save(perfil);
   }
@@ -44,15 +51,17 @@ export class PerfilService {
   }
 
   async update(id: string, updateRequest: UpdateRequest): Promise<Perfil> {
-    await this.perfilRepository.update(id, updateRequest);
-    const updatedPost = await this.perfilRepository.findOne({
+    const updatePerfil = await this.perfilRepository.findOne({
       where: { id },
     });
 
-    if (!updatedPost) {
-      throw new NotFoundException('Perfil not found');
+    if (
+      updateRequest.name.toLowerCase() === 'admin' ||
+      updatePerfil?.name.toLowerCase() === 'admin'
+    ) {
+      throw new NotAcceptableException('Invalid perfil name');
     }
 
-    return updatedPost;
+    return await this.perfilRepository.save({ id, ...updateRequest });
   }
 }

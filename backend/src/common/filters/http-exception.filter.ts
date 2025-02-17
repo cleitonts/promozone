@@ -6,8 +6,16 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ApiResponse, ErrorResponse } from '../dto/api.response';
+import { ApiResponse } from '../dto/api.response';
 import { AppLogger } from '../logger.service';
+import { Code } from 'typeorm';
+
+interface IErrorResponse {
+  code: string;
+  status: HttpStatus;
+  details?: any;
+  stack?: string;
+}
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -19,26 +27,28 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let errorResponse: ErrorResponse;
+    let errorResponse: IErrorResponse;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const response = exception.getResponse();
 
-      errorResponse = new ErrorResponse(
-        exception.name,
+      errorResponse = {
+        code: exception.name,
         status,
-        typeof response === 'object' ? response : { message: response },
-        process.env.NODE_ENV === 'development' ? exception.stack : undefined,
-      );
+        details:
+          typeof response === 'object' ? response : { message: response },
+        stack:
+          process.env.NODE_ENV === 'development' ? exception.stack : undefined,
+      };
     } else {
       const error = exception as Error;
-      errorResponse = new ErrorResponse(
-        'INTERNAL_ERROR',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        { message: error.message },
-        process.env.NODE_ENV === 'development' ? error.stack : undefined,
-      );
+      errorResponse = {
+        code: 'INTERNAL_ERROR',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        details: { message: error.message },
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+      };
     }
 
     this.logger.error(
@@ -47,6 +57,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       'HTTP Exception Filter',
     );
 
-    response.status(status).json(ApiResponse.error(errorResponse));
+    response.status(status).json(errorResponse);
   }
 }

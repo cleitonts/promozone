@@ -10,7 +10,14 @@ import type { AxiosResponse } from 'axios'
 const plural = 'perfil'
 const singular = 'perfil'
 
-type PerfilApiModels = TApiModels<IPerfil, IPerfil[], null, null, null, null>
+type PerfilApiModels = TApiModels<
+  IPerfil,
+  IPerfil[],
+  Omit<IPerfil, 'id'>,
+  Omit<IPerfil, 'id'>,
+  null,
+  IPerfil
+>
 
 export interface IPerfil {
   name: string

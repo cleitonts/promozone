@@ -2,7 +2,7 @@
   <v-card class="overflow-visible">
     <the-card-title
       text="Users"
-      icon="fa fa-person"
+      icon="fa6-solid:person"
       bg-color="bg-secondary-gradient"
       text-color="white"
     >
@@ -10,9 +10,10 @@
         <v-col cols="6" class="pa-0 d-flex justify-end">
           <v-btn
             rounded
-            icon="fas fa-plus"
+            icon="fa6-solid:plus"
+            color="success"
             class="bg-success-gradient position-absolute mt-n5 mb-3 text-white icon-fix"
-            :to="{ name: 'usersNew' }"
+            :to="{ name: 'perfilNew' }"
           />
         </v-col>
       </template>
@@ -31,7 +32,6 @@
         v-model:page="page"
         v-model:limit="limit"
         :total-items="totalItems"
-        class="collaborators-table"
         :matrix="users"
         :header="headers"
         @update:limit="getList()"
@@ -42,7 +42,7 @@
             <v-btn
               color="primary"
               size="x-small"
-              icon="fa fa-pencil"
+              icon="fa6-solid:pencil"
               :to="{ name: 'usersEdit', params: { id: element.id } }"
             />
           </td>

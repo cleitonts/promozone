@@ -78,8 +78,11 @@ export const useApiProvider = <
     return apiClient.post(`/${resourceSingular}`, model)
   }
 
-  const put = (model: T['PutModel']): Promise<AxiosResponse<IApiResponse<T['SaveResponse']>>> => {
-    return apiClient.put(`/${resourceSingular}`, model)
+  const put = (
+    id: string,
+    model: T['PutModel'],
+  ): Promise<AxiosResponse<IApiResponse<T['SaveResponse']>>> => {
+    return apiClient.put(`/${resourceSingular}/${id}`, model)
   }
 
   const patch = (

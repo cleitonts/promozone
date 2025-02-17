@@ -44,9 +44,9 @@ export const axiosApiCreate = () => {
         addMessage(error.response.data.title, EMessageType.Danger)
         return Promise.reject(error)
       }
-      if (error.response?.data?.notify?.length > 0) {
-        const { processReturn } = useInterfaceStore()
-        processReturn(error.response.data.notify)
+      if (error.response?.status >= 400 && error.response?.status < 500) {
+        addMessage(error.response.data.details.message, EMessageType.Danger)
+        return Promise.resolve()
       }
       if ([401, 403].includes(error.response?.status)) {
         // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
