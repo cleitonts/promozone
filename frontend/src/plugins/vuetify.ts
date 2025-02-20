@@ -1,24 +1,22 @@
-import '@fortawesome/fontawesome-free/css/all.css'
-import '@/assets/base.sass'
-import customColors from '@/assets/template/exports/colors.module.scss'
-import 'vuetify/styles'
+import '@/assets/base.scss'
 import { createVuetify } from 'vuetify'
 import { iconifyAdapter } from './iconify'
+import * as colors from '@/assets/template/variables/colors.module.scss'
 
 const customLightTheme = {
-  dark: false,
+  dark: true,
   colors: {
-    background: customColors.background,
-    surface: customColors.surface,
-    surfaceLighten: customColors.surfaceLighten,
-    primary: customColors.primary,
-    secondary: customColors.secondary,
-    error: customColors.error,
-    info: customColors.info,
-    success: customColors.success,
-    warning: customColors.warning,
-    accent: customColors.accent,
-    textDark: customColors.textDark,
+    background: colors.background,
+    surface: colors.surface,
+    surfaceLighten: colors.surfaceLighten,
+    primary: colors.primary,
+    secondary: colors.secondary,
+    error: colors.error,
+    info: colors.info,
+    success: colors.success,
+    warning: colors.warning,
+    accent: colors.accent,
+    textDark: colors.textDark,
   },
 }
 
@@ -40,7 +38,6 @@ export default createVuetify({
       VTextField: {
         variant: 'underlined',
         density: 'compact',
-        color: 'textDark',
       },
       VTabs: {
         density: 'compact',

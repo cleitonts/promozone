@@ -1,0 +1,34 @@
+@use 'sass:color';
+
+$background: #1a1a1a; //
+$surface: color.scale($background, $lightness: 4%); // #222222
+$text-light: #faf8f5;
+$text-dark: color.scale($text-light, $lightness: -10%);
+$surfaceLighten: color.scale($background, $lightness: 11%); // #333333
+$primary: #fb7701; //
+$secondary: #70a426; //
+$error: #ff3d00; //
+$danger: $error; //
+$info: #41b5d3; //
+$accent: color.scale($primary, $lightness: -10%); //
+$warning: #fdd835; //
+$success: $secondary; //#70e291; //
+$dark: $background; //
+
+//never changes any value in this array, do it in the upwards vars
+:export {
+  background: $background;
+  textLight: $text-light;
+  textDark: $text-dark;
+  surface: $surface;
+  surfaceLighten: $surfaceLighten;
+  primary: $primary;
+  secondary: $secondary;
+  error: $error;
+  danger: $danger;
+  dark: $dark;
+  info: $info;
+  success: $success;
+  warning: $warning;
+  accent: $accent;
+}

@@ -10,33 +10,29 @@
         <v-col cols="6" class="pa-0 d-flex justify-end">
           <v-btn
             rounded
+            color="secondary"
             icon="fa6-solid:plus"
-            color="success"
-            class="bg-success-gradient position-absolute mt-n5 mb-3 text-white icon-fix"
-            :to="{ name: 'perfilNew' }"
+            class="position-absolute mt-n5 mb-3"
+            :to="{ name: 'usersNew' }"
           />
         </v-col>
       </template>
     </the-card-title>
 
     <v-card-text>
-      <v-form @submit.prevent="getList()">
-        <v-row>
-          <v-btn type="submit" class="d-none"></v-btn>
-          <v-col cols="6">
-            <v-text-field v-model="email" :rules="emailRules" label="E-mail" required />
-          </v-col>
-        </v-row>
-      </v-form>
       <base-grid
         v-model:page="page"
         v-model:limit="limit"
         :total-items="totalItems"
         :matrix="users"
         :header="headers"
-        @update:limit="getList()"
-        @update:page="getList()"
+        @update="getList()"
       >
+        <template #prepend>
+          <v-col cols="6">
+            <v-text-field v-model="email" :rules="emailRules" label="E-mail" required />
+          </v-col>
+        </template>
         <template #action="{ element }">
           <td class="actions to-none pa-1">
             <v-btn
@@ -57,7 +53,6 @@ import { type IUser, useUserApi } from '@/api/user.api'
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref } from 'vue'
 import { page, limit } from '@/api/user.api'
-import type { VForm } from 'vuetify/lib/components/index.mjs'
 
 const email = ref('')
 const users = ref<IUser[]>([])

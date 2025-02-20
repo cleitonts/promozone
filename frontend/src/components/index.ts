@@ -1,5 +1,6 @@
 // Layouts
 export { default as TheNotifications } from '@/components/layout/TheNotifications.vue'
+export { default as TheConfirmationDialog } from '@/components/layout/TheConfirmationDialog.vue'
 export { default as TheMainAppBar } from '@/components/layout/backOffice/TheMainAppBar.vue'
 export { default as TheMainFooter } from '@/components/layout/backOffice/TheMainFooter.vue'
 export { default as TheMainMenu } from '@/components/layout/backOffice/TheMainMenu.vue'

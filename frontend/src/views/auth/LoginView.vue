@@ -10,7 +10,6 @@
             v-model="email"
             :rules="emailRules"
             class="mb-2"
-            clearable
             color="primary"
             label="Email"
             variant="underlined"
@@ -20,7 +19,6 @@
             v-model="password"
             :rules="passwordRules"
             type="password"
-            clearable
             color="primary"
             label="Password"
             placeholder="Enter your password"

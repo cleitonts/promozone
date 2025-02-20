@@ -4,19 +4,15 @@
   $text-shadow: ();
 
   @for $i from 0 through $count {
-    $text-shadow: $text-shadow,
-      (-0.5+ (math.random()) * 3) +
-        em
-        (-0.5+ (math.random()) * 3) +
-        em
-        7px hsla(175, 35%, 7%, 0.9);
+    $text-shadow:
+      $text-shadow,
+      (-0.5+ (math.random()) * 3) + em (-0.5+ (math.random()) * 3) + em 7px hsla(175, 35%, 7%, 0.9);
   }
 
   text-shadow: $text-shadow;
 }
 
 html {
-  font: 5vmin/1.3 Serif;
   overflow: hidden;
   background: rgb(0, 0, 0) !important;
 }
@@ -71,17 +67,5 @@ head::after {
 
   to {
     transform: rotate(360deg) scale(18) translateX(20px);
-  }
-}
-
-.v-application {
-  background: #1f1f1f;
-}
-
-.v-navigation-drawer--left {
-  background: rgba(255, 255, 255, 1);
-
-  &.v-navigation-drawer--expand-on-hover.v-navigation-drawer--is-hovering {
-    background: rgba(255, 255, 255, 1);
   }
 }

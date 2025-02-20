@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,9 @@ import { ApiRequest } from 'src/common/types/request';
 import { UpdateRequest } from './dto/update.request';
 import { CreateRequest } from './dto/create.request';
 import { PerfilPermissions } from './perfil-permissions';
+import { Perfil } from './perfil.entity';
+import { PaginationResponse } from 'src/common/dto/api.response';
+import { PaginationRequest } from 'src/common/dto/api.request';
 
 @Controller({
   version: '1',
@@ -29,17 +33,16 @@ export class PerfilController {
 
   @Post()
   @Roles('PERFIL:CREATE')
-  async create(
-    @Body() createPerfilRequest: CreateRequest,
-    @Req() req: ApiRequest,
-  ) {
+  async create(@Body() createPerfilRequest: CreateRequest) {
     return await this.perfilService.create(createPerfilRequest);
   }
 
   @Get()
   @Roles('PERFIL:READ')
-  list() {
-    return this.perfilService.findAll();
+  async list(
+    @Query() query: PaginationRequest,
+  ): Promise<PaginationResponse<Perfil>> {
+    return await this.perfilService.findAll(query);
   }
 
   @Get('/permissions')
@@ -75,7 +78,7 @@ export class PerfilController {
 
   @Delete(':id')
   @Roles('PERFIL:DELETE')
-  async remove(@Param('id') id: string, @Req() req: ApiRequest) {
-    throw new NotFoundException('Acesso negado');
+  async remove(@Param('id') id: string) {
+    return this.perfilService.delete(id);
   }
 }

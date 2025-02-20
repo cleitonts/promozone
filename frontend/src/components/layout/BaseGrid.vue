@@ -1,7 +1,13 @@
 <template>
   <div>
-    <slot name="prepend">
-      <v-row v-if="limit" class="justify-content-between px-0">
+    <v-form class="d-flex" @submit.prevent="$emit('update')">
+      <v-row>
+        <v-col v-if="$slots.prepend">
+          <v-btn color="secondary" prepend-icon="fa6-solid:magnifying-glass" type="submit">
+            search
+          </v-btn>
+        </v-col>
+        <slot name="prepend"></slot>
         <v-col cols="3" md="2" class="ml-auto">
           <v-select
             :model-value="limit"
@@ -14,13 +20,13 @@
             @update:modelValue="
               (e) => {
                 $emit('update:limit', e)
-                $emit('update', e)
+                $emit('update')
               }
             "
           />
         </v-col>
       </v-row>
-    </slot>
+    </v-form>
     <v-table v-if="getCleanedMatrix.length">
       <slot name="thead">
         <thead>
@@ -66,7 +72,7 @@
           @update:modelValue="
             (e) => {
               $emit('update:page', e)
-              $emit('update', e)
+              $emit('update')
             }
           "
         />
@@ -94,7 +100,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<{
   (event: 'update:page', value: number): void
-  (event: 'update', value: number): void
+  (event: 'update'): void
   (event: 'update:limit', value: number): void
 }>()
 

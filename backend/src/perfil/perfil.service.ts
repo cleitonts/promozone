@@ -4,10 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { DeleteResult, FindOptionsWhere, Repository } from 'typeorm';
 import { Perfil } from './perfil.entity';
 import { CreateRequest } from './dto/create.request';
 import { UpdateRequest } from './dto/update.request';
+import { PaginationRequest } from 'src/common/dto/api.request';
+import { PaginationResponse } from 'src/common/dto/api.response';
 
 @Injectable()
 export class PerfilService {
@@ -24,8 +26,11 @@ export class PerfilService {
     return await this.perfilRepository.save(perfil);
   }
 
-  async findAll(): Promise<Perfil[]> {
-    return await this.perfilRepository.find();
+  async findAll(get: PaginationRequest): Promise<PaginationResponse<Perfil>> {
+    return await this.perfilRepository.findAndCount({
+      take: get.limit,
+      skip: (get.page - 1) * get.limit,
+    });
   }
 
   async findBy(
@@ -63,5 +68,9 @@ export class PerfilService {
     }
 
     return await this.perfilRepository.save({ id, ...updateRequest });
+  }
+
+  async delete(id: string): Promise<DeleteResult> {
+    return await this.perfilRepository.delete(id);
   }
 }

@@ -47,7 +47,6 @@ import { useRoute } from 'vue-router'
 import { TheCardTitle } from '@/components'
 import { ref } from 'vue'
 import { type IPerfil, usePerfilApi } from '@/api/perfil.api'
-import type { VForm } from 'vuetify/lib/components/index.mjs'
 import type { SubmitEventPromise } from 'vuetify/lib/framework.mjs'
 import { router } from '@/router'
 
