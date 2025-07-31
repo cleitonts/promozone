@@ -1,7 +1,8 @@
 import '@/assets/base.scss'
 import { createVuetify } from 'vuetify'
 import { iconifyAdapter } from './iconify'
-import * as colors from '@/assets/template/variables/colors.module.scss'
+import  {default as colors} from '@/assets/template/variables/colors.module.scss'
+// const colors = rawColors as Record<string, string>
 
 const customLightTheme = {
   dark: true,

@@ -20,7 +20,9 @@ export class PerfilService {
 
   async create(createPerfilRequest: CreateRequest): Promise<Perfil> {
     if (createPerfilRequest.name.toLowerCase() === 'admin') {
-      throw new NotAcceptableException('Invalid perfil name');
+      if(await this.findOneBy({ name: 'admin' })){
+        throw new NotAcceptableException('Invalid perfil name');
+      }
     }
     const perfil = this.perfilRepository.create(createPerfilRequest);
     return await this.perfilRepository.save(perfil);
