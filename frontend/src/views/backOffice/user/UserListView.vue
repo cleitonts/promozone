@@ -49,14 +49,17 @@
 </template>
 
 <script setup lang="ts">
-import { type IUser, useUserApi } from '@/api/user.api'
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref } from 'vue'
-import { page, limit } from '@/api/user.api'
+import { useUserStore } from '@/stores/userStore'
 
+const userStore = useUserStore()
 const email = ref('')
-const users = ref<IUser[]>([])
+const users = ref<any[]>([])
 const totalItems = ref(0)
+const page = ref(1)
+const limit = ref(10)
+
 const headers = {
   action: '#',
   id: 'Id',
@@ -66,15 +69,18 @@ const headers = {
 const emailRules = [
   (v: string) => !!v || 'E-mail is required',
   (v: string) =>
-    /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-      v,
-    ) || 'E-mail must be valid',
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'E-mail must be valid',
 ]
 
 const getList = async function () {
-  const response = await useUserApi().getAll()
-  totalItems.value = response.data.totalItems
-  users.value = response.data.data
+  await userStore.fetchAllUsers()
+  if (userStore.users) {
+    users.value = userStore.users.map((user: any) => ({
+      id: user.id || '',
+      email: user.email || '',
+    }))
+    totalItems.value = users.value.length
+  }
 }
 
 onMounted(() => {

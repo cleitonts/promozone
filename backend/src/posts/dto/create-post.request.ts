@@ -24,7 +24,7 @@ export class AllowedDomainConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'URL deve ser de um dos domínios permitidos: amazon.com.br, magazineluiza.com.br';
+    return 'URL must be from one of the allowed domains: amazon.com.br, magazineluiza.com.br';
   }
 }
 

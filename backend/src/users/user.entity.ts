@@ -2,19 +2,16 @@ import { Post } from 'src/posts/post.entity';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { Perfil } from 'src/perfil/perfil.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 @ObjectType()
 @Entity()
-export class User {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class User extends BaseEntity {
 
   @Field()
   @Column({ unique: true })

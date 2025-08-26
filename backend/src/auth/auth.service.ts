@@ -12,6 +12,8 @@ import { randomUUID } from 'crypto';
 import { User } from 'src/users/user.entity';
 import { Perfil } from '../perfil/perfil.entity';
 
+type UserWithoutPassword = Pick<User, 'id' | 'email' | 'perfil' | 'posts' | 'createdAt'>;
+
 export interface ITokenPayload {
   username: string;
   perfil: Perfil;
@@ -37,7 +39,7 @@ export class AuthService {
   async validateUser(
     email: string,
     pass: string,
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<UserWithoutPassword> {
     const user = await this.usersService.findOneByEmail(email);
     console.log(user);
     if (user && (await bcrypt.compare(pass, user.password))) {
@@ -53,7 +55,7 @@ export class AuthService {
     return await this.generateTokenPair(user);
   }
 
-  async generateTokenPair(user: Omit<User, 'password'>): Promise<ITokenPair> {
+  async generateTokenPair(user: UserWithoutPassword): Promise<ITokenPair> {
     return {
       accessToken: await this.generateAccessToken(user),
       refreshToken: await this.generateRefreshToken(user),
@@ -61,7 +63,7 @@ export class AuthService {
   }
 
   private async generateAccessToken(
-    user: Omit<User, 'password'>,
+    user: UserWithoutPassword,
   ): Promise<string> {
     const payload: ITokenPayload = {
       username: user.email,
@@ -77,7 +79,7 @@ export class AuthService {
   }
 
   private async generateRefreshToken(
-    user: Omit<User, 'password'>,
+    user: UserWithoutPassword,
   ): Promise<string> {
     const tokenId = randomUUID();
 

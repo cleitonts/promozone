@@ -8,7 +8,7 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Product } from '../product.entity';
 
 @ObjectType()
-@Entity('categories')
+@Entity('products_categories')
 export class Category {
   @Field(() => Int)
   @PrimaryGeneratedColumn()

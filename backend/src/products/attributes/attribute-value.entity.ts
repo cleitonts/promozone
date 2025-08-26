@@ -9,7 +9,7 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Attribute } from './attribute.entity';
 
 @ObjectType()
-@Entity('attribute_values')
+@Entity('products_attribute_values')
 export class AttributeValue {
   @Field(() => Int)
   @PrimaryGeneratedColumn()

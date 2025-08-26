@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useLocalStorage } from '@/plugins/localStorage'
-import { useAuthApi } from '@/api/auth.api'
+import { useAuthStore } from '@/stores/authStore'
 import { router } from '@/router'
 
 export enum EMessageType {
@@ -67,15 +67,17 @@ export const useInterfaceStore = defineStore('interface', () => {
 
     async login(email: string, password: string): Promise<void> {
       try {
-        const response = await useAuthApi().login({ email, password })
-        if (response.status === 201) {
-          STATE.token.value = response.data.data.accessToken
-          STATE.refreshToken.value = response.data.data.refreshToken
+        const authStore = useAuthStore()
+        const result = await authStore.login(email, password)
+        
+        if (result.success) {
+          STATE.token.value = authStore.accessToken
+          STATE.refreshToken.value = authStore.refreshToken
           await router.push('/dashboard')
           return
         }
 
-        throw new Error('Not possible to login')
+        throw new Error(result.error || 'Not possible to login')
       } catch (error) {
         console.log(error)
       }
@@ -85,7 +87,9 @@ export const useInterfaceStore = defineStore('interface', () => {
     async logout(): Promise<boolean> {
       let error = false
       try {
-        await useAuthApi().logout()
+        const authStore = useAuthStore()
+        const result = await authStore.logout()
+        error = !result.success
       } catch {
         console.log('backend seems to be down')
         error = true

@@ -1,0 +1,19 @@
+mutation Login($loginInput: LoginInput!) {
+  login(loginInput: $loginInput) {
+    accessToken
+    refreshToken
+  }
+}
+
+mutation Logout {
+  logout {
+    message
+  }
+}
+
+mutation RefreshTokens($refreshToken: String!) {
+  refreshTokens(refreshToken: $refreshToken) {
+    accessToken
+    refreshToken
+  }
+}

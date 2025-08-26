@@ -8,9 +8,9 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { AttributeValue } from './attribute-value.entity';
 
 @ObjectType()
-@Entity('attributes')
+@Entity('products_attributes')
 export class Attribute {
-  @Field(() => Int)
+  @Field(() => Int) 
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -1,0 +1,15 @@
+query GetAllUsers {
+  users {
+    id
+    email
+    createdAt
+  }
+}
+
+query GetUser($id: String!) {
+  user(id: $id) {
+    id
+    email
+    createdAt
+  }
+}

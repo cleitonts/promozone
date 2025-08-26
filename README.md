@@ -26,6 +26,20 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Language Standards
+
+**This project enforces English as the mandatory language for all code and documentation.**
+
+Please refer to [CODING_STANDARDS.md](./CODING_STANDARDS.md) for detailed language requirements and coding standards.
+
+### Key Requirements:
+- All code (variables, functions, classes, comments) must be in English
+- Error messages and validation text must be in English
+- Documentation and README files must be in English
+- Database schema elements must use English naming
+
+The only exception is direct communication with stakeholders in their preferred language.
+
 ## Project setup
 
 ```bash

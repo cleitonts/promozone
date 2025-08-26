@@ -12,7 +12,7 @@ import { Attribute } from './attribute.entity';
 import { AttributeValue } from './attribute-value.entity';
 
 @ObjectType()
-@Entity('product_variant_attributes')
+@Entity('products_variant_attributes')
 @Unique(['variantId', 'attributeId'])
 export class ProductVariantAttribute {
   @Field(() => Int)

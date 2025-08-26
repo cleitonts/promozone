@@ -55,7 +55,7 @@ export class PostsResolver {
   async findOnePost(@Args('id') id: string): Promise<Post> {
     const post = await this.postsService.findOne(id);
     if (!post) {
-      throw new NotFoundException('Post não encontrado');
+      throw new NotFoundException('Post not found');
     }
     return post;
   }
@@ -71,10 +71,10 @@ export class PostsResolver {
     const userId = context.req.user.userId;
     const post = await this.postsService.findOne(id);
     if (!post) {
-      throw new NotFoundException('Post não encontrado');
+      throw new NotFoundException('Post not found');
     }
     if (post.author.id !== userId) {
-      throw new ForbiddenException('Acesso negado');
+      throw new ForbiddenException('Access denied');
     }
     return this.postsService.update(id, updatePostInput);
   }
@@ -89,10 +89,10 @@ export class PostsResolver {
     const userId = context.req.user.userId;
     const post = await this.postsService.findOne(id);
     if (!post) {
-      throw new NotFoundException('Post não encontrado');
+      throw new NotFoundException('Post not found');
     }
     if (post.author.id !== userId) {
-      throw new ForbiddenException('Acesso negado');
+      throw new ForbiddenException('Access denied');
     }
     await this.postsService.remove(id);
     return true;

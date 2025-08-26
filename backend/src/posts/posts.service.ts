@@ -23,13 +23,13 @@ export class PostsService {
   ): Promise<Post> {
     const author = await this.usersService.findOne(createPostRequest.authorId);
     if (!author) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException('User not found');
     }
     const domain = new URL(createPostRequest.originalUrl).hostname;
     const allowedDomains = ['amazon.com'];
 
     if (!allowedDomains.some((d) => domain.includes(d))) {
-      throw new BadRequestException('Domínio não permitido');
+      throw new BadRequestException('Domain not allowed');
     }
 
     return this.postsRepository.save({
@@ -53,7 +53,7 @@ export class PostsService {
     const post = await this.postsRepository.findOne({ where: { id: postId } });
 
     if (!post) {
-      throw new NotFoundException('Post não encontrado');
+      throw new NotFoundException('Post not found');
     }
 
     return { percentage: post.getEngagementPercentage() };
@@ -79,7 +79,7 @@ export class PostsService {
     const updatedPost = await this.postsRepository.findOne({ where: { id } });
 
     if (!updatedPost) {
-      throw new NotFoundException('Post não encontrado');
+      throw new NotFoundException('Post not found');
     }
 
     return updatedPost;

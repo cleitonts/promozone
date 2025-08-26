@@ -1,6 +1,5 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   ManyToOne,
@@ -9,14 +8,12 @@ import {
 } from 'typeorm';
 import sanitizeHtml from 'sanitize-html';
 import { User } from 'src/users/user.entity';
-import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
+import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
+import { BaseEntity } from 'src/common/base.entity';
 
 @ObjectType()
 @Entity()
-export class Post {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class Post extends BaseEntity {
 
   @Field()
   @Column()
@@ -63,7 +60,7 @@ export class Post {
   @BeforeUpdate()
   sanitizeContent() {
     this.content = sanitizeHtml(this.content, {
-      allowedTags: ['p', 'a', 'strong', 'em', 'ul', 'ol', 'li'],
+      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'br'],
       allowedAttributes: {
         a: ['href'],
       },
