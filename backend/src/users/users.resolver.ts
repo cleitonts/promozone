@@ -1,40 +1,37 @@
-import { Body, Controller, Post, Param, UseGuards, Get } from '@nestjs/common';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserRequest } from './dto/create-user.request';
+import { User } from './user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AppLogger } from 'src/common/logger.service';
-import { User } from './user.entity';
-import { PaginationResponse } from 'src/common/dto/api.response';
 
-@Controller({
-  version: '1',
-  path: 'users',
-})
+@Resolver(() => User)
 @UseGuards(JwtAuthGuard, RolesGuard)
-export class UsersController {
+export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
     private readonly logger: AppLogger,
   ) {}
 
-  @Post()
+  @Mutation(() => User)
   @Roles('USERS:CREATE')
-  async create(@Body() createUserRequest: CreateUserRequest) {
-    this.logger.debug('Listing users');
+  async createUser(@Args('createUserInput') createUserRequest: CreateUserRequest) {
+    this.logger.debug('Creating user');
     return await this.usersService.create(createUserRequest);
   }
 
+  @Query(() => [User], { name: 'users' })
   @Roles('USERS:READ')
-  @Get()
-  async findAll(): Promise<PaginationResponse<User>> {
+  async findAll() {
     return await this.usersService.findAll();
   }
 
-  @Get(':id')
+  @Query(() => User, { name: 'user' })
   @Roles('USERS:READ')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Args('id') id: string) {
     return await this.usersService.findOne(id);
   }
 }

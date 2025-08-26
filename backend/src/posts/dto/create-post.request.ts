@@ -9,6 +9,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { SanitizeHTML } from 'src/common/decorators/sanitize-html.decorator';
+import { InputType, Field, Float } from '@nestjs/graphql';
 
 @ValidatorConstraint({ name: 'AllowedDomain', async: false })
 export class AllowedDomainConstraint implements ValidatorConstraintInterface {
@@ -27,26 +28,33 @@ export class AllowedDomainConstraint implements ValidatorConstraintInterface {
   }
 }
 
+@InputType()
 export class CreatePostRequest {
+  @Field()
   @IsNotEmpty()
   @IsString()
   title: string;
 
+  @Field()
   @SanitizeHTML()
   @IsNotEmpty()
   @IsString()
   content: string;
 
+  @Field()
   @IsUrl()
   @Validate(AllowedDomainConstraint)
   originalUrl: string;
 
+  @Field(() => Float)
   @IsNumber()
   currentPrice: number;
 
+  @Field(() => Float)
   @IsNumber()
   originalPrice: number;
 
+  @Field(() => Float)
   @IsNumber()
   discountPercentage: number;
 }

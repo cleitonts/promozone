@@ -1,22 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { AppLogger } from './common/logger.service';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { ApiResponseInterceptor } from './common/interceptors/Api-response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new AppLogger(),
   });
 
-  app.useGlobalInterceptors(new ApiResponseInterceptor());
 
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: '1',
-    prefix: 'api/v',
-  });
 
   app.enableCors({
     origin: ['http://localhost:5173'],
@@ -35,8 +27,7 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
-  const logger = app.get(AppLogger);
-  app.useGlobalFilters(new HttpExceptionFilter(logger));
+
 
   app.useGlobalPipes(
     new ValidationPipe({

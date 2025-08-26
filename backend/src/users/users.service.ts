@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserRequest } from './dto/update-user.request';
 import { PerfilService } from 'src/perfil/perfil.service';
-import { PaginationResponse } from 'src/common/dto/api.response';
+
 
 @Injectable()
 export class UsersService {
@@ -18,10 +18,10 @@ export class UsersService {
     private perfilService: PerfilService,
   ) {}
 
-  async findAll(): Promise<PaginationResponse<User>> {
-    return await this.usersRepository.findAndCount({
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find({
       select: ['id', 'email', 'perfil', 'createdAt'],
-      take: 10,
+      relations: ['perfil'],
     });
   }
 

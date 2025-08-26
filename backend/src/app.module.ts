@@ -8,6 +8,9 @@ import { WinstonModule } from 'nest-winston';
 import { AppLogger } from './common/logger.service';
 import { PerfilModule } from './perfil/perfil.module';
 import { ProductsModule } from './products/products.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -18,6 +21,13 @@ import { ProductsModule } from './products/products.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.prod', '.env.local', '.env', '.env.dist'],
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
+      playground: true,
+      introspection: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

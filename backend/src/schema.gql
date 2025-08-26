@@ -1,0 +1,187 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Attribute {
+  attributeValues: [AttributeValue!]!
+  id: Int!
+  name: String!
+  type: String!
+}
+
+type AttributeValue {
+  attribute: Attribute!
+  attributeId: Int!
+  id: Int!
+  value: String!
+}
+
+type AuthResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Brand {
+  id: Int!
+  name: String!
+  products: [Product!]!
+}
+
+type Category {
+  id: Int!
+  name: String!
+  products: [Product!]!
+}
+
+input CreatePostRequest {
+  content: String!
+  currentPrice: Float!
+  discountPercentage: Float!
+  originalPrice: Float!
+  originalUrl: String!
+  title: String!
+}
+
+input CreateProductDto {
+  brandId: Int
+  categoryId: Int
+  description: String
+  name: String!
+}
+
+input CreateRequest {
+  name: String!
+  permissions: [String!]
+}
+
+input CreateUserRequest {
+  email: String!
+  password: String!
+  perfilId: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type EngagementResponse {
+  percentage: Int!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LogoutResponse {
+  message: String!
+}
+
+type Mutation {
+  createPerfil(createPerfilInput: CreateRequest!): Perfil!
+  createPost(createPostInput: CreatePostRequest!): Post!
+  createProduct(createProductInput: CreateProductDto!): Product!
+  createUser(createUserInput: CreateUserRequest!): User!
+  login(loginInput: LoginInput!): AuthResponse!
+  logout: LogoutResponse!
+  refreshTokens(refreshToken: String!): AuthResponse!
+  removePerfil(id: String!): Boolean!
+  removePost(id: String!): Boolean!
+  removeProduct(id: Int!): Boolean!
+  updatePerfil(id: String!, updatePerfilInput: UpdateRequest!): Perfil!
+  updatePost(id: String!, updatePostInput: UpdatePostRequest!): Post!
+  updateProduct(id: Int!, updateProductInput: UpdateProductDto!): Product!
+  votePost(postId: String!, voteType: String!): VoteResponse!
+}
+
+type Perfil {
+  id: ID!
+  name: String!
+  permissions: [String!]
+  users: [User!]!
+}
+
+type Post {
+  author: User!
+  content: String!
+  createdAt: DateTime!
+  currentPrice: Float!
+  discountPercentage: Float!
+  downvotes: Int!
+  id: ID!
+  originalPrice: Float!
+  originalUrl: String!
+  title: String!
+  upvotes: Int!
+}
+
+type Product {
+  brand: Brand
+  brandId: Int
+  category: Category
+  categoryId: Int
+  createdAt: DateTime!
+  description: String
+  id: Int!
+  name: String!
+  variants: [ProductVariants!]!
+}
+
+type ProductVariants {
+  createdAt: DateTime!
+  id: Int!
+  imageUrl: String
+  price: Float!
+  product: Product!
+  productId: Int!
+  sku: String!
+  stock: Int!
+}
+
+type Query {
+  findAllPerfis: [Perfil!]!
+  findAllPosts: [Post!]!
+  findOnePerfil(id: String!): Perfil!
+  findOnePost(id: String!): Post!
+  getPerfilPermissions: [String!]!
+  getPostEngagement(postId: String!): EngagementResponse!
+  product(id: Int!): Product!
+  products: [Product!]!
+  user(id: String!): User!
+  users: [User!]!
+}
+
+input UpdatePostRequest {
+  content: String
+  currentPrice: Float
+  discountPercentage: Float
+  originalPrice: Float
+  originalUrl: String
+  title: String
+}
+
+input UpdateProductDto {
+  brandId: Int
+  categoryId: Int
+  description: String
+  name: String
+}
+
+input UpdateRequest {
+  name: String!
+  permissions: [String!]
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  perfil: Perfil
+  posts: [Post!]!
+}
+
+type VoteResponse {
+  downvotes: Int!
+  upvotes: Int!
+}
