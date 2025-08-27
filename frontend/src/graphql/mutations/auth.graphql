@@ -17,3 +17,10 @@ mutation RefreshTokens($refreshToken: String!) {
     refreshToken
   }
 }
+
+mutation RenewAccessToken($accessToken: String!) {
+  renewAccessToken(accessToken: $accessToken) {
+    accessToken
+    refreshToken
+  }
+}

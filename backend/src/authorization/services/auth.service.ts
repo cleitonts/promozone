@@ -111,6 +111,35 @@ export class AuthService {
     return this.generateTokenPair(user, tenantId);
   }
 
+  async renewAccessToken(currentAccessToken: string): Promise<ITokenPair> {
+    try {
+      // Validar rigorosamente o token atual
+      const payload = await this.jwtService.verifyAsync<ITokenPayload>(currentAccessToken, {
+        secret: this.config.get('JWT_SECRET'),
+        ignoreExpiration: false, // Não ignorar expiração para validação rigorosa
+      });
+
+      // Verificar se é um token de acesso válido
+      if (payload.type !== 'access') {
+        throw new UnauthorizedException('Invalid token type for renewal');
+      }
+
+      // Buscar o usuário para garantir que ainda existe e está ativo
+      const user = await this.usersService.findOne(payload.sub);
+      if (!user) {
+        throw new UnauthorizedException('User not found or inactive');
+      }
+
+      // Gerar novo par de tokens
+      return this.generateTokenPair(user, payload.tenantId);
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Token has already expired');
+      }
+      throw new UnauthorizedException('Invalid token for renewal');
+    }
+  }
+
   private async validateRefreshToken(token: string): Promise<ITokenPayload> {
     try {
       return await this.jwtService.verifyAsync<ITokenPayload>(token, {

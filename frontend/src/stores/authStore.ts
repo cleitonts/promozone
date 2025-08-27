@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useApolloClient } from '@vue/apollo-composable'
-import { useLoginMutation, useLogoutMutation, useRefreshTokensMutation } from '@/generated/graphql'
+import { useLoginMutation, useLogoutMutation, useRefreshTokensMutation, useRenewAccessTokenMutation } from '@/generated/graphql'
+import { getTokenMonitorService } from '@/services'
 
 export const useAuthStore = defineStore('auth', () => {
   const { resolveClient } = useApolloClient()
@@ -14,6 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
   const { mutate: loginMutation } = useLoginMutation()
   const { mutate: logoutMutation } = useLogoutMutation()
   const { mutate: refreshTokensMutation } = useRefreshTokensMutation()
+  const { mutate: renewAccessTokenMutation } = useRenewAccessTokenMutation()
   
   const login = async (email: string, password: string) => {
     try {
@@ -34,6 +36,10 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('accessToken', newAccessToken)
         localStorage.setItem('refreshToken', newRefreshToken)
         
+        // Iniciar monitoramento de token após login bem-sucedido
+        const tokenMonitor = getTokenMonitorService()
+        tokenMonitor.startMonitoring()
+        
         return { success: true }
       }
       
@@ -46,6 +52,10 @@ export const useAuthStore = defineStore('auth', () => {
   
   const logout = async () => {
     try {
+      // Parar monitoramento de token antes do logout
+      const tokenMonitor = getTokenMonitorService()
+      tokenMonitor.stopMonitoring()
+      
       await logoutMutation()
       
       accessToken.value = null
@@ -107,12 +117,40 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
   
+  const renewAccessToken = async () => {
+    try {
+      if (!accessToken.value) {
+        throw new Error('Token de acesso não encontrado')
+      }
+
+      const result = await renewAccessTokenMutation({
+        accessToken: accessToken.value
+      })
+
+      if (result?.data?.renewAccessToken) {
+        accessToken.value = result.data.renewAccessToken.accessToken
+        refreshToken.value = result.data.renewAccessToken.refreshToken
+        
+        localStorage.setItem('accessToken', accessToken.value)
+        localStorage.setItem('refreshToken', refreshToken.value)
+        
+        return result.data.renewAccessToken
+      }
+    } catch (error) {
+      console.error('Erro ao renovar token de acesso:', error)
+      // Se falhar ao renovar, fazer logout
+      await logout()
+      throw error
+    }
+  }
+  
   return {
     accessToken,
     refreshToken,
     isAuthenticated,
     login,
     logout,
-    refreshTokens
+    refreshTokens,
+    renewAccessToken
   }
 })

@@ -43,6 +43,11 @@ export class AuthResolver {
     return await this.authService.refreshTokens(refreshToken);
   }
 
+  @Mutation(() => AuthResponse)
+  async renewAccessToken(@Args('accessToken') accessToken: string): Promise<ITokenPair> {
+    return await this.authService.renewAccessToken(accessToken);
+  }
+
   @Mutation(() => LogoutResponse)
   async logout(): Promise<LogoutResponse> {
     return { message: 'success' };

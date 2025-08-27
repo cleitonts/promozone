@@ -203,6 +203,7 @@ export type Mutation = {
   removeProductVariantAttributeByVariantAndAttribute: Scalars['Boolean']['output'];
   removeProductVariantAttributesByVariant: Scalars['Boolean']['output'];
   removeRoleFromUser: Scalars['Boolean']['output'];
+  renewAccessToken: AuthResponse;
   updateAttribute: Attribute;
   updateAttributeValue: AttributeValue;
   updateBrand: Brand;
@@ -371,6 +372,11 @@ export type MutationRemoveProductVariantAttributesByVariantArgs = {
 
 export type MutationRemoveRoleFromUserArgs = {
   input: AssignRoleToUserInput;
+};
+
+
+export type MutationRenewAccessTokenArgs = {
+  accessToken: Scalars['String']['input'];
 };
 
 
@@ -765,6 +771,13 @@ export type RefreshTokensMutationVariables = Exact<{
 
 export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
 
+export type RenewAccessTokenMutationVariables = Exact<{
+  accessToken: Scalars['String']['input'];
+}>;
+
+
+export type RenewAccessTokenMutation = { __typename?: 'Mutation', renewAccessToken: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
+
 export type CreateBrandMutationVariables = Exact<{
   createBrandInput: CreateBrandDto;
 }>;
@@ -984,6 +997,36 @@ export function useRefreshTokensMutation(options: VueApolloComposable.UseMutatio
   return VueApolloComposable.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, options);
 }
 export type RefreshTokensMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RefreshTokensMutation, RefreshTokensMutationVariables>;
+export const RenewAccessTokenDocument = gql`
+    mutation RenewAccessToken($accessToken: String!) {
+  renewAccessToken(accessToken: $accessToken) {
+    accessToken
+    refreshToken
+  }
+}
+    `;
+
+/**
+ * __useRenewAccessTokenMutation__
+ *
+ * To run a mutation, you first call `useRenewAccessTokenMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRenewAccessTokenMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRenewAccessTokenMutation({
+ *   variables: {
+ *     accessToken: // value for 'accessToken'
+ *   },
+ * });
+ */
+export function useRenewAccessTokenMutation(options: VueApolloComposable.UseMutationOptions<RenewAccessTokenMutation, RenewAccessTokenMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RenewAccessTokenMutation, RenewAccessTokenMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RenewAccessTokenMutation, RenewAccessTokenMutationVariables>(RenewAccessTokenDocument, options);
+}
+export type RenewAccessTokenMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RenewAccessTokenMutation, RenewAccessTokenMutationVariables>;
 export const CreateBrandDocument = gql`
     mutation CreateBrand($createBrandInput: CreateBrandDto!) {
   createBrand(createBrandInput: $createBrandInput) {

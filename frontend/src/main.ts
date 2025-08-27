@@ -8,6 +8,7 @@ import apolloClient from '@/plugins/apollo'
 import App from './App.vue'
 import { router } from './router'
 import { TheSpinner } from './components'
+import { initializeTokenMonitoring } from '@/services'
 
 const app = createApp(App)
 
@@ -18,3 +19,6 @@ app.use(router)
 app.use(vuetify)
 
 app.mount('#app')
+
+// Inicializar monitoramento de token após a aplicação estar montada
+initializeTokenMonitoring()

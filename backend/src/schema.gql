@@ -183,6 +183,7 @@ type Mutation {
   removeProductVariantAttributeByVariantAndAttribute(attributeId: Int!, variantId: Int!): Boolean!
   removeProductVariantAttributesByVariant(variantId: Int!): Boolean!
   removeRoleFromUser(input: AssignRoleToUserInput!): Boolean!
+  renewAccessToken(accessToken: String!): AuthResponse!
   updateAttribute(id: Int!, updateAttributeInput: UpdateAttributeDto!): Attribute!
   updateAttributeValue(id: Int!, updateAttributeValueInput: UpdateAttributeValueDto!): AttributeValue!
   updateBrand(id: Int!, updateBrandInput: UpdateBrandDto!): Brand!
