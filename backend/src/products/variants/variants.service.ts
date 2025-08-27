@@ -22,19 +22,19 @@ export class VariantsService {
     });
   }
 
-  async findOne(id: number): Promise<ProductVariants | null> {
+  async findOne(id: string): Promise<ProductVariants | null> {
     return await this.variantRepository.findOne({
       where: { id },
       relations: ['product'],
     });
   }
 
-  async update(id: number, updateProductVariantDto: Partial<CreateProductVariantDto>): Promise<ProductVariants | null> {
+  async update(id: string, updateProductVariantDto: Partial<CreateProductVariantDto>): Promise<ProductVariants | null> {
     await this.variantRepository.update(id, updateProductVariantDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.variantRepository.delete(id);
   }
 

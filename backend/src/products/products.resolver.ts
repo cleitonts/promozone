@@ -19,20 +19,20 @@ export class ProductsResolver {
   }
 
   @Query(() => Product, { name: 'product' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => Int }) id: string) {
     return this.productsService.findOne(id);
   }
 
   @Mutation(() => Product)
   updateProduct(
-    @Args('id', { type: () => Int }) id: number,
+    @Args('id', { type: () => Int }) id: string,
     @Args('updateProductInput') updateProductDto: UpdateProductDto,
   ) {
     return this.productsService.update(id, updateProductDto);
   }
 
   @Mutation(() => Boolean)
-  removeProduct(@Args('id', { type: () => Int }) id: number) {
+  removeProduct(@Args('id', { type: () => Int }) id: string) {
     return this.productsService.remove(id);
   }
 }

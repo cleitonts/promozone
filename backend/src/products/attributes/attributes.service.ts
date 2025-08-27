@@ -22,19 +22,19 @@ export class AttributesService {
     });
   }
 
-  async findOne(id: number): Promise<Attribute | null> {
+  async findOne(id: string): Promise<Attribute | null> {
     return await this.attributeRepository.findOne({
       where: { id },
       relations: ['attributeValues'],
     });
   }
 
-  async update(id: number, updateAttributeDto: Partial<CreateAttributeDto>): Promise<Attribute | null> {
+  async update(id: string, updateAttributeDto: Partial<CreateAttributeDto>): Promise<Attribute | null> {
     await this.attributeRepository.update(id, updateAttributeDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.attributeRepository.delete(id);
   }
 }

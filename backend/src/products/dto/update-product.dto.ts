@@ -1,5 +1,5 @@
-import { IsString, IsOptional, IsNumber } from 'class-validator';
-import { InputType, Field, Int } from '@nestjs/graphql';
+import { IsString, IsOptional, IsNumber, IsPositive } from 'class-validator';
+import { InputType, Field, Int, Float } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateProductDto {
@@ -11,7 +11,18 @@ export class UpdateProductDto {
   @Field({ nullable: true })
   @IsString()
   @IsOptional()
+  slug?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
   description?: string;
+
+  @Field(() => Float, { nullable: true })
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  price?: number;
 
   @Field(() => Int, { nullable: true })
   @IsNumber()

@@ -7,11 +7,6 @@ export class CreateAttributeDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  type: string;
 }
 
 @InputType()
@@ -20,9 +15,4 @@ export class UpdateAttributeDto {
   @IsString()
   @IsOptional()
   name?: string;
-
-  @Field({ nullable: true })
-  @IsString()
-  @IsOptional()
-  type?: string;
 }

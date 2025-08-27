@@ -28,6 +28,11 @@ export class CreateProductVariantDto {
 
 @InputType()
 export class UpdateProductVariantDto {
+  @Field(() => Int, { nullable: true })
+  @IsNumber()
+  @IsOptional()
+  productId?: number;
+
   @Field({ nullable: true })
   @IsString()
   @IsOptional()
@@ -39,7 +44,7 @@ export class UpdateProductVariantDto {
   price?: number;
 
   @Field(() => Int, { nullable: true })
-  @IsInt()
+  @IsNumber()
   @IsOptional()
   stock?: number;
 

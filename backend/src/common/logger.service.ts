@@ -10,7 +10,6 @@ import { utilities as nestWinstonUtilities } from 'nest-winston/dist/winston.uti
 export class AppLogger implements LoggerService, WinstonModuleOptionsFactory {
   private logger: LoggerService;
 
-  // Implementação obrigatória da interface WinstonModuleOptionsFactory
   createWinstonModuleOptions(): WinstonModuleOptions {
     return {
       transports: [
@@ -37,7 +36,6 @@ export class AppLogger implements LoggerService, WinstonModuleOptionsFactory {
   }
 
   constructor() {
-    // Inicialização do logger usando a configuração definida
     this.logger = winston.createLogger(this.createWinstonModuleOptions());
   }
 

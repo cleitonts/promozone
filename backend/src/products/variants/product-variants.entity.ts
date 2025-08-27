@@ -1,21 +1,16 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   ManyToOne,
-  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { Product } from '../product.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 @ObjectType()
-@Entity('products_variants')
-export class ProductVariants {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
-
+@Entity('product_variants')
+export class ProductVariants extends BaseEntity {
   @Field(() => Int)
   @Column({ name: 'product_id' })
   productId: number;

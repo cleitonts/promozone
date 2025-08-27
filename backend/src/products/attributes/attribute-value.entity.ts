@@ -7,13 +7,11 @@ import {
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Attribute } from './attribute.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 @ObjectType()
-@Entity('products_attribute_values')
-export class AttributeValue {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
+@Entity('attribute_values')
+export class AttributeValue extends BaseEntity {
 
   @Field(() => Int)
   @Column({ name: 'attribute_id' })

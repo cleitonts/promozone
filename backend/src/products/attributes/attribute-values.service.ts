@@ -22,7 +22,7 @@ export class AttributeValuesService {
     });
   }
 
-  async findOne(id: number): Promise<AttributeValue | null> {
+  async findOne(id: string): Promise<AttributeValue | null> {
     return await this.attributeValueRepository.findOne({
       where: { id },
       relations: ['attribute'],
@@ -36,12 +36,12 @@ export class AttributeValuesService {
     });
   }
 
-  async update(id: number, updateAttributeValueDto: Partial<CreateAttributeValueDto>): Promise<AttributeValue | null> {
+  async update(id: string, updateAttributeValueDto: Partial<CreateAttributeValueDto>): Promise<AttributeValue | null> {
     await this.attributeValueRepository.update(id, updateAttributeValueDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.attributeValueRepository.delete(id);
   }
 }

@@ -1,0 +1,58 @@
+query GetAllProducts {
+  products {
+    id
+    name
+    description
+    categoryId
+    brandId
+    createdAt
+    category {
+      id
+      name
+    }
+    brand {
+      id
+      name
+    }
+    variants {
+      id
+      sku
+      price
+      stock
+      imageUrl
+    }
+  }
+}
+
+query GetProduct($id: Int!) {
+  product(id: $id) {
+    id
+    name
+    description
+    categoryId
+    brandId
+    createdAt
+    category {
+      id
+      name
+    }
+    brand {
+      id
+      name
+    }
+    variants {
+      id
+      sku
+      price
+      stock
+      imageUrl
+    }
+  }
+}
+
+query GetAllCategories {
+  categories {
+    id
+    name
+  }
+}

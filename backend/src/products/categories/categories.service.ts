@@ -22,19 +22,19 @@ export class CategoriesService {
     });
   }
 
-  async findOne(id: number): Promise<Category | null> {
+  async findOne(id: string): Promise<Category | null> {
     return await this.categoryRepository.findOne({
       where: { id },
       relations: ['products'],
     });
   }
 
-  async update(id: number, updateCategoryDto: Partial<CreateCategoryDto>): Promise<Category | null> {
+  async update(id: string, updateCategoryDto: Partial<CreateCategoryDto>): Promise<Category | null> {
     await this.categoryRepository.update(id, updateCategoryDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.categoryRepository.delete(id);
   }
 }

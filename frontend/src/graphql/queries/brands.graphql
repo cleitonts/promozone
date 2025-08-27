@@ -1,0 +1,29 @@
+query GetAllBrands {
+  brands {
+    id
+    name
+    slug
+    description
+    logo_url
+    website
+    country
+    is_active
+  }
+}
+
+query GetBrand($id: Int!) {
+  brand(id: $id) {
+    id
+    name
+    slug
+    description
+    logo_url
+    website
+    country
+    is_active
+    products {
+      id
+      name
+    }
+  }
+}

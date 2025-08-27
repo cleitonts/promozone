@@ -10,15 +10,12 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { ProductVariants } from '../variants/product-variants.entity';
 import { Attribute } from './attribute.entity';
 import { AttributeValue } from './attribute-value.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 @ObjectType()
-@Entity('products_variant_attributes')
+@Entity('product_variant_attributes')
 @Unique(['variantId', 'attributeId'])
-export class ProductVariantAttribute {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class ProductVariantAttribute extends BaseEntity {
   @Field(() => Int)
   @Column({ name: 'variant_id' })
   variantId: number;

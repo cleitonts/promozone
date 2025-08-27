@@ -28,6 +28,7 @@ import { join } from 'path';
       sortSchema: true,
       playground: true,
       introspection: true,
+      context: ({ req }: any) => ({ req }),
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

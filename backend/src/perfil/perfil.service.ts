@@ -1,7 +1,6 @@
 import {
   Injectable,
   NotAcceptableException,
-  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, FindOptionsWhere, Repository } from 'typeorm';

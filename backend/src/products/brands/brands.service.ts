@@ -22,19 +22,19 @@ export class BrandsService {
     });
   }
 
-  async findOne(id: number): Promise<Brand | null> {
+  async findOne(id: string): Promise<Brand | null> {
     return await this.brandRepository.findOne({
       where: { id },
       relations: ['products'],
     });
   }
 
-  async update(id: number, updateBrandDto: Partial<CreateBrandDto>): Promise<Brand | null> {
+  async update(id: string, updateBrandDto: Partial<CreateBrandDto>): Promise<Brand | null> {
     await this.brandRepository.update(id, updateBrandDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.brandRepository.delete(id);
   }
 }

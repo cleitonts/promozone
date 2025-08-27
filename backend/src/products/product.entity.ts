@@ -1,30 +1,35 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  ManyToMany,
   JoinColumn,
 } from 'typeorm';
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { Category } from './categories/category.entity';
 import { Brand } from './brands/brand.entity';
 import { ProductVariants } from './variants/product-variants.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 @ObjectType()
 @Entity('products')
-export class Product {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Product extends BaseEntity {
   @Field()
   @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;
 
+  @Field()
+  @Column({ type: 'varchar', length: 255, unique: true, nullable: false })
+  slug: string;
+
   @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })
   description: string;
+
+  @Field(() => Float)
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+  price: number;
 
   @Field(() => Int, { nullable: true })
   @Column({ name: 'category_id', nullable: true })
@@ -47,6 +52,10 @@ export class Product {
   @Field(() => [ProductVariants])
   @OneToMany(() => ProductVariants, (variant) => variant.product)
   variants: ProductVariants[];
+
+  @Field(() => [Brand], { nullable: true })
+  @ManyToMany(() => Brand, (brand) => brand.productBrands)
+  brands?: Brand[];
 
   @Field()
   @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

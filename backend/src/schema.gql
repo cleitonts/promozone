@@ -4,15 +4,14 @@
 
 type Attribute {
   attributeValues: [AttributeValue!]!
-  id: Int!
+  id: ID!
   name: String!
-  type: String!
 }
 
 type AttributeValue {
   attribute: Attribute!
   attributeId: Int!
-  id: Int!
+  id: ID!
   value: String!
 }
 
@@ -22,15 +21,45 @@ type AuthResponse {
 }
 
 type Brand {
-  id: Int!
+  country: String
+  description: String
+  id: ID!
+  is_active: Boolean!
+  logo_url: String
+  name: String!
+  productBrands: [Product!]
+  products: [Product!]!
+  slug: String!
+  website: String
+}
+
+type Category {
+  id: ID!
   name: String!
   products: [Product!]!
 }
 
-type Category {
-  id: Int!
+input CreateAttributeDto {
   name: String!
-  products: [Product!]!
+}
+
+input CreateAttributeValueDto {
+  attributeId: Int!
+  value: String!
+}
+
+input CreateBrandDto {
+  country: String
+  description: String
+  is_active: Boolean
+  logo_url: String
+  name: String!
+  slug: String!
+  website: String
+}
+
+input CreateCategoryDto {
+  name: String!
 }
 
 input CreatePostRequest {
@@ -47,6 +76,22 @@ input CreateProductDto {
   categoryId: Int
   description: String
   name: String!
+  price: Float!
+  slug: String!
+}
+
+input CreateProductVariantAttributeDto {
+  attributeId: Int!
+  valueId: Int!
+  variantId: Int!
+}
+
+input CreateProductVariantDto {
+  imageUrl: String
+  price: Float!
+  productId: Int!
+  sku: String!
+  stock: Int!
 }
 
 input CreateRequest {
@@ -79,23 +124,44 @@ type LogoutResponse {
 }
 
 type Mutation {
+  createAttribute(createAttributeInput: CreateAttributeDto!): Attribute!
+  createAttributeValue(createAttributeValueInput: CreateAttributeValueDto!): AttributeValue!
+  createBrand(createBrandInput: CreateBrandDto!): Brand!
+  createCategory(createCategoryInput: CreateCategoryDto!): Category!
   createPerfil(createPerfilInput: CreateRequest!): Perfil!
   createPost(createPostInput: CreatePostRequest!): Post!
   createProduct(createProductInput: CreateProductDto!): Product!
+  createProductVariant(createVariantInput: CreateProductVariantDto!): ProductVariants!
+  createProductVariantAttribute(createProductVariantAttributeInput: CreateProductVariantAttributeDto!): ProductVariantAttribute!
   createUser(createUserInput: CreateUserRequest!): User!
   login(loginInput: LoginInput!): AuthResponse!
   logout: LogoutResponse!
   refreshTokens(refreshToken: String!): AuthResponse!
+  removeAttribute(id: Int!): Boolean!
+  removeAttributeValue(id: Int!): Boolean!
+  removeBrand(id: Int!): Boolean!
+  removeCategory(id: Int!): Boolean!
   removePerfil(id: String!): Boolean!
   removePost(id: String!): Boolean!
   removeProduct(id: Int!): Boolean!
+  removeProductVariant(id: Int!): Boolean!
+  removeProductVariantAttribute(id: Int!): Boolean!
+  removeProductVariantAttributeByVariantAndAttribute(attributeId: Int!, variantId: Int!): Boolean!
+  removeProductVariantAttributesByVariant(variantId: Int!): Boolean!
+  updateAttribute(id: Int!, updateAttributeInput: UpdateAttributeDto!): Attribute!
+  updateAttributeValue(id: Int!, updateAttributeValueInput: UpdateAttributeValueDto!): AttributeValue!
+  updateBrand(id: Int!, updateBrandInput: UpdateBrandDto!): Brand!
+  updateCategory(id: Int!, updateCategoryInput: UpdateCategoryDto!): Category!
   updatePerfil(id: String!, updatePerfilInput: UpdateRequest!): Perfil!
   updatePost(id: String!, updatePostInput: UpdatePostRequest!): Post!
   updateProduct(id: Int!, updateProductInput: UpdateProductDto!): Product!
+  updateProductVariant(id: Int!, updateVariantInput: UpdateProductVariantDto!): ProductVariants!
+  updateProductVariantAttribute(id: Int!, updateProductVariantAttributeInput: UpdateProductVariantAttributeDto!): ProductVariantAttribute!
   votePost(postId: String!, voteType: String!): VoteResponse!
 }
 
 type Perfil {
+  id: ID!
   name: String!
   permissions: [String!]
   users: [User!]!
@@ -108,6 +174,7 @@ type Post {
   currentPrice: Float!
   discountPercentage: Float!
   downvotes: Int!
+  id: ID!
   originalPrice: Float!
   originalUrl: String!
   title: String!
@@ -117,18 +184,31 @@ type Post {
 type Product {
   brand: Brand
   brandId: Int
+  brands: [Brand!]
   category: Category
   categoryId: Int
   createdAt: DateTime!
   description: String
-  id: Int!
+  id: ID!
   name: String!
+  price: Float!
+  slug: String!
   variants: [ProductVariants!]!
+}
+
+type ProductVariantAttribute {
+  attribute: Attribute!
+  attributeId: Int!
+  id: ID!
+  value: AttributeValue!
+  valueId: Int!
+  variant: ProductVariants!
+  variantId: Int!
 }
 
 type ProductVariants {
   createdAt: DateTime!
-  id: Int!
+  id: ID!
   imageUrl: String
   price: Float!
   product: Product!
@@ -138,6 +218,15 @@ type ProductVariants {
 }
 
 type Query {
+  attribute(id: Int!): Attribute!
+  attributeValue(id: Int!): AttributeValue!
+  attributeValues: [AttributeValue!]!
+  attributeValuesByAttribute(attributeId: Int!): [AttributeValue!]!
+  attributes: [Attribute!]!
+  brand(id: Int!): Brand!
+  brands: [Brand!]!
+  categories: [Category!]!
+  category(id: Int!): Category!
   findAllPerfis: [Perfil!]!
   findAllPosts: [Post!]!
   findOnePerfil(id: String!): Perfil!
@@ -145,9 +234,38 @@ type Query {
   getPerfilPermissions: [String!]!
   getPostEngagement(postId: String!): EngagementResponse!
   product(id: Int!): Product!
+  productVariant(id: Int!): ProductVariants!
+  productVariantAttribute(id: Int!): ProductVariantAttribute!
+  productVariantAttributes: [ProductVariantAttribute!]!
+  productVariantAttributesByAttribute(attributeId: Int!): [ProductVariantAttribute!]!
+  productVariantAttributesByVariant(variantId: Int!): [ProductVariantAttribute!]!
+  productVariants: [ProductVariants!]!
+  productVariantsByProduct(productId: Int!): [ProductVariants!]!
   products: [Product!]!
   user(id: String!): User!
   users: [User!]!
+}
+
+input UpdateAttributeDto {
+  name: String
+}
+
+input UpdateAttributeValueDto {
+  value: String
+}
+
+input UpdateBrandDto {
+  country: String
+  description: String
+  is_active: Boolean
+  logo_url: String
+  name: String
+  slug: String
+  website: String
+}
+
+input UpdateCategoryDto {
+  name: String
 }
 
 input UpdatePostRequest {
@@ -164,6 +282,22 @@ input UpdateProductDto {
   categoryId: Int
   description: String
   name: String
+  price: Float
+  slug: String
+}
+
+input UpdateProductVariantAttributeDto {
+  attributeId: Int
+  valueId: Int
+  variantId: Int
+}
+
+input UpdateProductVariantDto {
+  imageUrl: String
+  price: Float
+  productId: Int
+  sku: String
+  stock: Int
 }
 
 input UpdateRequest {
@@ -174,6 +308,7 @@ input UpdateRequest {
 type User {
   createdAt: DateTime!
   email: String!
+  id: ID!
   perfil: Perfil
   posts: [Post!]!
 }

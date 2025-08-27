@@ -45,11 +45,20 @@ const items = ref<IMenuItem[]>([
       },
     ],
   },
-  // {
-  //   title: 'Users',
-  //   icon: 'fa6-solid:user',
-  //   routeName: 'usersList',
-  // },
+  {
+    title: 'Catalog',
+    icon: 'fa6-solid:store',
+    items: [
+      {
+        title: 'Products',
+        routeName: 'productsList',
+      },
+      {
+        title: 'Brands',
+        routeName: 'brandsList',
+      },
+    ],
+  },
 ])
 </script>
 

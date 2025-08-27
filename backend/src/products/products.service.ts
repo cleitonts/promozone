@@ -22,19 +22,19 @@ export class ProductsService {
     });
   }
 
-  async findOne(id: number): Promise<Product | null> {
+  async findOne(id: string): Promise<Product | null> {
     return await this.productRepository.findOne({
       where: { id },
       relations: ['category', 'brand', 'variants'],
     });
   }
 
-  async update(id: number, updateProductDto: Partial<CreateProductDto>): Promise<Product | null> {
+  async update(id: string, updateProductDto: Partial<CreateProductDto>): Promise<Product | null> {
     await this.productRepository.update(id, updateProductDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.productRepository.delete(id);
   }
 }

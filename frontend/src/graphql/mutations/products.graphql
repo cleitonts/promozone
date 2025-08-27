@@ -1,0 +1,41 @@
+mutation CreateProduct($createProductInput: CreateProductDto!) {
+  createProduct(createProductInput: $createProductInput) {
+    id
+    name
+    description
+    categoryId
+    brandId
+    createdAt
+    category {
+      id
+      name
+    }
+    brand {
+      id
+      name
+    }
+  }
+}
+
+mutation UpdateProduct($id: Int!, $updateProductInput: UpdateProductDto!) {
+  updateProduct(id: $id, updateProductInput: $updateProductInput) {
+    id
+    name
+    description
+    categoryId
+    brandId
+    createdAt
+    category {
+      id
+      name
+    }
+    brand {
+      id
+      name
+    }
+  }
+}
+
+mutation RemoveProduct($id: Int!) {
+  removeProduct(id: $id)
+}

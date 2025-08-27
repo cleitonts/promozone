@@ -1,0 +1,29 @@
+mutation CreateBrand($createBrandInput: CreateBrandDto!) {
+  createBrand(createBrandInput: $createBrandInput) {
+    id
+    name
+    slug
+    description
+    logo_url
+    website
+    country
+    is_active
+  }
+}
+
+mutation UpdateBrand($id: Int!, $updateBrandInput: UpdateBrandDto!) {
+  updateBrand(id: $id, updateBrandInput: $updateBrandInput) {
+    id
+    name
+    slug
+    description
+    logo_url
+    website
+    country
+    is_active
+  }
+}
+
+mutation RemoveBrand($id: Int!) {
+  removeBrand(id: $id)
+}
