@@ -1,0 +1,17 @@
+mutation CreateCategory($createCategoryInput: CreateCategoryDto!) {
+  createCategory(createCategoryInput: $createCategoryInput) {
+    id
+    name
+  }
+}
+
+mutation UpdateCategory($id: Int!, $updateCategoryInput: UpdateCategoryDto!) {
+  updateCategory(id: $id, updateCategoryInput: $updateCategoryInput) {
+    id
+    name
+  }
+}
+
+mutation RemoveCategory($id: Int!) {
+  removeCategory(id: $id)
+}

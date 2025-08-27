@@ -88,6 +88,8 @@ const validate = async function () {
   if (route.name === 'productsNew') {
     try {
       await productStore.createProduct({
+        price: 0,
+        slug: '',
         name: product.value.name,
         description: product.value.description,
         categoryId: product.value.categoryId || undefined,

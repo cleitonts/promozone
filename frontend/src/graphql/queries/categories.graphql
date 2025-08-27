@@ -1,0 +1,17 @@
+query GetAllCategories {
+  categories {
+    id
+    name
+  }
+}
+
+query GetCategory($id: Int!) {
+  category(id: $id) {
+    id
+    name
+    products {
+      id
+      name
+    }
+  }
+}

@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { ProductsService } from './products.service';
 import { ProductsResolver } from './products.resolver';
-import { BrandsModule } from './brands/brands.module';
-import { CategoriesModule } from './categories/categories.module';
-import { VariantsModule } from './variants/variants.module';
-import { AttributesModule } from './attributes/attributes.module';
+import { BrandsModule } from '../brands/brands.module';
+import { CategoriesModule } from '../categories/categories.module';
+import { VariantsModule } from '../variants/variants.module';
+import { AttributesModule } from '../attributes/attributes.module';
 
 @Module({
   imports: [

@@ -10,6 +10,8 @@ import ProductListView from '@/views/backOffice/products/ProductListView.vue'
 import ProductEditView from '@/views/backOffice/products/ProductEditView.vue'
 import BrandListView from '@/views/backOffice/brands/BrandListView.vue'
 import BrandEditView from '@/views/backOffice/brands/BrandEditView.vue'
+import CategoryListView from '@/views/backOffice/categories/CategoryListView.vue'
+import CategoryEditView from '@/views/backOffice/categories/CategoryEditView.vue'
 import type { RouteRecordRaw } from 'vue-router'
 
 export const backOfficeRoutes: RouteRecordRaw = {
@@ -148,6 +150,36 @@ export const backOfficeRoutes: RouteRecordRaw = {
           component: BrandEditView,
           meta: {
             pageTitle: 'Edit brand',
+          },
+        },
+      ],
+    },
+    {
+      path: 'categories',
+      component: TheMainLayout,
+      children: [
+        {
+          path: '',
+          name: 'categoriesList',
+          component: CategoryListView,
+          meta: {
+            pageTitle: 'Categories list',
+          },
+        },
+        {
+          path: 'new',
+          name: 'categoriesNew',
+          component: CategoryEditView,
+          meta: {
+            pageTitle: 'Create category',
+          },
+        },
+        {
+          path: 'edit/:id',
+          name: 'categoriesEdit',
+          component: CategoryEditView,
+          meta: {
+            pageTitle: 'Edit category',
           },
         },
       ],

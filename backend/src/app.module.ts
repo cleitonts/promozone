@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { AppLogger } from './common/logger.service';
 import { PerfilModule } from './perfil/perfil.module';
-import { ProductsModule } from './products/products.module';
+import { ProductsModule } from './products/products/products.module';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';

@@ -5,7 +5,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
-import { Product } from '../product.entity';
+import { Product } from '../products/product.entity';
 import { BaseEntity } from 'src/common/base.entity';
 
 @ObjectType()
