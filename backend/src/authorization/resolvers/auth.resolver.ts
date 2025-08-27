@@ -1,5 +1,5 @@
 import { Resolver, Mutation, Args } from '@nestjs/graphql';
-import { AuthService, ITokenPair } from './auth.service';
+import { AuthService, ITokenPair } from '../services/auth.service';
 import { InputType, Field, ObjectType } from '@nestjs/graphql';
 
 @InputType()
@@ -9,6 +9,9 @@ export class LoginInput {
 
   @Field()
   password: string;
+
+  @Field({ nullable: true })
+  tenantId?: string;
 }
 
 @ObjectType()
@@ -32,7 +35,7 @@ export class AuthResolver {
 
   @Mutation(() => AuthResponse)
   async login(@Args('loginInput') loginInput: LoginInput): Promise<ITokenPair> {
-    return await this.authService.login(loginInput.email, loginInput.password);
+    return await this.authService.login(loginInput.email, loginInput.password, loginInput.tenantId);
   }
 
   @Mutation(() => AuthResponse)

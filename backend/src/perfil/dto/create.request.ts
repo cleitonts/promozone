@@ -1,7 +1,6 @@
 import { Transform } from 'class-transformer';
-import { IsArray, IsOptional, IsString, Validate } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 import { InputType, Field } from '@nestjs/graphql';
-import { isValidPermission } from '../permission.validator';
 
 @InputType()
 export class CreateRequest {
@@ -12,7 +11,6 @@ export class CreateRequest {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  @Validate(isValidPermission, { each: true })
   @Transform(({ value }) => {
     if (!Array.isArray(value)) return value;
     return value.map((v) => v.toUpperCase());

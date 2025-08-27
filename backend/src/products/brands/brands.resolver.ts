@@ -3,17 +3,14 @@ import { BrandsService } from './brands.service';
 import { Brand } from './brand.entity';
 import { CreateBrandDto, UpdateBrandDto } from './dto/brand.dto';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guards';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { GqlAuthGuard } from 'src/authorization/guards/gql-auth.guard';
 
 @Resolver(() => Brand)
 export class BrandsResolver {
   constructor(private readonly brandsService: BrandsService) {}
 
   @Mutation(() => Brand)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   createBrand(@Args('createBrandInput') createBrandDto: CreateBrandDto) {
     return this.brandsService.create(createBrandDto);
   }
@@ -29,8 +26,7 @@ export class BrandsResolver {
   }
 
   @Mutation(() => Brand)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   updateBrand(
     @Args('id', { type: () => Int }) id: string,
     @Args('updateBrandInput') updateBrandDto: UpdateBrandDto,
@@ -39,8 +35,7 @@ export class BrandsResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   removeBrand(@Args('id', { type: () => Int }) id: string) {
     return this.brandsService.remove(id);
   }

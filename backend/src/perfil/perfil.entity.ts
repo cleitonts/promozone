@@ -11,12 +11,7 @@ export class Perfil extends BaseEntity {
   @Column({ unique: true })
   name: string;
 
-  @Field(() => [String], { nullable: true })
-  @Column({
-    type: 'jsonb',
-    nullable: true,
-  })
-  permissions?: string[];
+
 
   @Field(() => [User])
   @OneToMany(() => User, (user) => user.perfil)

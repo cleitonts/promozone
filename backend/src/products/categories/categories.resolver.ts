@@ -3,17 +3,14 @@ import { CategoriesService } from './categories.service';
 import { Category } from './category.entity';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto/category.dto';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guards';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { GqlAuthGuard } from 'src/authorization/guards/gql-auth.guard';
 
 @Resolver(() => Category)
 export class CategoriesResolver {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Mutation(() => Category)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   createCategory(@Args('createCategoryInput') createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
@@ -29,8 +26,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => Category)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   updateCategory(
     @Args('id', { type: () => Int }) id: string,
     @Args('updateCategoryInput') updateCategoryDto: UpdateCategoryDto,
@@ -39,8 +35,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   removeCategory(@Args('id', { type: () => Int }) id: string) {
     return this.categoriesService.remove(id);
   }

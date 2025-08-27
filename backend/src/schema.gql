@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AssignPermissionToRoleInput {
+  permissionId: String!
+  roleId: String!
+}
+
+input AssignRoleToUserInput {
+  roleId: String!
+  tenantId: String
+  userId: String!
+}
+
 type Attribute {
   attributeValues: [AttributeValue!]!
   id: ID!
@@ -62,6 +73,14 @@ input CreateCategoryDto {
   name: String!
 }
 
+input CreatePermissionInput {
+  action: String!
+  description: String
+  isGlobal: Boolean! = false
+  resource: String!
+  tenantId: String
+}
+
 input CreatePostRequest {
   content: String!
   currentPrice: Float!
@@ -99,6 +118,13 @@ input CreateRequest {
   permissions: [String!]
 }
 
+input CreateRoleInput {
+  description: String
+  isGlobal: Boolean! = false
+  name: String!
+  tenantId: String
+}
+
 input CreateUserRequest {
   email: String!
   password: String!
@@ -117,6 +143,7 @@ type EngagementResponse {
 input LoginInput {
   email: String!
   password: String!
+  tenantId: String
 }
 
 type LogoutResponse {
@@ -124,16 +151,22 @@ type LogoutResponse {
 }
 
 type Mutation {
+  assignPermissionToRole(input: AssignPermissionToRoleInput!): Boolean!
+  assignRoleToUser(input: AssignRoleToUserInput!): Boolean!
   createAttribute(createAttributeInput: CreateAttributeDto!): Attribute!
   createAttributeValue(createAttributeValueInput: CreateAttributeValueDto!): AttributeValue!
   createBrand(createBrandInput: CreateBrandDto!): Brand!
   createCategory(createCategoryInput: CreateCategoryDto!): Category!
   createPerfil(createPerfilInput: CreateRequest!): Perfil!
+  createPermission(input: CreatePermissionInput!): Permission!
   createPost(createPostInput: CreatePostRequest!): Post!
   createProduct(createProductInput: CreateProductDto!): Product!
   createProductVariant(createVariantInput: CreateProductVariantDto!): ProductVariants!
   createProductVariantAttribute(createProductVariantAttributeInput: CreateProductVariantAttributeDto!): ProductVariantAttribute!
+  createRole(input: CreateRoleInput!): Role!
   createUser(createUserInput: CreateUserRequest!): User!
+  deletePermission(id: String!): Boolean!
+  deleteRole(id: String!): Boolean!
   login(loginInput: LoginInput!): AuthResponse!
   logout: LogoutResponse!
   refreshTokens(refreshToken: String!): AuthResponse!
@@ -142,29 +175,42 @@ type Mutation {
   removeBrand(id: Int!): Boolean!
   removeCategory(id: Int!): Boolean!
   removePerfil(id: String!): Boolean!
+  removePermissionFromRole(input: AssignPermissionToRoleInput!): Boolean!
   removePost(id: String!): Boolean!
   removeProduct(id: Int!): Boolean!
   removeProductVariant(id: Int!): Boolean!
   removeProductVariantAttribute(id: Int!): Boolean!
   removeProductVariantAttributeByVariantAndAttribute(attributeId: Int!, variantId: Int!): Boolean!
   removeProductVariantAttributesByVariant(variantId: Int!): Boolean!
+  removeRoleFromUser(input: AssignRoleToUserInput!): Boolean!
   updateAttribute(id: Int!, updateAttributeInput: UpdateAttributeDto!): Attribute!
   updateAttributeValue(id: Int!, updateAttributeValueInput: UpdateAttributeValueDto!): AttributeValue!
   updateBrand(id: Int!, updateBrandInput: UpdateBrandDto!): Brand!
   updateCategory(id: Int!, updateCategoryInput: UpdateCategoryDto!): Category!
   updatePerfil(id: String!, updatePerfilInput: UpdateRequest!): Perfil!
+  updatePermission(input: UpdatePermissionInput!): Permission!
   updatePost(id: String!, updatePostInput: UpdatePostRequest!): Post!
   updateProduct(id: Int!, updateProductInput: UpdateProductDto!): Product!
   updateProductVariant(id: Int!, updateVariantInput: UpdateProductVariantDto!): ProductVariants!
   updateProductVariantAttribute(id: Int!, updateProductVariantAttributeInput: UpdateProductVariantAttributeDto!): ProductVariantAttribute!
+  updateRole(input: UpdateRoleInput!): Role!
   votePost(postId: String!, voteType: String!): VoteResponse!
 }
 
 type Perfil {
   id: ID!
   name: String!
-  permissions: [String!]
   users: [User!]!
+}
+
+type Permission {
+  action: String!
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  name: String!
+  resource: String!
+  updatedAt: DateTime!
 }
 
 type Post {
@@ -233,6 +279,8 @@ type Query {
   findOnePost(id: String!): Post!
   getPerfilPermissions: [String!]!
   getPostEngagement(postId: String!): EngagementResponse!
+  permission(id: String!): Permission
+  permissions: [Permission!]!
   product(id: Int!): Product!
   productVariant(id: Int!): ProductVariants!
   productVariantAttribute(id: Int!): ProductVariantAttribute!
@@ -242,8 +290,20 @@ type Query {
   productVariants: [ProductVariants!]!
   productVariantsByProduct(productId: Int!): [ProductVariants!]!
   products: [Product!]!
+  role(id: String!): Role
+  roles: [Role!]!
   user(id: String!): User!
+  userPermissions(userId: String!): [String!]!
+  userRoles(userId: String!): [Role!]!
   users: [User!]!
+}
+
+type Role {
+  description: String
+  id: ID!
+  isGlobal: Boolean!
+  name: String!
+  tenant: User
 }
 
 input UpdateAttributeDto {
@@ -266,6 +326,15 @@ input UpdateBrandDto {
 
 input UpdateCategoryDto {
   name: String
+}
+
+input UpdatePermissionInput {
+  action: String
+  description: String
+  id: String!
+  isGlobal: Boolean = false
+  resource: String
+  tenantId: String
 }
 
 input UpdatePostRequest {
@@ -303,6 +372,14 @@ input UpdateProductVariantDto {
 input UpdateRequest {
   name: String!
   permissions: [String!]
+}
+
+input UpdateRoleInput {
+  description: String
+  id: String!
+  isGlobal: Boolean = false
+  name: String
+  tenantId: String
 }
 
 type User {

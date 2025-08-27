@@ -4,9 +4,7 @@ import { PostsService } from './posts.service';
 import { Post } from './post.entity';
 import { CreatePostRequest } from './dto/create-post.request';
 import { UpdatePostRequest } from './dto/update-post.request';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guards';
-import { Roles } from '../auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../authorization/guards/jwt-auth.guard';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
@@ -29,8 +27,7 @@ export class PostsResolver {
   constructor(private readonly postsService: PostsService) {}
 
   @Mutation(() => Post)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('POST:CREATE')
+  @UseGuards(JwtAuthGuard)
   async createPost(
     @Args('createPostInput') createPostInput: CreatePostRequest,
     @Context() context: any,
@@ -43,15 +40,13 @@ export class PostsResolver {
   }
 
   @Query(() => [Post])
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('POST:READ')
+  @UseGuards(JwtAuthGuard)
   async findAllPosts(): Promise<Post[]> {
     return this.postsService.findAll();
   }
 
   @Query(() => Post)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('POST:READ')
+  @UseGuards(JwtAuthGuard)
   async findOnePost(@Args('id') id: string): Promise<Post> {
     const post = await this.postsService.findOne(id);
     if (!post) {
@@ -61,8 +56,7 @@ export class PostsResolver {
   }
 
   @Mutation(() => Post)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('POST:UPDATE')
+  @UseGuards(JwtAuthGuard)
   async updatePost(
     @Args('id') id: string,
     @Args('updatePostInput') updatePostInput: UpdatePostRequest,
@@ -80,8 +74,7 @@ export class PostsResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('POST:DELETE')
+  @UseGuards(JwtAuthGuard)
   async removePost(
     @Args('id') id: string,
     @Context() context: any,
@@ -99,8 +92,7 @@ export class PostsResolver {
   }
 
   @Mutation(() => VoteResponse)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('POST:UPDATE')
+  @UseGuards(JwtAuthGuard)
   async votePost(
     @Args('postId') postId: string,
     @Args('voteType') voteType: string,
@@ -112,8 +104,7 @@ export class PostsResolver {
   }
 
   @Query(() => EngagementResponse)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('POST:READ')
+  @UseGuards(JwtAuthGuard)
   async getPostEngagement(@Args('postId') postId: string): Promise<EngagementResponse> {
     return await this.postsService.getPostEngagement(postId);
   }

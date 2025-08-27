@@ -3,17 +3,14 @@ import { AttributeValuesService } from './attribute-values.service';
 import { AttributeValue } from './attribute-value.entity';
 import { CreateAttributeValueDto, UpdateAttributeValueDto } from './dto/attribute-value.dto';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guards';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { GqlAuthGuard } from 'src/authorization/guards/gql-auth.guard';
 
 @Resolver(() => AttributeValue)
 export class AttributeValuesResolver {
   constructor(private readonly attributeValuesService: AttributeValuesService) {}
 
   @Mutation(() => AttributeValue)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   createAttributeValue(@Args('createAttributeValueInput') createAttributeValueDto: CreateAttributeValueDto) {
     return this.attributeValuesService.create(createAttributeValueDto);
   }
@@ -34,8 +31,7 @@ export class AttributeValuesResolver {
   }
 
   @Mutation(() => AttributeValue)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   updateAttributeValue(
     @Args('id', { type: () => Int }) id: string,
     @Args('updateAttributeValueInput') updateAttributeValueDto: UpdateAttributeValueDto,
@@ -44,8 +40,7 @@ export class AttributeValuesResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   removeAttributeValue(@Args('id', { type: () => Int }) id: string) {
     return this.attributeValuesService.remove(id);
   }

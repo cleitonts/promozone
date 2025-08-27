@@ -3,17 +3,14 @@ import { VariantsService } from './variants.service';
 import { ProductVariants } from './product-variants.entity';
 import { CreateProductVariantDto, UpdateProductVariantDto } from './dto/product-variant.dto';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guards';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { GqlAuthGuard } from 'src/authorization/guards/gql-auth.guard';
 
 @Resolver(() => ProductVariants)
 export class VariantsResolver {
   constructor(private readonly variantsService: VariantsService) {}
 
   @Mutation(() => ProductVariants)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   createProductVariant(@Args('createVariantInput') createVariantDto: CreateProductVariantDto) {
     return this.variantsService.create(createVariantDto);
   }
@@ -34,8 +31,7 @@ export class VariantsResolver {
   }
 
   @Mutation(() => ProductVariants)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   updateProductVariant(
     @Args('id', { type: () => Int }) id: string,
     @Args('updateVariantInput') updateVariantDto: UpdateProductVariantDto,
@@ -44,8 +40,7 @@ export class VariantsResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   removeProductVariant(@Args('id', { type: () => Int }) id: string) {
     return this.variantsService.remove(id);
   }

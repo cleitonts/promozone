@@ -3,6 +3,7 @@ import { ProductsService } from './products.service';
 import { Product } from './product.entity';
 import { CreateProductDto } from './dto/product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { GqlAuthGuard } from 'src/authorization/guards/gql-auth.guard';
 
 @Resolver(() => Product)
 export class ProductsResolver {

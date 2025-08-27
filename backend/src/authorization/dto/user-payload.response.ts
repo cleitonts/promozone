@@ -11,4 +11,7 @@ export class UserPayloadResponse {
 
   @Field(() => Perfil)
   perfil: Perfil;
+
+  @Field({ nullable: true })
+  tenantId?: string;
 }

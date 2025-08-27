@@ -3,17 +3,14 @@ import { ProductVariantAttributesService } from './product-variant-attributes.se
 import { ProductVariantAttribute } from './product-variant-attribute.entity';
 import { CreateProductVariantAttributeDto, UpdateProductVariantAttributeDto } from './dto/product-variant-attribute.dto';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guards';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { GqlAuthGuard } from 'src/authorization/guards/gql-auth.guard';
 
 @Resolver(() => ProductVariantAttribute)
 export class ProductVariantAttributesResolver {
   constructor(private readonly productVariantAttributesService: ProductVariantAttributesService) {}
 
   @Mutation(() => ProductVariantAttribute)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   createProductVariantAttribute(@Args('createProductVariantAttributeInput') createProductVariantAttributeDto: CreateProductVariantAttributeDto) {
     return this.productVariantAttributesService.create(createProductVariantAttributeDto);
   }
@@ -39,8 +36,7 @@ export class ProductVariantAttributesResolver {
   }
 
   @Mutation(() => ProductVariantAttribute)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   updateProductVariantAttribute(
     @Args('id', { type: () => Int }) id: string,
     @Args('updateProductVariantAttributeInput') updateProductVariantAttributeDto: UpdateProductVariantAttributeDto,
@@ -49,22 +45,19 @@ export class ProductVariantAttributesResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   removeProductVariantAttribute(@Args('id', { type: () => Int }) id: string) {
     return this.productVariantAttributesService.remove(id);
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   removeProductVariantAttributesByVariant(@Args('variantId', { type: () => Int }) variantId: number) {
     return this.productVariantAttributesService.removeByVariant(variantId);
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(GqlAuthGuard)
   removeProductVariantAttributeByVariantAndAttribute(
     @Args('variantId', { type: () => Int }) variantId: number,
     @Args('attributeId', { type: () => Int }) attributeId: number,

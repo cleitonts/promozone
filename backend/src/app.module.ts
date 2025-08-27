@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -8,6 +7,7 @@ import { WinstonModule } from 'nest-winston';
 import { AppLogger } from './common/logger.service';
 import { PerfilModule } from './perfil/perfil.module';
 import { ProductsModule } from './products/products.module';
+import { AuthorizationModule } from './authorization/authorization.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
@@ -15,9 +15,9 @@ import { join } from 'path';
 @Module({
   imports: [
     UsersModule,
-    AuthModule,
     PostsModule,
     PerfilModule,
+    AuthorizationModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.prod', '.env.local', '.env', '.env.dist'],
