@@ -1,4 +1,4 @@
-import { TheMainLayout } from '@/components'
+import TheMainLayout from '@/components/layout/backOffice/TheMainLayout.vue'
 import {
   BackOfficeHomeView,
   UserEditView,
@@ -12,6 +12,12 @@ import BrandListView from '@/views/backOffice/brands/BrandListView.vue'
 import BrandEditView from '@/views/backOffice/brands/BrandEditView.vue'
 import CategoryListView from '@/views/backOffice/categories/CategoryListView.vue'
 import CategoryEditView from '@/views/backOffice/categories/CategoryEditView.vue'
+import RoleListView from '@/views/backOffice/admin/RoleListView.vue'
+import RoleEditView from '@/views/backOffice/admin/RoleEditView.vue'
+import TenantListView from '@/views/backOffice/admin/TenantListView.vue'
+import TenantEditView from '@/views/backOffice/admin/TenantEditView.vue'
+import PermissionListView from '@/views/backOffice/admin/PermissionListView.vue'
+import PermissionEditView from '@/views/backOffice/admin/PermissionEditView.vue'
 import type { RouteRecordRaw } from 'vue-router'
 
 export const backOfficeRoutes: RouteRecordRaw = {
@@ -44,6 +50,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
           component: UserListView,
           meta: {
             pageTitle: 'Users list',
+            requiresPermission: 'users.read',
           },
         },
         {
@@ -52,6 +59,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
           component: UserEditView,
           meta: {
             pageTitle: 'Create user',
+            requiresPermission: 'users.create',
           },
         },
         {
@@ -60,6 +68,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
           component: UserEditView,
           meta: {
             pageTitle: 'Edit user',
+            requiresPermission: 'users.write',
           },
         },
       ],
@@ -180,6 +189,105 @@ export const backOfficeRoutes: RouteRecordRaw = {
           component: CategoryEditView,
           meta: {
             pageTitle: 'Edit category',
+          },
+        },
+      ],
+    },
+    {
+      path: 'admin/roles',
+      component: TheMainLayout,
+      children: [
+        {
+          path: '',
+          name: 'rolesList',
+          component: RoleListView,
+          meta: {
+            pageTitle: 'Roles list',
+            requiresPermission: 'roles.read',
+          },
+        },
+        {
+          path: 'new',
+          name: 'rolesNew',
+          component: RoleEditView,
+          meta: {
+            pageTitle: 'Create role',
+            requiresPermission: 'roles.write',
+          },
+        },
+        {
+          path: ':id/edit',
+          name: 'rolesEdit',
+          component: RoleEditView,
+          meta: {
+            pageTitle: 'Edit role',
+            requiresPermission: 'roles.write',
+          },
+        },
+      ],
+    },
+    {
+      path: 'admin/tenants',
+      component: TheMainLayout,
+      children: [
+        {
+          path: '',
+          name: 'tenantsList',
+          component: TenantListView,
+          meta: {
+            pageTitle: 'Tenants list',
+            requiresPermission: 'tenant.list',
+          },
+        },
+        {
+          path: 'new',
+          name: 'tenantsNew',
+          component: TenantEditView,
+          meta: {
+            pageTitle: 'Create tenant',
+            requiresPermission: 'tenant.create',
+          },
+        },
+        {
+          path: ':id/edit',
+          name: 'tenantsEdit',
+          component: TenantEditView,
+          meta: {
+            pageTitle: 'Edit tenant',
+            requiresPermission: 'tenant.write',
+          },
+        },
+      ],
+    },
+    {
+      path: 'admin/permissions',
+      component: TheMainLayout,
+      children: [
+        {
+          path: '',
+          name: 'permissionsList',
+          component: PermissionListView,
+          meta: {
+            pageTitle: 'Permissions list',
+            requiresPermission: 'permissions.read',
+          },
+        },
+        {
+          path: 'new',
+          name: 'permissionsNew',
+          component: PermissionEditView,
+          meta: {
+            pageTitle: 'Create permission',
+            requiresPermission: 'permissions.write',
+          },
+        },
+        {
+          path: ':id/edit',
+          name: 'permissionsEdit',
+          component: PermissionEditView,
+          meta: {
+            pageTitle: 'Edit permission',
+            requiresPermission: 'permissions.write',
           },
         },
       ],

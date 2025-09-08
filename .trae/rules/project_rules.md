@@ -1,0 +1,80 @@
+# PromoZone Project Rules
+
+## Project Structure
+
+This project is divided into two main parts:
+- **Backend**: GraphQL API built with NestJS
+- **Frontend**: Vue.js 3 application with Vuetify
+
+## Frontend Development
+
+### GraphQL Code Generation
+
+To generate TypeScript types and Vue composables from the GraphQL schema:
+
+```bash
+npx graphql-codegen --config codegen.yml
+```
+
+**Important**: Always use `npx` to run the GraphQL Code Generator, not `npm run codegen`. This ensures the correct version is used and avoids dependency issues.
+
+### GraphQL File Structure
+
+- Queries: `src/graphql/queries/`
+- Mutations: `src/graphql/mutations/`
+- Generated types: `src/generated/graphql.ts`
+
+## Backend Development
+
+### RBAC System
+
+The project implements a complete Role-Based Access Control (RBAC) system with:
+- Entities: Role, Permission, RolePermission, UserRole, Tenant
+- Permission-based access control
+- Multi-tenancy support
+
+### Module Structure
+
+- `authorization/`: RBAC system and access control
+- `users/`: User management
+- `products/`: Product management
+- `posts/`: Post system
+- `perfil/`: User profiles
+
+## Code Conventions
+
+### General Code Rules
+- **ALL CODE MUST BE WRITTEN IN ENGLISH**: This includes variable names, function names, class names, documentation, commit messages, and any other code-related text. No exceptions.
+- **NO CODE COMMENTS ALLOWED**: Code must be self-documenting through descriptive naming and clear structure. Comments are strictly prohibited in all source code files.
+- Use descriptive and meaningful names in English that eliminate the need for comments
+- Follow English naming conventions for the respective programming language
+- Code should be written in a way that its purpose and functionality are immediately clear from reading the code itself
+
+### Frontend
+- Use Vue 3 Composition API
+- Follow Vuetify patterns for UI components
+- Use TypeScript for strong typing
+- Organize components in `src/components/`
+- Views in `src/views/backOffice/` for administrative area
+
+### Backend
+- Use NestJS decorators for guards and validations
+- Implement permission validation in all resolvers
+- Follow naming pattern: `entity.resolver.ts`, `entity.service.ts`
+- Use DTOs for input validation
+
+## Useful Commands
+
+### Frontend
+```bash
+npm run dev          # Development server
+npm run build        # Production build
+npx graphql-codegen  # Generate GraphQL types
+```
+
+### Backend
+```bash
+npm run dev          # Development server
+npm run build        # Production build
+npm run test         # Run tests
+```

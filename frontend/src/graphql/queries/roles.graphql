@@ -1,0 +1,25 @@
+query GetRoles {
+  roles {
+    id
+    name
+    description
+    isGlobal
+    tenant {
+      id
+      name
+    }
+  }
+}
+
+query GetRole($id: String!) {
+  role(id: $id) {
+    id
+    name
+    description
+    isGlobal
+    tenant {
+      id
+      name
+    }
+  }
+}

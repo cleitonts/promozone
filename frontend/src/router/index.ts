@@ -1,15 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { backOfficeRoutes } from '@/router/backOfficeRoutes'
+import { adminRoutes } from '@/router/adminRoutes'
 import { AuthRoutes } from '@/router/authRoutes'
-import { TheMainLayout } from '@/components/index'
+import TheMainLayout from '@/components/layout/backOffice/TheMainLayout.vue'
 import TheIndex from '@/views/TheIndex.vue'
-import { useInterfaceStore } from '@/stores/interfaceStore'
+import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
+import { useAuthStore } from '@/stores/authStore'
+
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   linkActiveClass: 'active',
   routes: [
     backOfficeRoutes,
+    adminRoutes,
     AuthRoutes,
 
     {
@@ -31,17 +35,33 @@ export const router = createRouter({
   ],
 })
 
-router.beforeEach((to) => {
-  const auth = useInterfaceStore()
+router.beforeEach(async (to) => {
+  const interfaceStore = useInterfaceStore()
+  const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !auth.token) {
+  if (to.meta.requiresAuth && !interfaceStore.token) {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 
-  if (to.meta.guestOnly && auth.token) {
+  if (to.meta.guestOnly && interfaceStore.token) {
     return { path: '/' }
   }
+
+  if (to.meta.requiresPermission && authStore.isAuthenticated) {
+    try {
+      const hasRequiredPermission = authStore.hasPermission(to.meta.requiresPermission as string)
+      if (!hasRequiredPermission) {
+        interfaceStore.addMessage('Access denied. You do not have the required permissions.', EMessageType.Danger)
+        return { path: '/bo/home' }
+      }
+    } catch (error) {
+      console.error('Error checking permissions:', error)
+      return { path: '/bo/home' }
+    }
+  }
 })
+
+
 
 router.afterEach((to) => {
   const interfaceStore = useInterfaceStore()

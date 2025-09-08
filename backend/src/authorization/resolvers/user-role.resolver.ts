@@ -19,7 +19,8 @@ export class UserRoleResolver {
     @Args('userId') userId: string,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<Role[]> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     return this.authorizationService.getUserRoles(userId, tenantId);
   }
 
@@ -29,7 +30,8 @@ export class UserRoleResolver {
     @Args('userId') userId: string,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<string[]> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     const permissions = await this.authorizationService.getUserEffectivePermissions(userId, tenantId);
     return permissions.map(p => p.name);
   }

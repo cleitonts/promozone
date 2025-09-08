@@ -1,0 +1,33 @@
+mutation CreateRole($input: CreateRoleInput!) {
+  createRole(input: $input) {
+    id
+    name
+    description
+    isGlobal
+    tenant {
+      id
+      name
+    }
+  }
+}
+
+mutation UpdateRole($input: UpdateRoleInput!) {
+  updateRole(input: $input) {
+    id
+    name
+    description
+    isGlobal
+    tenant {
+      id
+      name
+    }
+  }
+}
+
+mutation DeleteRole($id: String!) {
+  deleteRole(id: $id)
+}
+
+mutation AssignRoleToUser($input: AssignRoleToUserInput!) {
+  assignRoleToUser(input: $input)
+}

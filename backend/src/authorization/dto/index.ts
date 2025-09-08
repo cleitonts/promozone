@@ -4,5 +4,8 @@ export * from './create-permission.input';
 export * from './create-role.input';
 export * from './update-permission.input';
 export * from './update-role.input';
+export * from './create-tenant.input';
+export * from './update-tenant.input';
+export * from './add-user-to-tenant.input';
 export * from './login.request';
 export * from './user-payload.response';

@@ -1,0 +1,23 @@
+query GetPermissions {
+  permissions {
+    id
+    name
+    resource
+    action
+    description
+    createdAt
+    updatedAt
+  }
+}
+
+query GetPermission($id: String!) {
+  permission(id: $id) {
+    id
+    name
+    resource
+    action
+    description
+    createdAt
+    updatedAt
+  }
+}

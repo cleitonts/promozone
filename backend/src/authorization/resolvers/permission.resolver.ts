@@ -21,7 +21,8 @@ export class PermissionResolver {
   async permissions(
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<Permission[]> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     return this.authorizationService.getPermissions(tenantId);
   }
 
@@ -31,7 +32,8 @@ export class PermissionResolver {
     @Args('id') id: string,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<Permission | null> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     return this.authorizationService.getPermissionById(id, tenantId);
   }
 
@@ -54,7 +56,8 @@ export class PermissionResolver {
     @Args('input') input: UpdatePermissionInput,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<Permission> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     return this.authorizationService.updatePermission(input.id, input, tenantId);
   }
 
@@ -64,7 +67,8 @@ export class PermissionResolver {
     @Args('id') id: string,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<boolean> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     await this.authorizationService.deletePermission(id, tenantId);
     return true;
   }

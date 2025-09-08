@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddUserToTenantInput {
+  roleId: String!
+  tenantId: String!
+  userId: String!
+}
+
 input AssignPermissionToRoleInput {
   permissionId: String!
   roleId: String!
@@ -125,6 +131,15 @@ input CreateRoleInput {
   tenantId: String
 }
 
+input CreateTenantInput {
+  description: String
+  domain: String
+  name: String!
+  ownerId: String
+  settings: TenantSettingsInput
+  slug: String!
+}
+
 input CreateUserRequest {
   email: String!
   password: String!
@@ -135,6 +150,12 @@ input CreateUserRequest {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type EffectivePermissionType {
+  action: String!
+  name: String!
+  resource: String!
+}
 
 type EngagementResponse {
   percentage: Int!
@@ -151,6 +172,7 @@ type LogoutResponse {
 }
 
 type Mutation {
+  addUserToTenant(input: AddUserToTenantInput!): Boolean!
   assignPermissionToRole(input: AssignPermissionToRoleInput!): Boolean!
   assignRoleToUser(input: AssignRoleToUserInput!): Boolean!
   createAttribute(createAttributeInput: CreateAttributeDto!): Attribute!
@@ -164,9 +186,11 @@ type Mutation {
   createProductVariant(createVariantInput: CreateProductVariantDto!): ProductVariants!
   createProductVariantAttribute(createProductVariantAttributeInput: CreateProductVariantAttributeDto!): ProductVariantAttribute!
   createRole(input: CreateRoleInput!): Role!
+  createTenant(input: CreateTenantInput!): Tenant!
   createUser(createUserInput: CreateUserRequest!): User!
   deletePermission(id: String!): Boolean!
   deleteRole(id: String!): Boolean!
+  deleteTenant(id: String!): Boolean!
   login(loginInput: LoginInput!): AuthResponse!
   logout: LogoutResponse!
   refreshTokens(refreshToken: String!): AuthResponse!
@@ -183,6 +207,7 @@ type Mutation {
   removeProductVariantAttributeByVariantAndAttribute(attributeId: Int!, variantId: Int!): Boolean!
   removeProductVariantAttributesByVariant(variantId: Int!): Boolean!
   removeRoleFromUser(input: AssignRoleToUserInput!): Boolean!
+  removeUserFromTenant(input: RemoveUserFromTenantInput!): Boolean!
   renewAccessToken(accessToken: String!): AuthResponse!
   updateAttribute(id: Int!, updateAttributeInput: UpdateAttributeDto!): Attribute!
   updateAttributeValue(id: Int!, updateAttributeValueInput: UpdateAttributeValueDto!): AttributeValue!
@@ -195,6 +220,7 @@ type Mutation {
   updateProductVariant(id: Int!, updateVariantInput: UpdateProductVariantDto!): ProductVariants!
   updateProductVariantAttribute(id: Int!, updateProductVariantAttributeInput: UpdateProductVariantAttributeDto!): ProductVariantAttribute!
   updateRole(input: UpdateRoleInput!): Role!
+  updateTenant(input: UpdateTenantInput!): Tenant!
   votePost(postId: String!, voteType: String!): VoteResponse!
 }
 
@@ -280,6 +306,7 @@ type Query {
   findOnePost(id: String!): Post!
   getPerfilPermissions: [String!]!
   getPostEngagement(postId: String!): EngagementResponse!
+  me: User!
   permission(id: String!): Permission
   permissions: [Permission!]!
   product(id: Int!): Product!
@@ -293,10 +320,19 @@ type Query {
   products: [Product!]!
   role(id: String!): Role
   roles: [Role!]!
+  tenant(id: String!): Tenant
+  tenants: [Tenant!]!
   user(id: String!): User!
+  userInfo: UserInfoResponse!
   userPermissions(userId: String!): [String!]!
   userRoles(userId: String!): [Role!]!
   users: [User!]!
+}
+
+input RemoveUserFromTenantInput {
+  roleId: String!
+  tenantId: String!
+  userId: String!
 }
 
 type Role {
@@ -304,7 +340,27 @@ type Role {
   id: ID!
   isGlobal: Boolean!
   name: String!
-  tenant: User
+  tenant: Tenant
+}
+
+type Tenant {
+  createdAt: DateTime!
+  description: String
+  domain: String
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  owner: User!
+  settings: String
+  slug: String!
+  updatedAt: DateTime!
+}
+
+input TenantSettingsInput {
+  customization: String
+  features: String
+  integrations: String
+  theme: String
 }
 
 input UpdateAttributeDto {
@@ -383,12 +439,31 @@ input UpdateRoleInput {
   tenantId: String
 }
 
+input UpdateTenantInput {
+  description: String
+  domain: String
+  id: String!
+  name: String
+  ownerId: String
+  settings: TenantSettingsInput
+  slug: String
+}
+
 type User {
   createdAt: DateTime!
   email: String!
   id: ID!
+  isSuperuser: Boolean!
   perfil: Perfil
   posts: [Post!]!
+}
+
+type UserInfoResponse {
+  currentTenantId: String
+  permissions: [EffectivePermissionType!]!
+  roles: [Role!]!
+  tenants: [Tenant!]!
+  user: User!
 }
 
 type VoteResponse {

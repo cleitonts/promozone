@@ -30,6 +30,10 @@ export class User extends BaseEntity {
   posts: Post[];
 
   @Field()
+  @Column({ default: false })
+  isSuperuser: boolean;
+
+  @Field()
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 }

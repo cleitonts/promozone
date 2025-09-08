@@ -3,6 +3,7 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/base.entity';
 import { User } from 'src/users/user.entity';
 import { Role } from './role.entity';
+import { Tenant } from './tenant.entity';
 
 @ObjectType()
 @Entity('user_roles')
@@ -17,8 +18,8 @@ export class UserRole extends BaseEntity {
   @JoinColumn({ name: 'role_id' })
   role: Role;
 
-  @Field({ nullable: true })
-  @ManyToOne(() => User, { nullable: true })
+  @Field(() => Tenant, { nullable: true })
+  @ManyToOne(() => Tenant, (tenant) => tenant.userRoles, { nullable: true })
   @JoinColumn({ name: 'tenant_id' })
-  tenant?: User;
+  tenant?: Tenant;
 }

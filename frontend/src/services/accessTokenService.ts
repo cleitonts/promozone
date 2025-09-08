@@ -1,7 +1,8 @@
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
-import { useRenewAccessTokenMutation } from '@/generated/graphql'
+import { RenewAccessTokenDocument } from '@/generated/graphql'
+import apolloClient from '@/plugins/apollo'
 
 interface TokenPayload {
   username: string
@@ -14,44 +15,30 @@ interface TokenPayload {
   exp: number
 }
 
-export class TokenMonitorService {
+export class AccessTokenService {
   private monitorInterval: NodeJS.Timeout | null = null
   private renewalInProgress = ref(false)
   private lastRenewalAttempt = ref(0)
-  private readonly RENEWAL_THRESHOLD = 60 * 1000 // 1 minuto em milliseconds
-  private readonly MIN_RENEWAL_INTERVAL = 30 * 1000 // 30 segundos entre tentativas
+  private readonly RENEWAL_THRESHOLD = 60 * 1000
+  private readonly MIN_RENEWAL_INTERVAL = 30 * 1000
   private readonly MAX_RETRY_ATTEMPTS = 3
   private retryCount = 0
-  
-  constructor() {
-    // Não inicializar composables no construtor para evitar problemas de inicialização circular
-  }
 
-  /**
-   * Obtém a instância do authStore
-   */
   private getAuthStore() {
     return useAuthStore()
   }
 
-  /**
-   * Obtém a instância do router
-   */
   private getRouter() {
     return useRouter()
   }
 
-  /**
-   * Obtém a função de mutação para renovar token
-   */
-  private getRenewTokenMutation() {
-    const { mutate } = useRenewAccessTokenMutation()
-    return mutate
+  private async renewTokenMutation(variables: { accessToken: string }) {
+    return await apolloClient.mutate({
+      mutation: RenewAccessTokenDocument,
+      variables
+    })
   }
 
-  /**
-   * Decodifica um JWT token sem verificar a assinatura
-   */
   private decodeToken(token: string): TokenPayload | null {
     try {
       const base64Url = token.split('.')[1]
@@ -64,14 +51,11 @@ export class TokenMonitorService {
       )
       return JSON.parse(jsonPayload)
     } catch (error) {
-      console.error('Erro ao decodificar token:', error)
+      console.error('Error decoding token:', error)
       return null
     }
   }
 
-  /**
-   * Calcula o tempo restante até a expiração do token em milliseconds
-   */
   private getTimeUntilExpiration(token: string): number {
     const payload = this.decodeToken(token)
     if (!payload || !payload.exp) {
@@ -83,25 +67,16 @@ export class TokenMonitorService {
     return Math.max(0, timeUntilExp)
   }
 
-  /**
-   * Verifica se o token está próximo da expiração (1 minuto)
-   */
   private isTokenNearExpiration(token: string): boolean {
     const timeUntilExp = this.getTimeUntilExpiration(token)
     return timeUntilExp <= this.RENEWAL_THRESHOLD && timeUntilExp > 0
   }
 
-  /**
-   * Verifica se o token já expirou
-   */
   private isTokenExpired(token: string): boolean {
     const timeUntilExp = this.getTimeUntilExpiration(token)
     return timeUntilExp <= 0
   }
 
-  /**
-   * Renova o token de acesso
-   */
   private async renewToken(): Promise<boolean> {
     if (this.renewalInProgress.value) {
       return false
@@ -122,41 +97,36 @@ export class TokenMonitorService {
     this.lastRenewalAttempt.value = now
 
     try {
-      console.log('🔄 Renovando token de acesso...')
+      console.log('🔄 Renewing access token...')
       
-      const renewMutation = this.getRenewTokenMutation()
-      const result = await renewMutation({
+      const result = await this.renewTokenMutation({
         accessToken: currentToken
       })
 
       if (result?.data?.renewAccessToken) {
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = result.data.renewAccessToken
         
-        // Atualizar tokens no store
         const authStore = this.getAuthStore()
         authStore.accessToken = newAccessToken
         authStore.refreshToken = newRefreshToken
         authStore.isAuthenticated = true
         
-        // Atualizar localStorage
         localStorage.setItem('accessToken', newAccessToken)
         localStorage.setItem('refreshToken', newRefreshToken)
         
-        // Atualizar headers de autorização (será feito pelo interceptor)
         this.updateAuthorizationHeaders(newAccessToken)
         
-        console.log('✅ Token renovado com sucesso')
+        console.log('✅ Access token renewed successfully')
         this.retryCount = 0
         return true
       } else {
-        throw new Error('Resposta inválida do servidor')
+        throw new Error('Invalid server response')
       }
     } catch (error: any) {
-      console.error('❌ Erro ao renovar token:', error)
+      console.error('❌ Error renewing token:', error)
       
       this.retryCount++
       
-      // Se o token expirou ou atingiu o máximo de tentativas, fazer logout
       if (error.message?.includes('expired') || 
           error.message?.includes('Invalid token') ||
           this.retryCount >= this.MAX_RETRY_ATTEMPTS) {
@@ -170,35 +140,21 @@ export class TokenMonitorService {
     }
   }
 
-  /**
-   * Atualiza os headers de autorização para requisições futuras
-   */
   private updateAuthorizationHeaders(token: string): void {
-    // Os headers serão atualizados automaticamente pelos interceptors
-    // quando o token for atualizado no localStorage
-    console.log('🔄 Headers de autorização atualizados')
+    console.log('🔄 Authorization headers updated')
   }
 
-  /**
-   * Manipula a expiração do token fazendo logout automático
-   */
   private async handleTokenExpiration(): Promise<void> {
-    console.log('🚪 Token expirado - fazendo logout automático')
+    console.log('🚪 Token expired - performing automatic logout')
     
     try {
-      // Limpar todos os dados de autenticação
       await this.getAuthStore().logout()
-      
-      // Redirecionar para login
-      await this.getRouter().push('/login')
-      
-      // Exibir mensagem ao usuário
+      await this.getRouter().push('/login') 
       this.showExpirationMessage()
       
     } catch (error) {
-      console.error('Erro durante logout automático:', error)
+      console.error('Error during automatic logout:', error)
       
-      // Forçar limpeza manual se o logout falhar
       const authStore = this.getAuthStore()
       authStore.accessToken = null
       authStore.refreshToken = null
@@ -212,22 +168,13 @@ export class TokenMonitorService {
     }
   }
 
-  /**
-   * Exibe mensagem de expiração para o usuário
-   */
   private showExpirationMessage(): void {
-    // Implementar notificação (pode usar Vuetify snackbar, toast, etc.)
-    console.log('⚠️ Sua sessão expirou. Por favor, faça login novamente.')
-    
-    // Exemplo com alert (substituir por notificação mais elegante)
+    console.log('⚠️ Session expired. Please log in again.')
     setTimeout(() => {
-      alert('Sua sessão expirou. Por favor, faça login novamente.')
+      alert('Session expired. Please log in again.')
     }, 100)
   }
 
-  /**
-   * Monitora o token periodicamente
-   */
   private monitorToken(): void {
     const currentToken = this.getAuthStore().accessToken
     
@@ -236,58 +183,40 @@ export class TokenMonitorService {
       return
     }
 
-    // Verificar se o token já expirou
     if (this.isTokenExpired(currentToken)) {
       this.handleTokenExpiration()
       return
     }
 
-    // Verificar se está próximo da expiração
     if (this.isTokenNearExpiration(currentToken)) {
       this.renewToken()
     }
   }
 
-  /**
-   * Inicia o monitoramento do token
-   */
   public startMonitoring(): void {
     if (this.monitorInterval) {
       return
     }
 
-    console.log('🔍 Iniciando monitoramento de token')
-    
-    // Verificar imediatamente
+    console.log('🔍 Initializing token monitoring')
     this.monitorToken()
-    
-    // Configurar verificação periódica a cada 30 segundos
     this.monitorInterval = setInterval(() => {
       this.monitorToken()
     }, 30000)
   }
 
-  /**
-   * Para o monitoramento do token
-   */
   public stopMonitoring(): void {
     if (this.monitorInterval) {
       clearInterval(this.monitorInterval)
       this.monitorInterval = null
-      console.log('⏹️ Monitoramento de token parado')
+      console.log('⏹️ Token monitoring stopped')
     }
   }
 
-  /**
-   * Força uma verificação imediata do token
-   */
   public checkTokenNow(): void {
     this.monitorToken()
   }
 
-  /**
-   * Retorna informações sobre o estado atual do token
-   */
   public getTokenInfo(): {
     isValid: boolean
     timeUntilExpiration: number
@@ -315,24 +244,44 @@ export class TokenMonitorService {
     }
   }
 
-  /**
-   * Propriedade reativa para verificar se a renovação está em progresso
-   */
   public get isRenewing(): boolean {
     return this.renewalInProgress.value
   }
 }
 
-// Instância singleton do serviço
-export const tokenMonitorService = new TokenMonitorService()
+let accessTokenServiceInstance: AccessTokenService | null = null
 
-// Composable para usar o serviço em componentes Vue
+export class AccessTokenServiceManager {
+  static initialize(): void {
+    if (!accessTokenServiceInstance) {
+      accessTokenServiceInstance = new AccessTokenService()
+    }
+    accessTokenServiceInstance.startMonitoring()
+    console.log('🚀 Access token service initialized')
+  }
+
+  static stop(): void {
+    if (accessTokenServiceInstance) {
+      accessTokenServiceInstance.stopMonitoring()
+      console.log('🛑 Access token service stopped')
+    }
+  }
+
+  static getInstance(): AccessTokenService | null {
+    return accessTokenServiceInstance
+  }
+}
+
 export function useTokenMonitor() {
+  const instance = AccessTokenServiceManager.getInstance()
+  if (!instance) {
+    throw new Error('AccessTokenService not initialized. Call AccessTokenServiceManager.initialize() first.')
+  }
   return {
-    startMonitoring: () => tokenMonitorService.startMonitoring(),
-    stopMonitoring: () => tokenMonitorService.stopMonitoring(),
-    checkTokenNow: () => tokenMonitorService.checkTokenNow(),
-    getTokenInfo: () => tokenMonitorService.getTokenInfo(),
-    isRenewing: computed(() => tokenMonitorService.isRenewing)
+    startMonitoring: () => instance.startMonitoring(),
+    stopMonitoring: () => instance.stopMonitoring(),
+    checkTokenNow: () => instance.checkTokenNow(),
+    getTokenInfo: () => instance.getTokenInfo(),
+    isRenewing: instance.isRenewing
   }
 }

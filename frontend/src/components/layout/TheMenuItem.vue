@@ -1,5 +1,5 @@
 <template>
-  <v-list-item :key="item.title" link :to="{ name: item.routeName }">
+  <v-list-item :key="item.title" link :to="item.to || (item.routeName ? { name: item.routeName } : undefined)">
     <template v-if="item.icon" #prepend>
       <v-icon :icon="item.icon" size="small" />
     </template>
@@ -13,9 +13,11 @@
 export interface IMenuItem {
   title?: string
   routeName?: string
+  to?: string
   icon?: string
   group?: boolean
   items?: IMenuItem[]
+  children?: IMenuItem[]
 }
 
 defineProps<{

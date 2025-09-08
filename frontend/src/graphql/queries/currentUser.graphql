@@ -1,0 +1,16 @@
+query GetCurrentUserPermissions($userId: String!) {
+  userPermissions(userId: $userId)
+}
+
+query GetCurrentUserRoles($userId: String!) {
+  userRoles(userId: $userId) {
+    id
+    name
+    description
+    isGlobal
+    tenant {
+      id
+      name
+    }
+  }
+}

@@ -18,7 +18,6 @@ export class PermissionsGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Obter permissões necessárias dos metadados
     const requiredPermissions = this.reflector.getAllAndOverride<
       string[] | { type: 'any' | 'all'; permissions: string[] }
     >(PERMISSIONS_KEY, [
@@ -26,28 +25,26 @@ export class PermissionsGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    // Se não há permissões especificadas, permitir acesso
     if (!requiredPermissions) {
       return true;
     }
 
-    // Obter usuário e tenant-id do contexto
     const { user, tenantId } = this.getRequestContext(context);
-
-    // Verificar se usuário está autenticado
     if (!user) {
-      throw new UnauthorizedException('Usuário não autenticado');
+      throw new UnauthorizedException('User is not authenticated');
     }
 
-    // Verificar se tenant-id está presente (se necessário)
+    if (user.isSuperuser) {
+      return true;
+    }
+
     if (!tenantId) {
-      throw new ForbiddenException('Tenant ID é obrigatório');
+      throw new ForbiddenException('Tenant ID is required for this operation');
     }
 
     try {
-      // Verificar permissões baseado no tipo
+      await this.performSpecificAccessChecks(user.id, tenantId, requiredPermissions);
       if (Array.isArray(requiredPermissions)) {
-        // Comportamento padrão: verificar se tem todas as permissões (AND)
         const checks = this.parsePermissions(requiredPermissions);
         const hasPermissions = await this.authorizationService.canAll(
           { userId: user.id, tenantId },
@@ -56,11 +53,10 @@ export class PermissionsGuard implements CanActivate {
         
         if (!hasPermissions) {
           throw new ForbiddenException(
-            `Permissões necessárias: ${requiredPermissions.join(', ')}`,
+            `Need the following permissions: ${requiredPermissions.join(', ')}`,
           );
         }
       } else {
-        // Verificação com tipo específico (any/all)
         const { type, permissions } = requiredPermissions;
         const checks = this.parsePermissions(permissions);
         let hasPermissions: boolean;
@@ -78,9 +74,9 @@ export class PermissionsGuard implements CanActivate {
         }
 
         if (!hasPermissions) {
-          const logicType = type === 'any' ? 'pelo menos uma' : 'todas';
+          const logicType = type === 'any' ? 'at least one' : 'all'; 
           throw new ForbiddenException(
-            `Necessário ter ${logicType} das permissões: ${permissions.join(', ')}`,
+            `Need to have ${logicType} of the following permissions: ${permissions.join(', ')}`,
           );
         }
       }
@@ -91,9 +87,8 @@ export class PermissionsGuard implements CanActivate {
         throw error;
       }
       
-      // Log do erro para debugging
-      console.error('Erro ao verificar permissões:', error);
-      throw new ForbiddenException('Erro ao verificar permissões');
+      console.error('Error verifying permissions:', error);
+      throw new ForbiddenException('Error verifying permissions');
     }
   }
 
@@ -102,13 +97,10 @@ export class PermissionsGuard implements CanActivate {
     tenantId: string;
   } {
     let request: any;
-
-    // Tentar obter contexto GraphQL primeiro
     try {
       const gqlContext = GqlExecutionContext.create(context);
       request = gqlContext.getContext().req;
     } catch {
-      // Se falhar, usar contexto HTTP regular
       request = context.switchToHttp().getRequest();
     }
 
@@ -118,15 +110,54 @@ export class PermissionsGuard implements CanActivate {
     };
   }
 
-  /**
-   * Converte strings de permissões no formato "resource.action" 
-   * para objetos { resource, action }
-   */
+  private async performSpecificAccessChecks(
+    userId: string,
+    tenantId: string | undefined,
+    requiredPermissions: string[] | { type: 'any' | 'all'; permissions: string[] }
+  ): Promise<void> {
+    const permissions = Array.isArray(requiredPermissions) 
+      ? requiredPermissions 
+      : requiredPermissions.permissions;
+
+    if (permissions.some(p => p.includes('users.create') || p.includes('users.manage'))) {
+      if (tenantId) {
+        const canCreate = await this.authorizationService.canCreateTenantOwner(userId, tenantId);
+        if (!canCreate) {
+          throw new ForbiddenException(
+            'Only global admins or tenant owners can create tenant owners'
+          );
+        }
+      }
+    }
+
+    if (permissions.some(p => p.includes('roles.assign') || p.includes('users.manage'))) {
+      if (tenantId) {
+        const canAddUser = await this.authorizationService.canAddUserToTenant(userId, tenantId);
+        if (!canAddUser) {
+          throw new ForbiddenException(
+            'Only tenant owners or global admins can add users to tenant'
+          );
+        }
+      }
+    }
+
+    if (tenantId) {
+      const userTenants = await this.authorizationService.getUserTenants(userId);
+      const hasAccessToTenant = userTenants.some(tenant => tenant.id === tenantId);
+      
+      if (!hasAccessToTenant) {
+        throw new ForbiddenException(
+          'User does not have access to the requested tenant'
+        );
+      }
+    }
+  }
+
   private parsePermissions(permissions: string[]): Array<{ resource: string; action: string }> {
     return permissions.map(permission => {
       const [resource, action] = permission.split('.');
       if (!resource || !action) {
-        throw new Error(`Formato de permissão inválido: ${permission}. Use o formato "resource.action"`);
+        throw new Error(`Invalid permission format: ${permission}. Use the format "resource.action"`);
       }
       return { resource, action };
     });

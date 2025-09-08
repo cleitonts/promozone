@@ -1,5 +1,4 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Perfil } from '../../perfil/perfil.entity';
 
 @ObjectType()
 export class UserPayloadResponse {
@@ -8,10 +7,4 @@ export class UserPayloadResponse {
 
   @Field()
   username: string;
-
-  @Field(() => Perfil)
-  perfil: Perfil;
-
-  @Field({ nullable: true })
-  tenantId?: string;
 }

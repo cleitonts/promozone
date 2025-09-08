@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { useApolloClient } from '@vue/apollo-composable'
-import { useLoginMutation, useLogoutMutation, useRefreshTokensMutation, useRenewAccessTokenMutation } from '@/generated/graphql'
-import { getTokenMonitorService } from '@/services'
+import { ref, watch } from 'vue'
+import { useLoginMutation, useLogoutMutation, useRefreshTokensMutation, useRenewAccessTokenMutation, UserInfoDocument } from '@/generated/graphql'
+import { AccessTokenServiceManager } from '@/services/accessTokenService'
+import apolloClient from '@/plugins/apollo'
 
 export const useAuthStore = defineStore('auth', () => {
-  const { resolveClient } = useApolloClient()
-  const apolloClient = resolveClient()
   
   const accessToken = ref<string | null>(localStorage.getItem('accessToken'))
   const refreshToken = ref<string | null>(localStorage.getItem('refreshToken'))
   const isAuthenticated = ref<boolean>(!!accessToken.value)
+  const userPermissions = ref<string[]>(JSON.parse(localStorage.getItem('userPermissions') || '[]'))
+  const userId = ref<string | null>(localStorage.getItem('userId'))
   
   const { mutate: loginMutation } = useLoginMutation()
   const { mutate: logoutMutation } = useLogoutMutation()
@@ -35,10 +35,8 @@ export const useAuthStore = defineStore('auth', () => {
         
         localStorage.setItem('accessToken', newAccessToken)
         localStorage.setItem('refreshToken', newRefreshToken)
-        
-        // Iniciar monitoramento de token após login bem-sucedido
-        const tokenMonitor = getTokenMonitorService()
-        tokenMonitor.startMonitoring()
+        AccessTokenServiceManager.initialize()
+        await loadUserPermissions()
         
         return { success: true }
       }
@@ -52,9 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
   
   const logout = async () => {
     try {
-      // Parar monitoramento de token antes do logout
-      const tokenMonitor = getTokenMonitorService()
-      tokenMonitor.stopMonitoring()
+      AccessTokenServiceManager.stop()
       
       await logoutMutation()
       
@@ -64,20 +60,26 @@ export const useAuthStore = defineStore('auth', () => {
       
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
-      
-      // Clear Apollo cache
+      localStorage.removeItem('userPermissions')
+      localStorage.removeItem('userId')
+      userPermissions.value = []
+      userId.value = null
       await apolloClient.clearStore()
       
       return { success: true }
     } catch (error) {
       console.error('Logout error:', error)
-      // Even if logout fails on server, clear local data
       accessToken.value = null
       refreshToken.value = null
       isAuthenticated.value = false
       
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
+      localStorage.removeItem('userPermissions')
+      localStorage.removeItem('userId')
+      
+      userPermissions.value = []
+      userId.value = null
       
       await apolloClient.clearStore()
       
@@ -111,7 +113,6 @@ export const useAuthStore = defineStore('auth', () => {
       return { success: false, error: 'Token refresh failed' }
     } catch (error) {
       console.error('Token refresh error:', error)
-      // If refresh fails, logout user
       await logout()
       return { success: false, error: 'Token refresh failed' }
     }
@@ -120,7 +121,7 @@ export const useAuthStore = defineStore('auth', () => {
   const renewAccessToken = async () => {
     try {
       if (!accessToken.value) {
-        throw new Error('Token de acesso não encontrado')
+        throw new Error('Access token not found')
       }
 
       const result = await renewAccessTokenMutation({
@@ -137,20 +138,51 @@ export const useAuthStore = defineStore('auth', () => {
         return result.data.renewAccessToken
       }
     } catch (error) {
-      console.error('Erro ao renovar token de acesso:', error)
-      // Se falhar ao renovar, fazer logout
+      console.error('Error renewing access token:', error)
       await logout()
       throw error
     }
+  }
+  
+  const loadUserPermissions = async () => {
+    try {
+      const result = await apolloClient.query({
+        query: UserInfoDocument
+      })
+      
+      if (result.data?.userInfo) {
+        const { user, permissions } = result.data.userInfo
+        userId.value = user.id
+        userPermissions.value = permissions.map((p: any) => p.name)
+        localStorage.setItem('userId', userId.value!)
+        localStorage.setItem('userPermissions', JSON.stringify(userPermissions.value))
+      }
+    } catch (error) {
+      console.error('Error loading user info:', error)
+    }
+  }
+  
+  const hasPermission = (permission: string): boolean => {
+    return userPermissions.value.includes(permission)
+  }
+  
+  const isAdmin = (): boolean => {
+    return hasPermission('users.create') && 
+           hasPermission('tenant.manage')
   }
   
   return {
     accessToken,
     refreshToken,
     isAuthenticated,
+    userPermissions,
+    userId,
     login,
     logout,
     refreshTokens,
-    renewAccessToken
+    renewAccessToken,
+    loadUserPermissions,
+    hasPermission,
+    isAdmin
   }
 })

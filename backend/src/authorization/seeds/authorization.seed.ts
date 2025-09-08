@@ -19,79 +19,65 @@ export class AuthorizationSeedService {
     private policyRepository: Repository<Policy>,
   ) {}
 
-  /**
-   * Executa todos os seeds de autorização
-   */
   async seedAll(): Promise<void> {
-    console.log('🌱 Iniciando seeds de autorização...');
+    console.log('🌱 Initializing authorization seeds...');
     
     await this.seedGlobalPermissions();
     await this.seedGlobalRoles();
     await this.seedBasicPolicies();
     
-    console.log('✅ Seeds de autorização concluídos!');
+    console.log('✅ Authorization seeds completed!');
   }
 
-  /**
-   * Cria permissões globais básicas
-   */
-  private async seedGlobalPermissions(): Promise<void> {
-    console.log('📋 Criando permissões globais...');
 
-    const globalPermissions = [
-      // Permissões de usuários
+  private async seedGlobalPermissions(): Promise<void> {
+    console.log('📋 Creating system permissions...');
+
+    const systemPermissions = [
       { resource: 'users', action: 'read', name: 'users.read', description: 'Visualizar usuários' },
       { resource: 'users', action: 'write', name: 'users.write', description: 'Criar e editar usuários' },
+      { resource: 'users', action: 'create', name: 'users.create', description: 'Criar novos usuários' },
       { resource: 'users', action: 'delete', name: 'users.delete', description: 'Excluir usuários' },
       { resource: 'users', action: 'manage', name: 'users.manage', description: 'Gerenciar usuários completamente' },
 
-      // Permissões de roles
       { resource: 'roles', action: 'read', name: 'roles.read', description: 'Visualizar roles' },
       { resource: 'roles', action: 'write', name: 'roles.write', description: 'Criar e editar roles' },
       { resource: 'roles', action: 'delete', name: 'roles.delete', description: 'Excluir roles' },
       { resource: 'roles', action: 'assign', name: 'roles.assign', description: 'Atribuir roles a usuários' },
 
-      // Permissões de permissões
       { resource: 'permissions', action: 'read', name: 'permissions.read', description: 'Visualizar permissões' },
       { resource: 'permissions', action: 'write', name: 'permissions.write', description: 'Criar e editar permissões' },
       { resource: 'permissions', action: 'delete', name: 'permissions.delete', description: 'Excluir permissões' },
 
-      // Permissões de políticas
       { resource: 'policies', action: 'read', name: 'policies.read', description: 'Visualizar políticas' },
       { resource: 'policies', action: 'write', name: 'policies.write', description: 'Criar e editar políticas' },
       { resource: 'policies', action: 'delete', name: 'policies.delete', description: 'Excluir políticas' },
 
-      // Permissões de tenant
       { resource: 'tenant', action: 'read', name: 'tenant.read', description: 'Visualizar informações do tenant' },
       { resource: 'tenant', action: 'write', name: 'tenant.write', description: 'Editar configurações do tenant' },
       { resource: 'tenant', action: 'manage', name: 'tenant.manage', description: 'Gerenciar tenant completamente' },
 
-      // Permissões de produtos (exemplo de domínio específico)
       { resource: 'products', action: 'read', name: 'products.read', description: 'Visualizar produtos' },
       { resource: 'products', action: 'write', name: 'products.write', description: 'Criar e editar produtos' },
       { resource: 'products', action: 'delete', name: 'products.delete', description: 'Excluir produtos' },
       { resource: 'products', action: 'publish', name: 'products.publish', description: 'Publicar produtos' },
 
-      // Permissões de categorias
       { resource: 'categories', action: 'read', name: 'categories.read', description: 'Visualizar categorias' },
       { resource: 'categories', action: 'write', name: 'categories.write', description: 'Criar e editar categorias' },
       { resource: 'categories', action: 'delete', name: 'categories.delete', description: 'Excluir categorias' },
 
-      // Permissões de marcas
       { resource: 'brands', action: 'read', name: 'brands.read', description: 'Visualizar marcas' },
       { resource: 'brands', action: 'write', name: 'brands.write', description: 'Criar e editar marcas' },
       { resource: 'brands', action: 'delete', name: 'brands.delete', description: 'Excluir marcas' },
 
-      // Permissões de relatórios
       { resource: 'reports', action: 'read', name: 'reports.read', description: 'Visualizar relatórios' },
       { resource: 'reports', action: 'export', name: 'reports.export', description: 'Exportar relatórios' },
 
-      // Permissões de configurações
       { resource: 'settings', action: 'read', name: 'settings.read', description: 'Visualizar configurações' },
       { resource: 'settings', action: 'write', name: 'settings.write', description: 'Editar configurações' },
     ];
 
-    for (const permissionData of globalPermissions) {
+    for (const permissionData of systemPermissions) {
       const existingPermission = await this.permissionRepository.findOne({
         where: {
           resource: permissionData.resource,
@@ -104,26 +90,23 @@ export class AuthorizationSeedService {
           ...permissionData,
         });
         await this.permissionRepository.save(permission);
-        console.log(`  ✓ Permissão criada: ${permissionData.name}`);
+        console.log(`  ✓ Global permission created: ${permissionData.name}`);
       }
     }
   }
 
-  /**
-   * Cria roles globais básicos
-   */
   private async seedGlobalRoles(): Promise<void> {
-    console.log('👑 Criando roles globais...');
+    console.log('👑 Creating global roles...');
 
-    const globalRoles = [
+    const systemRoles = [
       {
         name: 'Super Admin',
-        description: 'Acesso total ao sistema, incluindo gerenciamento de tenants',
-        permissions: ['*'], // Todas as permissões
+        description: 'Global access to the system, including tenant management',
+        permissions: ['*'],
       },
       {
         name: 'Owner',
-        description: 'Proprietário do tenant com acesso total às funcionalidades do tenant',
+        description: 'Tenant owner with full access to tenant features',
         permissions: [
           'users.manage', 'roles.read', 'roles.write', 'roles.assign',
           'permissions.read', 'policies.read', 'policies.write',
@@ -135,7 +118,7 @@ export class AuthorizationSeedService {
       },
       {
         name: 'Admin',
-        description: 'Administrador do tenant com acesso a maioria das funcionalidades',
+        description: 'Tenant admin with access to most features',
         permissions: [
           'users.read', 'users.write', 'roles.read', 'roles.assign',
           'permissions.read', 'policies.read',
@@ -147,7 +130,7 @@ export class AuthorizationSeedService {
       },
       {
         name: 'Manager',
-        description: 'Gerente com acesso a funcionalidades de gestão de produtos',
+        description: 'Tenant manager with access to product management features',
         permissions: [
           'users.read', 'products.read', 'products.write', 'products.publish',
           'categories.read', 'categories.write',
@@ -157,7 +140,7 @@ export class AuthorizationSeedService {
       },
       {
         name: 'Editor',
-        description: 'Editor com acesso a criação e edição de conteúdo',
+        description: 'Tenant editor with access to content creation and editing',
         permissions: [
           'products.read', 'products.write',
           'categories.read', 'brands.read'
@@ -165,14 +148,14 @@ export class AuthorizationSeedService {
       },
       {
         name: 'Viewer',
-        description: 'Visualizador com acesso apenas de leitura',
+        description: 'Tenant viewer with read-only access',
         permissions: [
           'products.read', 'categories.read', 'brands.read', 'reports.read'
         ],
       },
     ];
 
-    for (const roleData of globalRoles) {
+    for (const roleData of systemRoles) {
       const existingRole = await this.roleRepository.findOne({
         where: {
           name: roleData.name,
@@ -187,24 +170,19 @@ export class AuthorizationSeedService {
           isGlobal: true,
         });
         const savedRole = await this.roleRepository.save(role);
-        console.log(`  ✓ Role criado: ${roleData.name}`);
+        console.log(`  ✓ Global role created: ${roleData.name}`);
 
-        // Atribuir permissões ao role
         await this.assignPermissionsToRole(savedRole.id, roleData.permissions);
       }
     }
   }
 
-  /**
-   * Atribui permissões a um role
-   */
   private async assignPermissionsToRole(
     roleId: string,
     permissionNames: string[],
   ): Promise<void> {
     for (const permissionName of permissionNames) {
       if (permissionName === '*') {
-        // Atribuir todas as permissões
         const allPermissions = await this.permissionRepository.find();
         
         for (const permission of allPermissions) {
@@ -251,16 +229,13 @@ export class AuthorizationSeedService {
     }
   }
 
-  /**
-   * Cria políticas básicas
-   */
   private async seedBasicPolicies(): Promise<void> {
-    console.log('📜 Criando políticas básicas...');
+    console.log('📜 Creating basic policies...');
 
     const basicPolicies = [
       {
         name: 'Owner Full Access',
-        description: 'Proprietários têm acesso total aos recursos do seu tenant',
+        description: 'Tenant owners have full access to their tenant resources',
         resource: '*',
         action: '*',
         effect: 'allow' as const,
@@ -274,7 +249,7 @@ export class AuthorizationSeedService {
       },
       {
         name: 'Deny Inactive Users',
-        description: 'Usuários inativos não podem acessar recursos',
+        description: 'Inactive users cannot access resources',
         resource: '*',
         action: '*',
         effect: 'deny' as const,
@@ -300,7 +275,7 @@ export class AuthorizationSeedService {
           ...policyData,
         });
         await this.policyRepository.save(policy);
-        console.log(`  ✓ Política criada: ${policyData.name}`);
+        console.log(`  ✓ Basic policy created: ${policyData.name}`);
       }
     }
   }

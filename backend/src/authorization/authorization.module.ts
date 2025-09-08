@@ -16,9 +16,10 @@ import { Role } from './entities/role.entity';
 import { RolePermission } from './entities/role-permission.entity';
 import { UserRole } from './entities/user-role.entity';
 import { Policy } from './entities/policy.entity';
+import { Tenant } from './entities/tenant.entity';
 import { User } from 'src/users/user.entity';
 import { UsersModule } from '../users/users.module';
-import { AuthResolver, RoleResolver, PermissionResolver, UserRoleResolver } from './resolvers';
+import { AuthResolver, RoleResolver, PermissionResolver, UserRoleResolver, TenantResolver } from './resolvers';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AuthResolver, RoleResolver, PermissionResolver, UserRoleResolver } from
       RolePermission,
       UserRole,
       Policy,
+      Tenant,
     ]),
   ],
   providers: [
@@ -56,6 +58,7 @@ import { AuthResolver, RoleResolver, PermissionResolver, UserRoleResolver } from
     RoleResolver,
     PermissionResolver,
     UserRoleResolver,
+    TenantResolver,
   ],
   exports: [AuthService, AuthorizationService, PolicyService, PermissionsGuard, AuthorizationSeedService],
 })

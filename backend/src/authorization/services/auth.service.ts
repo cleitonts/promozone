@@ -16,9 +16,7 @@ type UserWithoutPassword = Pick<User, 'id' | 'email' | 'perfil' | 'posts' | 'cre
 
 export interface ITokenPayload {
   username: string;
-  perfil: Perfil;
   sub: string;
-  tenantId?: string;
   jti?: string;
   type: 'access' | 'refresh';
 }
@@ -69,9 +67,7 @@ export class AuthService {
   ): Promise<string> {
     const payload: ITokenPayload = {
       username: user.email,
-      perfil: user.perfil,
       sub: user.id,
-      tenantId,
       type: 'access',
     };
 
@@ -89,9 +85,7 @@ export class AuthService {
 
     const payload: ITokenPayload = {
       username: user.email,
-      perfil: user.perfil,
       sub: user.id,
-      tenantId,
       jti: tokenId,
       type: 'refresh',
     };
@@ -103,35 +97,31 @@ export class AuthService {
   }
 
   async refreshTokens(oldRefreshToken: string): Promise<ITokenPair> {
-    const { sub, tenantId } = await this.validateRefreshToken(oldRefreshToken);
+    const { sub } = await this.validateRefreshToken(oldRefreshToken);
     const user = await this.usersService.findOne(sub);
     if (!user) {
       throw new UnauthorizedException('Invalid refresh token');
     }
-    return this.generateTokenPair(user, tenantId);
+    return this.generateTokenPair(user);
   }
 
   async renewAccessToken(currentAccessToken: string): Promise<ITokenPair> {
     try {
-      // Validar rigorosamente o token atual
       const payload = await this.jwtService.verifyAsync<ITokenPayload>(currentAccessToken, {
         secret: this.config.get('JWT_SECRET'),
-        ignoreExpiration: false, // Não ignorar expiração para validação rigorosa
+        ignoreExpiration: false,
       });
 
-      // Verificar se é um token de acesso válido
       if (payload.type !== 'access') {
         throw new UnauthorizedException('Invalid token type for renewal');
       }
 
-      // Buscar o usuário para garantir que ainda existe e está ativo
       const user = await this.usersService.findOne(payload.sub);
       if (!user) {
         throw new UnauthorizedException('User not found or inactive');
       }
 
-      // Gerar novo par de tokens
-      return this.generateTokenPair(user, payload.tenantId);
+      return this.generateTokenPair(user);
     } catch (error) {
       if (error.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Token has already expired');

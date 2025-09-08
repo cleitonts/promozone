@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/base.entity';
-import { User } from 'src/users/user.entity';
+import { Tenant } from './tenant.entity';
 
 @ObjectType()
 @Entity('roles')
@@ -18,10 +18,10 @@ export class Role extends BaseEntity {
   @Column({ default: false })
   isGlobal: boolean;
 
-  @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, { nullable: true })
+  @Field(() => Tenant, { nullable: true })
+  @ManyToOne(() => Tenant, (tenant) => tenant.roles, { nullable: true })
   @JoinColumn({ name: 'tenant_id' })
-  tenant?: User;
+  tenant?: Tenant;
 
   @OneToMany('RolePermission', 'role')
   rolePermissions: any[];

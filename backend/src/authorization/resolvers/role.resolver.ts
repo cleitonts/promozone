@@ -22,7 +22,8 @@ export class RoleResolver {
   async roles(
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<Role[]> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     return this.authorizationService.getRoles(tenantId);
   }
 
@@ -32,7 +33,8 @@ export class RoleResolver {
     @Args('id') id: string,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<Role | null> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     return this.authorizationService.getRoleById(id, tenantId);
   }
 
@@ -42,7 +44,9 @@ export class RoleResolver {
     @Args('input') input: CreateRoleInput,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<Role> {
-    const tenantId = input.tenantId || req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const defaultTenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
+    const tenantId = input.tenantId || defaultTenantId;
     const roleData: any = {
       name: input.name,
       description: input.description,
@@ -62,7 +66,8 @@ export class RoleResolver {
     @Args('input') input: UpdateRoleInput,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<Role> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     return this.authorizationService.updateRole(input.id, input, tenantId);
   }
 
@@ -72,7 +77,8 @@ export class RoleResolver {
     @Args('id') id: string,
     @Context('req') req: { user: UserPayloadResponse },
   ): Promise<boolean> {
-    const tenantId = req.user.tenantId;
+    const userTenants = await this.authorizationService.getUserTenants(req.user.userId);
+    const tenantId = userTenants.length > 0 ? userTenants[0].id : undefined;
     await this.authorizationService.deleteRole(id, tenantId);
     return true;
   }

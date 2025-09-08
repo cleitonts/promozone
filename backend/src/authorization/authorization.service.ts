@@ -6,6 +6,7 @@ import { Permission } from './entities/permission.entity';
 import { Role } from './entities/role.entity';
 import { UserRole } from './entities/user-role.entity';
 import { RolePermission } from './entities/role-permission.entity';
+import { Tenant } from './entities/tenant.entity';
 import { PolicyService } from './services/policy.service';
 import { PolicyContext } from './services/policy-evaluator.service';
 
@@ -37,20 +38,17 @@ export class AuthorizationService {
     private userRoleRepository: Repository<UserRole>,
     @InjectRepository(RolePermission)
     private rolePermissionRepository: Repository<RolePermission>,
+    @InjectRepository(Tenant)
+    private tenantRepository: Repository<Tenant>,
     private policyService: PolicyService,
   ) {}
 
-  /**
-   * Obtém todas as permissões efetivas de um usuário
-   * Combina permissões globais e específicas do tenant
-   */
   async getUserEffectivePermissions(
     userId: string,
     tenantId?: string,
   ): Promise<EffectivePermission[]> {
     const permissions = new Map<string, EffectivePermission>();
 
-    // 1. Buscar roles globais do usuário
     const globalUserRoles = await this.userRoleRepository
       .createQueryBuilder('ur')
       .leftJoinAndSelect('ur.role', 'role')
@@ -61,7 +59,6 @@ export class AuthorizationService {
       .andWhere('role.isGlobal = true')
       .getMany();
 
-    // Adicionar permissões globais
     for (const userRole of globalUserRoles) {
       if (userRole.role?.rolePermissions) {
         for (const rolePermission of userRole.role.rolePermissions) {
@@ -78,7 +75,6 @@ export class AuthorizationService {
       }
     }
 
-    // 2. Se tenantId fornecido, buscar roles específicas do tenant
     if (tenantId) {
       const tenantUserRoles = await this.userRoleRepository
         .createQueryBuilder('ur')
@@ -89,7 +85,6 @@ export class AuthorizationService {
         .andWhere('ur.tenant = :tenantId', { tenantId })
         .getMany();
 
-      // Adicionar permissões específicas do tenant
       for (const userRole of tenantUserRoles) {
         if (userRole.role?.rolePermissions) {
           for (const rolePermission of userRole.role.rolePermissions) {
@@ -110,16 +105,16 @@ export class AuthorizationService {
     return Array.from(permissions.values());
   }
 
-  /**
-   * Verifica se o usuário tem uma permissão específica
-   * Combina verificação de permissões baseadas em roles com políticas
-   */
   async can(
     context: AuthorizationContext,
     resource: string,
     action: string,
   ): Promise<boolean> {
-    // 1. Verificar permissões baseadas em roles
+    const user = context.user || await this.userRepository.findOne({ where: { id: context.userId } });
+    if (user?.isSuperuser) {
+      return true;
+    }
+
     const permissions = await this.getUserEffectivePermissions(
       context.userId,
       context.tenantId,
@@ -130,10 +125,7 @@ export class AuthorizationService {
         permission.resource === resource && permission.action === action,
     );
 
-    // 2. Verificar políticas
     try {
-      const user = context.user || await this.userRepository.findOne({ where: { id: context.userId } });
-      
       const policyContext: PolicyContext = {
         user,
         resource: context.resource,
@@ -148,23 +140,17 @@ export class AuthorizationService {
         context.tenantId,
       );
 
-      // Se há políticas aplicáveis, usar o resultado das políticas
       if (policyResult.matchedPolicies.length > 0) {
         return policyResult.allowed;
       }
 
-      // Se não há políticas aplicáveis, usar permissões baseadas em roles
       return hasRolePermission;
     } catch (error) {
-      console.error('Erro ao avaliar políticas:', error);
-      // Em caso de erro, usar apenas permissões baseadas em roles
+      console.error('Error evaluating policies:', error);
       return hasRolePermission;
     }
   }
 
-  /**
-   * Verifica múltiplas permissões de uma vez
-   */
   async canAny(
     context: AuthorizationContext,
     checks: Array<{ resource: string; action: string }>,
@@ -183,9 +169,6 @@ export class AuthorizationService {
     );
   }
 
-  /**
-   * Verifica se o usuário tem todas as permissões especificadas
-   */
   async canAll(
     context: AuthorizationContext,
     checks: Array<{ resource: string; action: string }>,
@@ -204,15 +187,11 @@ export class AuthorizationService {
     );
   }
 
-  /**
-   * Atribui uma role a um usuário
-   */
   async assignRoleToUser(
     userId: string,
     roleId: string,
     tenantId?: string,
   ): Promise<UserRole> {
-    // Verificar se a atribuição já existe
     const existingUserRole = await this.userRoleRepository.findOne({
       where: {
         user: { id: userId },
@@ -225,7 +204,6 @@ export class AuthorizationService {
       return existingUserRole;
     }
 
-    // Criar nova atribuição
     const userRole = this.userRoleRepository.create({
       user: { id: userId },
       role: { id: roleId },
@@ -235,9 +213,176 @@ export class AuthorizationService {
     return this.userRoleRepository.save(userRole);
   }
 
-  /**
-   * Remove uma role de um usuário
-   */
+  async isOwnerOfTenant(userId: string, tenantId: string): Promise<boolean> {
+    const tenant = await this.tenantRepository.findOne({
+      where: { id: tenantId },
+      relations: ['owner'],
+    });
+
+    return tenant?.owner?.id === userId;
+  }
+
+  async isSuperuser(userId: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    return user?.isSuperuser || false;
+  }
+
+  async canCreateTenantOwner(userId: string, tenantId?: string): Promise<boolean> {
+    if (await this.isSuperuser(userId)) {
+      return true;
+    }
+
+    if (tenantId) {
+      return await this.isOwnerOfTenant(userId, tenantId);
+    }
+
+    return false;
+  }
+
+  async canAddUserToTenant(userId: string, tenantId: string): Promise<boolean> {
+    if (await this.isSuperuser(userId)) {
+      return true;
+    }
+
+    return await this.isOwnerOfTenant(userId, tenantId);
+  }
+
+  async createTenant(data: {
+    name: string;
+    description?: string;
+    slug: string;
+    domain?: string;
+    ownerId: string;
+    settings?: any;
+  }): Promise<Tenant> {
+    const tenant = this.tenantRepository.create({
+      name: data.name,
+      description: data.description,
+      slug: data.slug,
+      domain: data.domain,
+      owner: { id: data.ownerId },
+      settings: data.settings,
+    });
+
+    const savedTenant = await this.tenantRepository.save(tenant);
+
+    const ownerRole = await this.roleRepository.findOne({
+      where: { name: 'Owner', isGlobal: true },
+    });
+
+    if (ownerRole) {
+      await this.assignRoleToUser(data.ownerId, ownerRole.id, savedTenant.id);
+    }
+
+    return savedTenant;
+  }
+
+  async updateTenant(id: string, data: {
+    name?: string;
+    description?: string;
+    domain?: string;
+    settings?: any;
+  }): Promise<Tenant> {
+    const tenant = await this.tenantRepository.findOne({
+      where: { id },
+      relations: ['owner'],
+    });
+
+    if (!tenant) {
+      throw new Error('Tenant not found');
+    }
+
+    Object.assign(tenant, data);
+    return this.tenantRepository.save(tenant);
+  }
+
+  async deleteTenant(id: string): Promise<void> {
+    const tenant = await this.tenantRepository.findOne({
+      where: { id },
+      relations: ['owner'],
+    });
+
+    if (!tenant) {
+      throw new Error('Tenant not found');
+    }
+
+    await this.userRoleRepository.delete({ tenant: { id } });
+    await this.tenantRepository.remove(tenant);
+  }
+
+  async getTenantById(id: string): Promise<Tenant | null> {
+    return this.tenantRepository.findOne({
+      where: { id },
+      relations: ['owner'],
+    });
+  }
+
+  async getUserTenants(userId: string): Promise<Tenant[]> {
+    if (await this.isSuperuser(userId)) {
+      return this.tenantRepository.find({
+        relations: ['owner'],
+        where: { isActive: true },
+      });
+    }
+
+    const userRoles = await this.userRoleRepository
+      .createQueryBuilder('ur')
+      .leftJoinAndSelect('ur.tenant', 'tenant')
+      .leftJoinAndSelect('tenant.owner', 'owner')
+      .where('ur.user = :userId', { userId })
+      .andWhere('ur.tenant IS NOT NULL')
+      .andWhere('tenant.isActive = true')
+      .getMany();
+
+    const tenants = userRoles
+      .map(ur => ur.tenant)
+      .filter((tenant, index, self) => 
+        tenant && self.findIndex(t => t?.id === tenant.id) === index
+      ) as Tenant[];
+
+    return tenants;
+  }
+
+  async canPerformAction(
+    userId: string,
+    resource: string,
+    action: string,
+    tenantId?: string,
+    resourceId?: string
+  ): Promise<boolean> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (user?.isSuperuser) {
+      return true;
+    }
+
+    const context: AuthorizationContext = {
+      userId,
+      tenantId,
+      resource,
+      resourceId,
+    };
+
+    const hasPermission = await this.can(context, resource, action);
+    if (!hasPermission) {
+      return false;
+    }
+
+    const policyContext: PolicyContext = {
+      user: { id: userId },
+      resource: { id: resourceId },
+      tenant: tenantId ? { id: tenantId } : undefined,
+    };
+
+    const policyResult = await this.policyService.evaluatePolicies(
+      resource,
+      action,
+      policyContext,
+      tenantId
+    );
+
+    return policyResult.allowed;
+  }
+
   async removeRoleFromUser(
     userId: string,
     roleId: string,
@@ -250,9 +395,6 @@ export class AuthorizationService {
     });
   }
 
-  /**
-   * Obtém todas as roles de um usuário
-   */
   async getUserRoles(
     userId: string,
     tenantId?: string,
@@ -272,7 +414,6 @@ export class AuthorizationService {
     return userRoles.map((ur) => ur.role).filter(Boolean);
   }
 
-  // Role CRUD operations
   async getRoles(tenantId?: string): Promise<Role[]> {
     const whereCondition: any = {};
 
@@ -327,7 +468,6 @@ export class AuthorizationService {
     await this.roleRepository.remove(role);
   }
 
-  // Permission CRUD operations
   async getPermissions(tenantId?: string): Promise<Permission[]> {
     const whereCondition: any = {};
 
@@ -380,7 +520,6 @@ export class AuthorizationService {
     await this.permissionRepository.remove(permission);
   }
 
-  // Role-Permission assignment operations
   async assignPermissionToRole(roleId: string, permissionId: string): Promise<void> {
     const existingAssignment = await this.rolePermissionRepository.findOne({
       where: {
@@ -390,7 +529,7 @@ export class AuthorizationService {
     });
 
     if (existingAssignment) {
-      return; // Already assigned
+      return;
     }
 
     const rolePermission = this.rolePermissionRepository.create({

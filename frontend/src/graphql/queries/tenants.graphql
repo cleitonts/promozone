@@ -1,0 +1,23 @@
+query GetTenants {
+  tenants {
+    id
+    name
+    description
+    domain
+    settings
+    createdAt
+    updatedAt
+  }
+}
+
+query GetTenant($id: String!) {
+  tenant(id: $id) {
+    id
+    name
+    description
+    domain
+    settings
+    createdAt
+    updatedAt
+  }
+}

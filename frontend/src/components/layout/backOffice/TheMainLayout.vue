@@ -30,7 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import { TheMainAppBar, TheMainMenu, TheNotifications } from '@/components'
+import TheMainAppBar from '@/components/layout/backOffice/TheMainAppBar.vue'
+import TheMainMenu from '@/components/layout/backOffice/TheMainMenu.vue'
+import TheNotifications from '@/components/layout/TheNotifications.vue'
 import { ref, onMounted } from 'vue'
 import type { VContainer } from 'vuetify/components'
 

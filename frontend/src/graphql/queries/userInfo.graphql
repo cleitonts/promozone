@@ -1,0 +1,22 @@
+query UserInfo {
+  userInfo {
+    user {
+      id
+      email
+    }
+    permissions {
+      resource
+      action
+      name
+    }
+    roles {
+      id
+      name
+    }
+    tenants {
+      id
+      name
+    }
+    currentTenantId
+  }
+}
