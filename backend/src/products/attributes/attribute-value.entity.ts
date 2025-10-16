@@ -1,28 +1,32 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  CreateDateColumn,
+  Entity,
+  UpdateDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Attribute } from './attribute.entity';
-import { BaseEntity } from 'src/common/base.entity';
+import { BaseEntity } from 'src/Common/base.entity';
+import { AttributeEntity } from './attribute.entity';
 
-@ObjectType()
-@Entity('attribute_values')
-export class AttributeValue extends BaseEntity {
+@Entity({ name: 'attribute_values', schema: 'products' })
+export class AttributeValueEntity extends BaseEntity {
+  @Column()
+  attributeId!: string;
 
-  @Field(() => Int)
-  @Column({ name: 'attribute_id' })
-  attributeId: number;
+  @Column()
+  value!: string;
 
-  @Field()
-  @Column({ type: 'varchar', length: 100, nullable: false })
-  value: string;
+  @Column({ default: true })
+  active!: boolean;
 
-  @Field(() => Attribute)
-  @ManyToOne(() => Attribute, (attribute) => attribute.attributeValues, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'attribute_id' })
-  attribute: Attribute;
+  @ManyToOne(() => AttributeEntity, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'attributeId' })
+  attribute!: AttributeEntity;
+
+  @CreateDateColumn()
+  created!: Date;
+
+  @UpdateDateColumn()
+  updated!: Date;
 }

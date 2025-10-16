@@ -1,63 +1,49 @@
 import {
-  Entity,
   Column,
+  CreateDateColumn,
+  Entity,
+  UpdateDateColumn,
   ManyToOne,
-  OneToMany,
-  ManyToMany,
   JoinColumn,
 } from 'typeorm';
-import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
-import { Category } from '../categories/category.entity';
-import { Brand } from '../brands/brand.entity';
-import { ProductVariants } from '../variants/product-variants.entity';
-import { BaseEntity } from 'src/common/base.entity';
+import { BaseEntity } from 'src/Common/base.entity';
+import { CategoryEntity } from '../categories/category.entity';
+import { BrandEntity } from '../brands/brand.entity';
 
-@ObjectType()
-@Entity('products')
-export class Product extends BaseEntity {
-  @Field()
-  @Column({ type: 'varchar', length: 255, nullable: false })
-  name: string;
+@Entity({ name: 'products', schema: 'products' })
+export class ProductEntity extends BaseEntity {
+  @Column()
+  name!: string;
 
-  @Field()
-  @Column({ type: 'varchar', length: 255, unique: true, nullable: false })
-  slug: string;
+  @Column({ unique: true })
+  slug!: string;
 
-  @Field({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  description: string;
+  @Column({ nullable: true })
+  description!: string;
 
-  @Field(() => Float)
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
-  price: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  price!: number;
 
-  @Field(() => Int, { nullable: true })
-  @Column({ name: 'category_id', nullable: true })
-  categoryId: number;
+  @Column({ nullable: true })
+  categoryId!: string;
 
-  @Field(() => Int, { nullable: true })
-  @Column({ name: 'brand_id', nullable: true })
-  brandId: number;
+  @Column({ nullable: true })
+  brandId!: string;
 
-  @Field(() => Category, { nullable: true })
-  @ManyToOne(() => Category, (category) => category.products, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'category_id' })
-  category: Category;
+  @Column({ default: true })
+  active!: boolean;
 
-  @Field(() => Brand, { nullable: true })
-  @ManyToOne(() => Brand, (brand) => brand.products, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'brand_id' })
-  brand: Brand;
+  @ManyToOne(() => CategoryEntity, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'categoryId' })
+  category!: CategoryEntity;
 
-  @Field(() => [ProductVariants])
-  @OneToMany(() => ProductVariants, (variant) => variant.product)
-  variants: ProductVariants[];
+  @ManyToOne(() => BrandEntity, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'brandId' })
+  brand!: BrandEntity;
 
-  @Field(() => [Brand], { nullable: true })
-  @ManyToMany(() => Brand, (brand) => brand.productBrands)
-  brands?: Brand[];
+  @CreateDateColumn()
+  created!: Date;
 
-  @Field()
-  @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  @UpdateDateColumn()
+  updated!: Date;
 }

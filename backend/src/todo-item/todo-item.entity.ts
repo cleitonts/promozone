@@ -6,16 +6,13 @@ import {
 } from 'typeorm';
 import { BaseEntity } from 'src/Common/base.entity';
 
-@Entity({ name: 'attributes', schema: 'products' })
-export class AttributeEntity extends BaseEntity {
+@Entity({ name: 'todo_items' })
+export class TodoItemEntity extends BaseEntity {
   @Column()
-  name!: string;
+  title!: string;
 
-  @Column({ nullable: true })
-  description!: string;
-
-  @Column({ default: true })
-  active!: boolean;
+  @Column()
+  completed!: boolean;
 
   @CreateDateColumn()
   created!: Date;

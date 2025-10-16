@@ -1,20 +1,29 @@
 import {
-  Entity,
   Column,
-  OneToMany
+  CreateDateColumn,
+  Entity,
+  UpdateDateColumn,
 } from 'typeorm';
-import { ObjectType, Field } from '@nestjs/graphql';
-import { Product } from '../products/product.entity';
-import { BaseEntity } from 'src/common/base.entity';
+import { BaseEntity } from 'src/Common/base.entity';
 
-@ObjectType()
-@Entity('categories')
-export class Category extends BaseEntity {
-  @Field()
-  @Column({ type: 'varchar', length: 255, nullable: false })
-  name: string;
+@Entity({ name: 'categories', schema: 'products' })
+export class CategoryEntity extends BaseEntity {
 
-  @Field(() => [Product])
-  @OneToMany(() => Product, (product) => product.category)
-  products: Product[];
+  @Column()
+  name!: string;
+
+  @Column({ nullable: true })
+  description!: string;
+
+  @Column({ unique: true })
+  slug!: string;
+
+  @Column({ default: true })
+  active!: boolean;
+
+  @CreateDateColumn()
+  created!: Date;
+
+  @UpdateDateColumn()
+  updated!: Date;
 }

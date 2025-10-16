@@ -1,55 +1,38 @@
 import {
-  Entity,
   Column,
-  OneToMany,
-  ManyToMany,
-  JoinTable
+  CreateDateColumn,
+  Entity,
+  UpdateDateColumn,
 } from 'typeorm';
-import { ObjectType, Field } from '@nestjs/graphql';
-import { Product } from '../products/product.entity';
-import { BaseEntity } from 'src/common/base.entity';
+import { BaseEntity } from 'src/Common/base.entity';
 
-@ObjectType()
-@Entity('brands')
-export class Brand extends BaseEntity {
-  @Field()
-  @Column({ type: 'varchar', length: 255, nullable: false })
-  name: string;
+@Entity({ name: 'brands', schema: 'products' })
+export class BrandEntity extends BaseEntity {
 
-  @Field()
-  @Column({ type: 'varchar', length: 255, unique: true, nullable: false })
-  slug: string;
+  @Column()
+  name!: string;
 
-  @Field({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  description?: string;
+  @Column({ unique: true })
+  slug!: string;
 
-  @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 500, nullable: true })
-  logo_url?: string;
+  @Column({ nullable: true })
+  description!: string;
 
-  @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  website?: string;
+  @Column({ nullable: true })
+  logoUrl!: string;
 
-  @Field({ nullable: true })
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  country?: string;
+  @Column({ nullable: true })
+  website!: string;
 
-  @Field()
-  @Column({ type: 'boolean', default: true })
-  is_active: boolean;
+  @Column({ nullable: true })
+  country!: string;
 
-  @Field(() => [Product])
-  @OneToMany(() => Product, (product) => product.brand)
-  products: Product[];
+  @Column({ default: true })
+  active!: boolean;
 
-  @Field(() => [Product], { nullable: true })
-  @ManyToMany(() => Product, (product) => product.brands)
-  @JoinTable({
-    name: 'product_brands',
-    joinColumn: { name: 'brand_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' }
-  })
-  productBrands?: Product[];
+  @CreateDateColumn()
+  created!: Date;
+
+  @UpdateDateColumn()
+  updated!: Date;
 }

@@ -2,7 +2,6 @@
 /dist
 /node_modules
 /build
-tsconfig.tsbuildinfo
 
 # Logs
 logs
@@ -22,7 +21,6 @@ lerna-debug.log*
 
 # IDEs and editors
 /.idea
-.history
 .project
 .classpath
 .c9/
