@@ -6,7 +6,6 @@ import { AuthGuard } from '@nestjs/passport'
 export class JwtAuthGuard extends AuthGuard('jwt') {
   getRequest<T = unknown>(context: ExecutionContext): T {
     const ctx = GqlExecutionContext.create(context)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access
     return ctx.getContext().req
   }
 }

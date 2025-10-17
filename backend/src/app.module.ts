@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common'
 import { GraphQLModule } from '@nestjs/graphql'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { AppService } from './app.service'
 import { TodoItemModule } from './todo-item/todo-item.module'
 import { TenantModule } from './tenant/tenant.module'
 import { UserModule } from './user/user.module'
@@ -27,7 +26,6 @@ import typeorm, { envFiles } from './data-source';
         if (!typeormConfig) {
           throw new Error('Missing TypeORM configuration');
         }
-        console.log(typeormConfig);
         return typeormConfig;
       },
     }),
@@ -41,7 +39,7 @@ import typeorm, { envFiles } from './data-source';
     ProductsModule,
     AuthModule,
   ],
-  providers: [AppService, SeedComposite],
+  providers: [SeedComposite],
   exports: [SeedComposite],
 })
 export class AppModule {}

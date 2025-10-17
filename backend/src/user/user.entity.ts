@@ -1,7 +1,7 @@
 import { Column, Entity } from 'typeorm';
-import { Name } from 'src/Common/entity/name.entity';
-import { CreatedAt } from 'src/Common/entity/createdAt.entity';
-import { BaseEntity } from 'src/Common/base.entity';
+import { Name } from '@/common/entity/name.entity';
+import { CreatedAt } from '@/common/entity/createdAt.entity';
+import { BaseEntity } from '@/common/base.entity';
 
 @Entity({ name: 'users', schema: 'users' })
 export class UserEntity extends BaseEntity {

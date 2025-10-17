@@ -6,7 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { BaseEntity } from 'src/Common/base.entity';
+import { BaseEntity } from '@/common/base.entity';
 import { ProductEntity } from '../products/product.entity';
 
 @Entity({ name: 'product_variants', schema: 'products' })

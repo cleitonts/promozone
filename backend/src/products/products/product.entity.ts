@@ -6,7 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { BaseEntity } from 'src/Common/base.entity';
+import { BaseEntity } from '@/common/base.entity';
 import { CategoryEntity } from '../categories/category.entity';
 import { BrandEntity } from '../brands/brand.entity';
 

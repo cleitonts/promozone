@@ -4,7 +4,7 @@ import {
   Entity,
   UpdateDateColumn,
 } from 'typeorm';
-import { BaseEntity } from 'src/Common/base.entity';
+import { BaseEntity } from '@/common/base.entity';
 
 @Entity({ name: 'attributes', schema: 'products' })
 export class AttributeEntity extends BaseEntity {

@@ -12,7 +12,7 @@ export type UserContext = {
   }
 }
 
-export type UserWithoutPassword = Omit<UserEntity, 'password'>;
+export type UserWithoutPassword = Omit<UserEntity, 'password' | 'beforeInsert' | 'ensureId'>
 
 export interface ITokenPayload {
   username: string;
