@@ -10,6 +10,8 @@ import { JwtStrategy } from './jwt.strategy'
 import { UserEntity } from '../user/user.entity'
 import { SeedService } from './seed/auth.seed'
 import { SEEDER } from '@/seed/seed.token'
+import { DiscoveryModule } from '@nestjs/core'
+import { ResolverScannerService } from './resolver-scanner.service'
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { SEEDER } from '@/seed/seed.token'
       }),
       inject: [ConfigService],
     }),
+    DiscoveryModule,
   ],
   providers: [
     AuthService,
@@ -33,6 +36,7 @@ import { SEEDER } from '@/seed/seed.token'
     JwtStrategy,
     SeedService,
     { provide: SEEDER, useExisting: SeedService },
+    ResolverScannerService,
   ],
   exports: [AuthService, SEEDER],
 })
