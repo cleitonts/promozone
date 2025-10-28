@@ -1,11 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { IsString } from 'class-validator'
+import { IsString, IsEmail } from 'class-validator'
 
-@InputType()
+@InputType('LoginInput')
 export class LoginInputDTO {
   @Field()
-  @IsString()
-  username!: string
+  @IsEmail()
+  email!: string
 
   @Field()
   @IsString()

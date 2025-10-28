@@ -59,6 +59,13 @@ router.beforeEach(async (to) => {
       return { path: '/bo/home' }
     }
   }
+
+  if (to.meta.requiresAdmin) {
+    if (!authStore.isAuthenticated || !authStore.isAdmin()) {
+      interfaceStore.addMessage('Access denied. Administrator role required.', EMessageType.Danger)
+      return { path: '/bo/home' }
+    }
+  }
 })
 
 

@@ -1,29 +1,33 @@
 query GetAllBrands {
   brands {
-    id
-    name
-    slug
-    description
-    logo_url
-    website
-    country
-    is_active
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        logoUrl
+        website
+        country
+        active
+        created
+        updated
+      }
+    }
   }
 }
 
-query GetBrand($id: Int!) {
+query GetBrand($id: ID!) {
   brand(id: $id) {
     id
     name
     slug
     description
-    logo_url
+    logoUrl
     website
     country
-    is_active
-    products {
-      id
-      name
-    }
+    active
+    created
+    updated
   }
 }

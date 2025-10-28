@@ -1,23 +1,4 @@
 import TheMainLayout from '@/components/layout/backOffice/TheMainLayout.vue'
-import {
-  BackOfficeHomeView,
-  UserEditView,
-  UserListView,
-  PerfilListView,
-  PerfilEditView,
-} from '@/views'
-import ProductListView from '@/views/backOffice/products/ProductListView.vue'
-import ProductEditView from '@/views/backOffice/products/ProductEditView.vue'
-import BrandListView from '@/views/backOffice/brands/BrandListView.vue'
-import BrandEditView from '@/views/backOffice/brands/BrandEditView.vue'
-import CategoryListView from '@/views/backOffice/categories/CategoryListView.vue'
-import CategoryEditView from '@/views/backOffice/categories/CategoryEditView.vue'
-import RoleListView from '@/views/backOffice/admin/RoleListView.vue'
-import RoleEditView from '@/views/backOffice/admin/RoleEditView.vue'
-import TenantListView from '@/views/backOffice/admin/TenantListView.vue'
-import TenantEditView from '@/views/backOffice/admin/TenantEditView.vue'
-import PermissionListView from '@/views/backOffice/admin/PermissionListView.vue'
-import PermissionEditView from '@/views/backOffice/admin/PermissionEditView.vue'
 import type { RouteRecordRaw } from 'vue-router'
 
 export const backOfficeRoutes: RouteRecordRaw = {
@@ -33,7 +14,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'backOfficeHome',
-          component: BackOfficeHomeView,
+          component: () => import('@/views/backOffice/HomeView.vue'),
           meta: {
             pageTitle: 'Home',
           },
@@ -47,7 +28,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'usersList',
-          component: UserListView,
+          component: () => import('@/views/backOffice/user/UserListView.vue'),
           meta: {
             pageTitle: 'Users list',
             requiresPermission: 'users.read',
@@ -56,7 +37,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'new',
           name: 'usersNew',
-          component: UserEditView,
+          component: () => import('@/views/backOffice/user/UserEditView.vue'),
           meta: {
             pageTitle: 'Create user',
             requiresPermission: 'users.create',
@@ -65,7 +46,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'edit/:id',
           name: 'usersEdit',
-          component: UserEditView,
+          component: () => import('@/views/backOffice/user/UserEditView.vue'),
           meta: {
             pageTitle: 'Edit user',
             requiresPermission: 'users.write',
@@ -80,7 +61,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'perfilList',
-          component: PerfilListView,
+          component: () => import('@/views/backOffice/perfil/PerfilListView.vue'),
           meta: {
             pageTitle: 'Perfil list',
           },
@@ -88,7 +69,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'new',
           name: 'perfilNew',
-          component: PerfilEditView,
+          component: () => import('@/views/backOffice/perfil/PerfilEditView.vue'),
           meta: {
             pageTitle: 'Create perfil',
           },
@@ -96,7 +77,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'edit/:id',
           name: 'perfilEdit',
-          component: PerfilEditView,
+          component: () => import('@/views/backOffice/perfil/PerfilEditView.vue'),
           meta: {
             pageTitle: 'Edit perfil',
           },
@@ -110,7 +91,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'productsList',
-          component: ProductListView,
+          component: () => import('@/views/backOffice/products/ProductListView.vue'),
           meta: {
             pageTitle: 'Products list',
           },
@@ -118,7 +99,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'new',
           name: 'productsNew',
-          component: ProductEditView,
+          component: () => import('@/views/backOffice/products/ProductEditView.vue'),
           meta: {
             pageTitle: 'Create product',
           },
@@ -126,7 +107,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'edit/:id',
           name: 'productsEdit',
-          component: ProductEditView,
+          component: () => import('@/views/backOffice/products/ProductEditView.vue'),
           meta: {
             pageTitle: 'Edit product',
           },
@@ -140,7 +121,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'brandsList',
-          component: BrandListView,
+          component: () => import('@/views/backOffice/brands/BrandListView.vue'),
           meta: {
             pageTitle: 'Brands list',
           },
@@ -148,7 +129,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'new',
           name: 'brandsNew',
-          component: BrandEditView,
+          component: () => import('@/views/backOffice/brands/BrandEditView.vue'),
           meta: {
             pageTitle: 'Create brand',
           },
@@ -156,7 +137,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'edit/:id',
           name: 'brandsEdit',
-          component: BrandEditView,
+          component: () => import('@/views/backOffice/brands/BrandEditView.vue'),
           meta: {
             pageTitle: 'Edit brand',
           },
@@ -170,7 +151,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'categoriesList',
-          component: CategoryListView,
+          component: () => import('@/views/backOffice/categories/CategoryListView.vue'),
           meta: {
             pageTitle: 'Categories list',
           },
@@ -178,7 +159,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'new',
           name: 'categoriesNew',
-          component: CategoryEditView,
+          component: () => import('@/views/backOffice/categories/CategoryEditView.vue'),
           meta: {
             pageTitle: 'Create category',
           },
@@ -186,7 +167,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'edit/:id',
           name: 'categoriesEdit',
-          component: CategoryEditView,
+          component: () => import('@/views/backOffice/categories/CategoryEditView.vue'),
           meta: {
             pageTitle: 'Edit category',
           },
@@ -200,7 +181,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'rolesList',
-          component: RoleListView,
+          component: () => import('@/views/backOffice/admin/RoleListView.vue'),
           meta: {
             pageTitle: 'Roles list',
             requiresPermission: 'roles.read',
@@ -209,7 +190,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'new',
           name: 'rolesNew',
-          component: RoleEditView,
+          component: () => import('@/views/backOffice/admin/RoleEditView.vue'),
           meta: {
             pageTitle: 'Create role',
             requiresPermission: 'roles.write',
@@ -218,7 +199,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: ':id/edit',
           name: 'rolesEdit',
-          component: RoleEditView,
+          component: () => import('@/views/backOffice/admin/RoleEditView.vue'),
           meta: {
             pageTitle: 'Edit role',
             requiresPermission: 'roles.write',
@@ -233,7 +214,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'tenantsList',
-          component: TenantListView,
+          component: () => import('@/views/backOffice/admin/TenantListView.vue'),
           meta: {
             pageTitle: 'Tenants list',
             requiresPermission: 'tenant.list',
@@ -242,7 +223,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'new',
           name: 'tenantsNew',
-          component: TenantEditView,
+          component: () => import('@/views/backOffice/admin/TenantEditView.vue'),
           meta: {
             pageTitle: 'Create tenant',
             requiresPermission: 'tenant.create',
@@ -251,7 +232,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: ':id/edit',
           name: 'tenantsEdit',
-          component: TenantEditView,
+          component: () => import('@/views/backOffice/admin/TenantEditView.vue'),
           meta: {
             pageTitle: 'Edit tenant',
             requiresPermission: 'tenant.write',
@@ -266,7 +247,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'permissionsList',
-          component: PermissionListView,
+          component: () => import('@/views/backOffice/admin/PermissionListView.vue'),
           meta: {
             pageTitle: 'Permissions list',
             requiresPermission: 'permissions.read',
@@ -275,7 +256,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: 'new',
           name: 'permissionsNew',
-          component: PermissionEditView,
+          component: () => import('@/views/backOffice/admin/PermissionEditView.vue'),
           meta: {
             pageTitle: 'Create permission',
             requiresPermission: 'permissions.write',
@@ -284,7 +265,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         {
           path: ':id/edit',
           name: 'permissionsEdit',
-          component: PermissionEditView,
+          component: () => import('@/views/backOffice/admin/PermissionEditView.vue'),
           meta: {
             pageTitle: 'Edit permission',
             requiresPermission: 'permissions.write',

@@ -1,17 +1,29 @@
-mutation CreateCategory($createCategoryInput: CreateCategoryDto!) {
-  createCategory(createCategoryInput: $createCategoryInput) {
+mutation CreateOneCategory($input: CreateOneCategoryInput!) {
+  createOneCategory(input: $input) {
     id
     name
+    description
+    slug
+    active
+    created
+    updated
   }
 }
 
-mutation UpdateCategory($id: Int!, $updateCategoryInput: UpdateCategoryDto!) {
-  updateCategory(id: $id, updateCategoryInput: $updateCategoryInput) {
+mutation DeleteOneCategory($input: DeleteOneCategoryInput!) {
+  deleteOneCategory(input: $input) {
     id
-    name
   }
 }
 
-mutation RemoveCategory($id: Int!) {
-  removeCategory(id: $id)
+mutation UpdateOneCategory($input: UpdateOneCategoryInput!) {
+  updateOneCategory(input: $input) {
+    id
+    name
+    slug
+    description
+    active
+    created
+    updated
+  }
 }

@@ -33,11 +33,11 @@
 import { useRoute } from 'vue-router'
 import { TheCardTitle } from '@/components'
 import { ref, onMounted } from 'vue'
-import { useUserStore } from '@/stores/userStore'
+import { useUsers } from '@/composables/useUsers'
 import { router } from '@/router'
 
 const route = useRoute()
-const userStore = useUserStore()
+const { fetchUser, createUser, currentUser } = useUsers()
 const user = ref({ email: '', password: '', perfilId: '' })
 
 const emailRules = [
@@ -49,7 +49,7 @@ const emailRules = [
 const validate = async function () {
   if (route.name === 'usersNew') {
     try {
-      await userStore.createUser({
+      await createUser({
         email: user.value.email,
         password: user.value.password,
         perfilId: user.value.perfilId,
@@ -67,9 +67,9 @@ const validate = async function () {
 // Load user data if editing
 onMounted(async () => {
   if (route.name !== 'usersNew' && route.params.id) {
-    await userStore.fetchUser(route.params.id as string)
-    if (userStore.currentUser) {
-      user.value.email = userStore.currentUser.email || ''
+    await fetchUser(route.params.id as string)
+    if (currentUser.value) {
+      user.value.email = currentUser.value.email || ''
     }
   }
 })

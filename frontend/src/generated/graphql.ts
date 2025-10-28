@@ -16,328 +16,970 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  ConnectionCursor: { input: any; output: any; }
   DateTime: { input: any; output: any; }
-};
-
-export type AddUserToTenantInput = {
-  roleId: Scalars['String']['input'];
-  tenantId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
-};
-
-export type AssignPermissionToRoleInput = {
-  permissionId: Scalars['String']['input'];
-  roleId: Scalars['String']['input'];
-};
-
-export type AssignRoleToUserInput = {
-  roleId: Scalars['String']['input'];
-  tenantId?: InputMaybe<Scalars['String']['input']>;
-  userId: Scalars['String']['input'];
 };
 
 export type Attribute = {
   __typename?: 'Attribute';
-  attributeValues: Array<AttributeValue>;
+  active: Scalars['Boolean']['output'];
+  created: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  updated: Scalars['DateTime']['output'];
+};
+
+export type AttributeConnection = {
+  __typename?: 'AttributeConnection';
+  /** Array of edges. */
+  edges: Array<AttributeEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
+};
+
+export type AttributeDeleteFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<AttributeDeleteFilter>>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<AttributeDeleteFilter>>;
+};
+
+export type AttributeDeleteResponse = {
+  __typename?: 'AttributeDeleteResponse';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type AttributeEdge = {
+  __typename?: 'AttributeEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the Attribute */
+  node: Attribute;
+};
+
+export type AttributeFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<AttributeFilter>>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<AttributeFilter>>;
+};
+
+export type AttributeSort = {
+  direction: SortDirection;
+  field: AttributeSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum AttributeSortFields {
+  Active = 'active',
+  Description = 'description',
+  Id = 'id',
+  Name = 'name'
+}
+
+export type AttributeUpdateFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<AttributeUpdateFilter>>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<AttributeUpdateFilter>>;
 };
 
 export type AttributeValue = {
   __typename?: 'AttributeValue';
-  attribute: Attribute;
-  attributeId: Scalars['Int']['output'];
+  active: Scalars['Boolean']['output'];
+  attributeId: Scalars['String']['output'];
+  created: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
+  updated: Scalars['DateTime']['output'];
   value: Scalars['String']['output'];
 };
 
-export type AuthResponse = {
-  __typename?: 'AuthResponse';
-  accessToken: Scalars['String']['output'];
-  refreshToken: Scalars['String']['output'];
+export type AttributeValueConnection = {
+  __typename?: 'AttributeValueConnection';
+  /** Array of edges. */
+  edges: Array<AttributeValueEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
+};
+
+export type AttributeValueDeleteFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<AttributeValueDeleteFilter>>;
+  attributeId?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<AttributeValueDeleteFilter>>;
+  value?: InputMaybe<StringFieldComparison>;
+};
+
+export type AttributeValueDeleteResponse = {
+  __typename?: 'AttributeValueDeleteResponse';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  attributeId?: Maybe<Scalars['String']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+export type AttributeValueEdge = {
+  __typename?: 'AttributeValueEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the AttributeValue */
+  node: AttributeValue;
+};
+
+export type AttributeValueFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<AttributeValueFilter>>;
+  attributeId?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<AttributeValueFilter>>;
+  value?: InputMaybe<StringFieldComparison>;
+};
+
+export type AttributeValueSort = {
+  direction: SortDirection;
+  field: AttributeValueSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum AttributeValueSortFields {
+  Active = 'active',
+  AttributeId = 'attributeId',
+  Id = 'id',
+  Value = 'value'
+}
+
+export type AttributeValueUpdateFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<AttributeValueUpdateFilter>>;
+  attributeId?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<AttributeValueUpdateFilter>>;
+  value?: InputMaybe<StringFieldComparison>;
+};
+
+export type BooleanFieldComparison = {
+  is?: InputMaybe<Scalars['Boolean']['input']>;
+  isNot?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type Brand = {
   __typename?: 'Brand';
+  active: Scalars['Boolean']['output'];
   country?: Maybe<Scalars['String']['output']>;
+  created: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  is_active: Scalars['Boolean']['output'];
-  logo_url?: Maybe<Scalars['String']['output']>;
+  logoUrl?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
-  productBrands?: Maybe<Array<Product>>;
-  products: Array<Product>;
   slug: Scalars['String']['output'];
+  updated: Scalars['DateTime']['output'];
   website?: Maybe<Scalars['String']['output']>;
+};
+
+export type BrandConnection = {
+  __typename?: 'BrandConnection';
+  /** Array of edges. */
+  edges: Array<BrandEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
+};
+
+export type BrandDeleteFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<BrandDeleteFilter>>;
+  country?: InputMaybe<StringFieldComparison>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  logoUrl?: InputMaybe<StringFieldComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<BrandDeleteFilter>>;
+  slug?: InputMaybe<StringFieldComparison>;
+  website?: InputMaybe<StringFieldComparison>;
+};
+
+export type BrandDeleteResponse = {
+  __typename?: 'BrandDeleteResponse';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  logoUrl?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  slug?: Maybe<Scalars['String']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
+};
+
+export type BrandEdge = {
+  __typename?: 'BrandEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the Brand */
+  node: Brand;
+};
+
+export type BrandFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<BrandFilter>>;
+  country?: InputMaybe<StringFieldComparison>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  logoUrl?: InputMaybe<StringFieldComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<BrandFilter>>;
+  slug?: InputMaybe<StringFieldComparison>;
+  website?: InputMaybe<StringFieldComparison>;
+};
+
+export type BrandSort = {
+  direction: SortDirection;
+  field: BrandSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum BrandSortFields {
+  Active = 'active',
+  Country = 'country',
+  Description = 'description',
+  Id = 'id',
+  LogoUrl = 'logoUrl',
+  Name = 'name',
+  Slug = 'slug',
+  Website = 'website'
+}
+
+export type BrandUpdateFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<BrandUpdateFilter>>;
+  country?: InputMaybe<StringFieldComparison>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  logoUrl?: InputMaybe<StringFieldComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<BrandUpdateFilter>>;
+  slug?: InputMaybe<StringFieldComparison>;
+  website?: InputMaybe<StringFieldComparison>;
 };
 
 export type Category = {
   __typename?: 'Category';
+  active: Scalars['Boolean']['output'];
+  created: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  products: Array<Product>;
+  slug: Scalars['String']['output'];
+  updated: Scalars['DateTime']['output'];
 };
 
-export type CreateAttributeDto = {
+export type CategoryConnection = {
+  __typename?: 'CategoryConnection';
+  /** Array of edges. */
+  edges: Array<CategoryEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
+};
+
+export type CategoryDeleteFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<CategoryDeleteFilter>>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<CategoryDeleteFilter>>;
+  slug?: InputMaybe<StringFieldComparison>;
+};
+
+export type CategoryDeleteResponse = {
+  __typename?: 'CategoryDeleteResponse';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  slug?: Maybe<Scalars['String']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type CategoryEdge = {
+  __typename?: 'CategoryEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the Category */
+  node: Category;
+};
+
+export type CategoryFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<CategoryFilter>>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<CategoryFilter>>;
+  slug?: InputMaybe<StringFieldComparison>;
+};
+
+export type CategorySort = {
+  direction: SortDirection;
+  field: CategorySortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum CategorySortFields {
+  Active = 'active',
+  Description = 'description',
+  Id = 'id',
+  Name = 'name',
+  Slug = 'slug'
+}
+
+export type CategoryUpdateFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<CategoryUpdateFilter>>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<CategoryUpdateFilter>>;
+  slug?: InputMaybe<StringFieldComparison>;
+};
+
+export type CreateAttribute = {
+  active?: Scalars['Boolean']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
 };
 
-export type CreateAttributeValueDto = {
-  attributeId: Scalars['Int']['input'];
+export type CreateAttributeValue = {
+  active?: Scalars['Boolean']['input'];
+  attributeId: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
 
-export type CreateBrandDto = {
+export type CreateBrand = {
+  active?: Scalars['Boolean']['input'];
   country?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  is_active?: InputMaybe<Scalars['Boolean']['input']>;
-  logo_url?: InputMaybe<Scalars['String']['input']>;
+  logoUrl?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   slug: Scalars['String']['input'];
   website?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type CreateCategoryDto = {
+export type CreateCategory = {
+  active?: Scalars['Boolean']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  slug: Scalars['String']['input'];
+};
+
+export type CreateManyAttributeValuesInput = {
+  /** Array of records to create */
+  attributeValues: Array<CreateAttributeValue>;
+};
+
+export type CreateManyAttributesInput = {
+  /** Array of records to create */
+  attributes: Array<CreateAttribute>;
+};
+
+export type CreateManyBrandsInput = {
+  /** Array of records to create */
+  brands: Array<CreateBrand>;
+};
+
+export type CreateManyCategoriesInput = {
+  /** Array of records to create */
+  categories: Array<CreateCategory>;
+};
+
+export type CreateManyProductVariantsInput = {
+  /** Array of records to create */
+  productVariants: Array<CreateProductVariant>;
+};
+
+export type CreateManyProductsInput = {
+  /** Array of records to create */
+  products: Array<CreateProduct>;
+};
+
+export type CreateManyProfilesInput = {
+  /** Array of records to create */
+  profiles: Array<CreateProfile>;
+};
+
+export type CreateManyTenantsInput = {
+  /** Array of records to create */
+  tenants: Array<CreateTenant>;
+};
+
+export type CreateManyTodoItemsInput = {
+  /** Array of records to create */
+  todoItems: Array<CreateTodoItem>;
+};
+
+export type CreateManyUsersInput = {
+  /** Array of records to create */
+  users: Array<CreateUser>;
+};
+
+export type CreateOneAttributeInput = {
+  /** The record to create */
+  attribute: CreateAttribute;
+};
+
+export type CreateOneAttributeValueInput = {
+  /** The record to create */
+  attributeValue: CreateAttributeValue;
+};
+
+export type CreateOneBrandInput = {
+  /** The record to create */
+  brand: CreateBrand;
+};
+
+export type CreateOneCategoryInput = {
+  /** The record to create */
+  category: CreateCategory;
+};
+
+export type CreateOneProductInput = {
+  /** The record to create */
+  product: CreateProduct;
+};
+
+export type CreateOneProductVariantInput = {
+  /** The record to create */
+  productVariant: CreateProductVariant;
+};
+
+export type CreateOneProfileInput = {
+  /** The record to create */
+  profile: CreateProfile;
+};
+
+export type CreateOneTenantInput = {
+  /** The record to create */
+  tenant: CreateTenant;
+};
+
+export type CreateOneTodoItemInput = {
+  /** The record to create */
+  todoItem: CreateTodoItem;
+};
+
+export type CreateOneUserInput = {
+  /** The record to create */
+  user: CreateUser;
+};
+
+export type CreateProduct = {
+  active?: Scalars['Boolean']['input'];
+  brandId?: InputMaybe<Scalars['String']['input']>;
+  categoryId?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  slug: Scalars['String']['input'];
+};
+
+export type CreateProductVariant = {
+  active?: Scalars['Boolean']['input'];
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  price: Scalars['Float']['input'];
+  productId: Scalars['String']['input'];
+  sku: Scalars['String']['input'];
+  stock?: Scalars['Int']['input'];
+};
+
+export type CreateProfile = {
+  resolvers: Array<Scalars['String']['input']>;
+  tenantId: Scalars['String']['input'];
+};
+
+export type CreateTenant = {
+  active?: Scalars['Boolean']['input'];
+  domain: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
 
-export type CreatePermissionInput = {
-  action: Scalars['String']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
-  isGlobal?: Scalars['Boolean']['input'];
-  resource: Scalars['String']['input'];
-  tenantId?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type CreatePostRequest = {
-  content: Scalars['String']['input'];
-  currentPrice: Scalars['Float']['input'];
-  discountPercentage: Scalars['Float']['input'];
-  originalPrice: Scalars['Float']['input'];
-  originalUrl: Scalars['String']['input'];
+export type CreateTodoItem = {
+  completed: Scalars['Boolean']['input'];
   title: Scalars['String']['input'];
 };
 
-export type CreateProductDto = {
-  brandId?: InputMaybe<Scalars['Int']['input']>;
-  categoryId?: InputMaybe<Scalars['Int']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  price: Scalars['Float']['input'];
-  slug: Scalars['String']['input'];
-};
-
-export type CreateProductVariantAttributeDto = {
-  attributeId: Scalars['Int']['input'];
-  valueId: Scalars['Int']['input'];
-  variantId: Scalars['Int']['input'];
-};
-
-export type CreateProductVariantDto = {
-  imageUrl?: InputMaybe<Scalars['String']['input']>;
-  price: Scalars['Float']['input'];
-  productId: Scalars['Int']['input'];
-  sku: Scalars['String']['input'];
-  stock: Scalars['Int']['input'];
-};
-
-export type CreateRequest = {
-  name: Scalars['String']['input'];
-  permissions?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-export type CreateRoleInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  isGlobal?: Scalars['Boolean']['input'];
-  name: Scalars['String']['input'];
-  tenantId?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type CreateTenantInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  domain?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  ownerId?: InputMaybe<Scalars['String']['input']>;
-  settings?: InputMaybe<TenantSettingsInput>;
-  slug: Scalars['String']['input'];
-};
-
-export type CreateUserRequest = {
+export type CreateUser = {
+  active?: Scalars['Boolean']['input'];
   email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
   password: Scalars['String']['input'];
-  perfilId: Scalars['String']['input'];
+  roles?: InputMaybe<Array<Scalars['String']['input']>>;
+  tenantId: Scalars['String']['input'];
 };
 
-export type EffectivePermissionType = {
-  __typename?: 'EffectivePermissionType';
-  action: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  resource: Scalars['String']['output'];
+export type CursorPaging = {
+  /** Paginate after opaque cursor */
+  after?: InputMaybe<Scalars['ConnectionCursor']['input']>;
+  /** Paginate before opaque cursor */
+  before?: InputMaybe<Scalars['ConnectionCursor']['input']>;
+  /** Paginate first */
+  first?: InputMaybe<Scalars['Int']['input']>;
+  /** Paginate last */
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type EngagementResponse = {
-  __typename?: 'EngagementResponse';
-  percentage: Scalars['Int']['output'];
+export type DeleteManyAttributeValuesInput = {
+  /** Filter to find records to delete */
+  filter: AttributeValueDeleteFilter;
+};
+
+export type DeleteManyAttributesInput = {
+  /** Filter to find records to delete */
+  filter: AttributeDeleteFilter;
+};
+
+export type DeleteManyBrandsInput = {
+  /** Filter to find records to delete */
+  filter: BrandDeleteFilter;
+};
+
+export type DeleteManyCategoriesInput = {
+  /** Filter to find records to delete */
+  filter: CategoryDeleteFilter;
+};
+
+export type DeleteManyProductVariantsInput = {
+  /** Filter to find records to delete */
+  filter: ProductVariantDeleteFilter;
+};
+
+export type DeleteManyProductsInput = {
+  /** Filter to find records to delete */
+  filter: ProductDeleteFilter;
+};
+
+export type DeleteManyProfilesInput = {
+  /** Filter to find records to delete */
+  filter: ProfileDeleteFilter;
+};
+
+export type DeleteManyResponse = {
+  __typename?: 'DeleteManyResponse';
+  /** The number of records deleted. */
+  deletedCount: Scalars['Int']['output'];
+};
+
+export type DeleteManyTenantsInput = {
+  /** Filter to find records to delete */
+  filter: TenantDeleteFilter;
+};
+
+export type DeleteManyTodoItemsInput = {
+  /** Filter to find records to delete */
+  filter: TodoItemDeleteFilter;
+};
+
+export type DeleteManyUsersInput = {
+  /** Filter to find records to delete */
+  filter: UserDeleteFilter;
+};
+
+export type DeleteOneAttributeInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneAttributeValueInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneBrandInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneCategoryInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneProductInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneProductVariantInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneProfileInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneTenantInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneTodoItemInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteOneUserInput = {
+  /** The id of the record to delete. */
+  id: Scalars['ID']['input'];
+};
+
+export type FloatFieldComparison = {
+  between?: InputMaybe<FloatFieldComparisonBetween>;
+  eq?: InputMaybe<Scalars['Float']['input']>;
+  gt?: InputMaybe<Scalars['Float']['input']>;
+  gte?: InputMaybe<Scalars['Float']['input']>;
+  in?: InputMaybe<Array<Scalars['Float']['input']>>;
+  is?: InputMaybe<Scalars['Boolean']['input']>;
+  isNot?: InputMaybe<Scalars['Boolean']['input']>;
+  lt?: InputMaybe<Scalars['Float']['input']>;
+  lte?: InputMaybe<Scalars['Float']['input']>;
+  neq?: InputMaybe<Scalars['Float']['input']>;
+  notBetween?: InputMaybe<FloatFieldComparisonBetween>;
+  notIn?: InputMaybe<Array<Scalars['Float']['input']>>;
+};
+
+export type FloatFieldComparisonBetween = {
+  lower: Scalars['Float']['input'];
+  upper: Scalars['Float']['input'];
+};
+
+export type IdFilterComparison = {
+  eq?: InputMaybe<Scalars['ID']['input']>;
+  gt?: InputMaybe<Scalars['ID']['input']>;
+  gte?: InputMaybe<Scalars['ID']['input']>;
+  iLike?: InputMaybe<Scalars['ID']['input']>;
+  in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  is?: InputMaybe<Scalars['Boolean']['input']>;
+  isNot?: InputMaybe<Scalars['Boolean']['input']>;
+  like?: InputMaybe<Scalars['ID']['input']>;
+  lt?: InputMaybe<Scalars['ID']['input']>;
+  lte?: InputMaybe<Scalars['ID']['input']>;
+  neq?: InputMaybe<Scalars['ID']['input']>;
+  notILike?: InputMaybe<Scalars['ID']['input']>;
+  notIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  notLike?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type IntFieldComparison = {
+  between?: InputMaybe<IntFieldComparisonBetween>;
+  eq?: InputMaybe<Scalars['Int']['input']>;
+  gt?: InputMaybe<Scalars['Int']['input']>;
+  gte?: InputMaybe<Scalars['Int']['input']>;
+  in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  is?: InputMaybe<Scalars['Boolean']['input']>;
+  isNot?: InputMaybe<Scalars['Boolean']['input']>;
+  lt?: InputMaybe<Scalars['Int']['input']>;
+  lte?: InputMaybe<Scalars['Int']['input']>;
+  neq?: InputMaybe<Scalars['Int']['input']>;
+  notBetween?: InputMaybe<IntFieldComparisonBetween>;
+  notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type IntFieldComparisonBetween = {
+  lower: Scalars['Int']['input'];
+  upper: Scalars['Int']['input'];
 };
 
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
-  tenantId?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type LogoutResponse = {
-  __typename?: 'LogoutResponse';
-  message: Scalars['String']['output'];
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  accessToken: Scalars['String']['output'];
+  refreshToken: Scalars['String']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addUserToTenant: Scalars['Boolean']['output'];
-  assignPermissionToRole: Scalars['Boolean']['output'];
-  assignRoleToUser: Scalars['Boolean']['output'];
-  createAttribute: Attribute;
-  createAttributeValue: AttributeValue;
-  createBrand: Brand;
-  createCategory: Category;
-  createPerfil: Perfil;
-  createPermission: Permission;
-  createPost: Post;
-  createProduct: Product;
-  createProductVariant: ProductVariants;
-  createProductVariantAttribute: ProductVariantAttribute;
-  createRole: Role;
-  createTenant: Tenant;
-  createUser: User;
-  deletePermission: Scalars['Boolean']['output'];
-  deleteRole: Scalars['Boolean']['output'];
-  deleteTenant: Scalars['Boolean']['output'];
-  login: AuthResponse;
-  logout: LogoutResponse;
-  refreshTokens: AuthResponse;
-  removeAttribute: Scalars['Boolean']['output'];
-  removeAttributeValue: Scalars['Boolean']['output'];
-  removeBrand: Scalars['Boolean']['output'];
-  removeCategory: Scalars['Boolean']['output'];
-  removePerfil: Scalars['Boolean']['output'];
-  removePermissionFromRole: Scalars['Boolean']['output'];
-  removePost: Scalars['Boolean']['output'];
-  removeProduct: Scalars['Boolean']['output'];
-  removeProductVariant: Scalars['Boolean']['output'];
-  removeProductVariantAttribute: Scalars['Boolean']['output'];
-  removeProductVariantAttributeByVariantAndAttribute: Scalars['Boolean']['output'];
-  removeProductVariantAttributesByVariant: Scalars['Boolean']['output'];
-  removeRoleFromUser: Scalars['Boolean']['output'];
-  removeUserFromTenant: Scalars['Boolean']['output'];
-  renewAccessToken: AuthResponse;
-  updateAttribute: Attribute;
-  updateAttributeValue: AttributeValue;
-  updateBrand: Brand;
-  updateCategory: Category;
-  updatePerfil: Perfil;
-  updatePermission: Permission;
-  updatePost: Post;
-  updateProduct: Product;
-  updateProductVariant: ProductVariants;
-  updateProductVariantAttribute: ProductVariantAttribute;
-  updateRole: Role;
-  updateTenant: Tenant;
-  votePost: VoteResponse;
+  createManyAttributeValues: Array<AttributeValue>;
+  createManyAttributes: Array<Attribute>;
+  createManyBrands: Array<Brand>;
+  createManyCategories: Array<Category>;
+  createManyProductVariants: Array<ProductVariant>;
+  createManyProducts: Array<Product>;
+  createManyProfiles: Array<Profile>;
+  createManyTenants: Array<Tenant>;
+  createManyUsers: Array<User>;
+  createOneAttribute: Attribute;
+  createOneAttributeValue: AttributeValue;
+  createOneBrand: Brand;
+  createOneCategory: Category;
+  createOneProduct: Product;
+  createOneProductVariant: ProductVariant;
+  createOneProfile: Profile;
+  createOneTenant: Tenant;
+  createOneUser: User;
+  createTodoItem: TodoItem;
+  createTodoItems: Array<TodoItem>;
+  deleteManyAttributeValues: DeleteManyResponse;
+  deleteManyAttributes: DeleteManyResponse;
+  deleteManyBrands: DeleteManyResponse;
+  deleteManyCategories: DeleteManyResponse;
+  deleteManyProductVariants: DeleteManyResponse;
+  deleteManyProducts: DeleteManyResponse;
+  deleteManyProfiles: DeleteManyResponse;
+  deleteManyTenants: DeleteManyResponse;
+  deleteManyUsers: DeleteManyResponse;
+  deleteOneAttribute: AttributeDeleteResponse;
+  deleteOneAttributeValue: AttributeValueDeleteResponse;
+  deleteOneBrand: BrandDeleteResponse;
+  deleteOneCategory: CategoryDeleteResponse;
+  deleteOneProduct: ProductDeleteResponse;
+  deleteOneProductVariant: ProductVariantDeleteResponse;
+  deleteOneProfile: ProfileDeleteResponse;
+  deleteOneTenant: TenantDeleteResponse;
+  deleteOneUser: UserDeleteResponse;
+  deleteTodoItem: TodoItemDeleteResponse;
+  deleteTodoItems: DeleteManyResponse;
+  login: LoginResponse;
+  updateManyAttributeValues: UpdateManyResponse;
+  updateManyAttributes: UpdateManyResponse;
+  updateManyBrands: UpdateManyResponse;
+  updateManyCategories: UpdateManyResponse;
+  updateManyProductVariants: UpdateManyResponse;
+  updateManyProducts: UpdateManyResponse;
+  updateManyProfiles: UpdateManyResponse;
+  updateManyTenants: UpdateManyResponse;
+  updateManyUsers: UpdateManyResponse;
+  updateOneAttribute: Attribute;
+  updateOneAttributeValue: AttributeValue;
+  updateOneBrand: Brand;
+  updateOneCategory: Category;
+  updateOneProduct: Product;
+  updateOneProductVariant: ProductVariant;
+  updateOneProfile: Profile;
+  updateOneTenant: Tenant;
+  updateOneUser: User;
+  updateTodoItem: TodoItem;
+  updateTodoItems: UpdateManyResponse;
 };
 
 
-export type MutationAddUserToTenantArgs = {
-  input: AddUserToTenantInput;
+export type MutationCreateManyAttributeValuesArgs = {
+  input: CreateManyAttributeValuesInput;
 };
 
 
-export type MutationAssignPermissionToRoleArgs = {
-  input: AssignPermissionToRoleInput;
+export type MutationCreateManyAttributesArgs = {
+  input: CreateManyAttributesInput;
 };
 
 
-export type MutationAssignRoleToUserArgs = {
-  input: AssignRoleToUserInput;
+export type MutationCreateManyBrandsArgs = {
+  input: CreateManyBrandsInput;
 };
 
 
-export type MutationCreateAttributeArgs = {
-  createAttributeInput: CreateAttributeDto;
+export type MutationCreateManyCategoriesArgs = {
+  input: CreateManyCategoriesInput;
 };
 
 
-export type MutationCreateAttributeValueArgs = {
-  createAttributeValueInput: CreateAttributeValueDto;
+export type MutationCreateManyProductVariantsArgs = {
+  input: CreateManyProductVariantsInput;
 };
 
 
-export type MutationCreateBrandArgs = {
-  createBrandInput: CreateBrandDto;
+export type MutationCreateManyProductsArgs = {
+  input: CreateManyProductsInput;
 };
 
 
-export type MutationCreateCategoryArgs = {
-  createCategoryInput: CreateCategoryDto;
+export type MutationCreateManyProfilesArgs = {
+  input: CreateManyProfilesInput;
 };
 
 
-export type MutationCreatePerfilArgs = {
-  createPerfilInput: CreateRequest;
+export type MutationCreateManyTenantsArgs = {
+  input: CreateManyTenantsInput;
 };
 
 
-export type MutationCreatePermissionArgs = {
-  input: CreatePermissionInput;
+export type MutationCreateManyUsersArgs = {
+  input: CreateManyUsersInput;
 };
 
 
-export type MutationCreatePostArgs = {
-  createPostInput: CreatePostRequest;
+export type MutationCreateOneAttributeArgs = {
+  input: CreateOneAttributeInput;
 };
 
 
-export type MutationCreateProductArgs = {
-  createProductInput: CreateProductDto;
+export type MutationCreateOneAttributeValueArgs = {
+  input: CreateOneAttributeValueInput;
 };
 
 
-export type MutationCreateProductVariantArgs = {
-  createVariantInput: CreateProductVariantDto;
+export type MutationCreateOneBrandArgs = {
+  input: CreateOneBrandInput;
 };
 
 
-export type MutationCreateProductVariantAttributeArgs = {
-  createProductVariantAttributeInput: CreateProductVariantAttributeDto;
+export type MutationCreateOneCategoryArgs = {
+  input: CreateOneCategoryInput;
 };
 
 
-export type MutationCreateRoleArgs = {
-  input: CreateRoleInput;
+export type MutationCreateOneProductArgs = {
+  input: CreateOneProductInput;
 };
 
 
-export type MutationCreateTenantArgs = {
-  input: CreateTenantInput;
+export type MutationCreateOneProductVariantArgs = {
+  input: CreateOneProductVariantInput;
 };
 
 
-export type MutationCreateUserArgs = {
-  createUserInput: CreateUserRequest;
+export type MutationCreateOneProfileArgs = {
+  input: CreateOneProfileInput;
 };
 
 
-export type MutationDeletePermissionArgs = {
-  id: Scalars['String']['input'];
+export type MutationCreateOneTenantArgs = {
+  input: CreateOneTenantInput;
 };
 
 
-export type MutationDeleteRoleArgs = {
-  id: Scalars['String']['input'];
+export type MutationCreateOneUserArgs = {
+  input: CreateOneUserInput;
 };
 
 
-export type MutationDeleteTenantArgs = {
-  id: Scalars['String']['input'];
+export type MutationCreateTodoItemArgs = {
+  input: CreateOneTodoItemInput;
+};
+
+
+export type MutationCreateTodoItemsArgs = {
+  input: CreateManyTodoItemsInput;
+};
+
+
+export type MutationDeleteManyAttributeValuesArgs = {
+  input: DeleteManyAttributeValuesInput;
+};
+
+
+export type MutationDeleteManyAttributesArgs = {
+  input: DeleteManyAttributesInput;
+};
+
+
+export type MutationDeleteManyBrandsArgs = {
+  input: DeleteManyBrandsInput;
+};
+
+
+export type MutationDeleteManyCategoriesArgs = {
+  input: DeleteManyCategoriesInput;
+};
+
+
+export type MutationDeleteManyProductVariantsArgs = {
+  input: DeleteManyProductVariantsInput;
+};
+
+
+export type MutationDeleteManyProductsArgs = {
+  input: DeleteManyProductsInput;
+};
+
+
+export type MutationDeleteManyProfilesArgs = {
+  input: DeleteManyProfilesInput;
+};
+
+
+export type MutationDeleteManyTenantsArgs = {
+  input: DeleteManyTenantsInput;
+};
+
+
+export type MutationDeleteManyUsersArgs = {
+  input: DeleteManyUsersInput;
+};
+
+
+export type MutationDeleteOneAttributeArgs = {
+  input: DeleteOneAttributeInput;
+};
+
+
+export type MutationDeleteOneAttributeValueArgs = {
+  input: DeleteOneAttributeValueInput;
+};
+
+
+export type MutationDeleteOneBrandArgs = {
+  input: DeleteOneBrandInput;
+};
+
+
+export type MutationDeleteOneCategoryArgs = {
+  input: DeleteOneCategoryInput;
+};
+
+
+export type MutationDeleteOneProductArgs = {
+  input: DeleteOneProductInput;
+};
+
+
+export type MutationDeleteOneProductVariantArgs = {
+  input: DeleteOneProductVariantInput;
+};
+
+
+export type MutationDeleteOneProfileArgs = {
+  input: DeleteOneProfileInput;
+};
+
+
+export type MutationDeleteOneTenantArgs = {
+  input: DeleteOneTenantInput;
+};
+
+
+export type MutationDeleteOneUserArgs = {
+  input: DeleteOneUserInput;
+};
+
+
+export type MutationDeleteTodoItemArgs = {
+  input: DeleteOneTodoItemInput;
+};
+
+
+export type MutationDeleteTodoItemsArgs = {
+  input: DeleteManyTodoItemsInput;
 };
 
 
@@ -346,517 +988,1033 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationRefreshTokensArgs = {
-  refreshToken: Scalars['String']['input'];
+export type MutationUpdateManyAttributeValuesArgs = {
+  input: UpdateManyAttributeValuesInput;
 };
 
 
-export type MutationRemoveAttributeArgs = {
-  id: Scalars['Int']['input'];
+export type MutationUpdateManyAttributesArgs = {
+  input: UpdateManyAttributesInput;
 };
 
 
-export type MutationRemoveAttributeValueArgs = {
-  id: Scalars['Int']['input'];
+export type MutationUpdateManyBrandsArgs = {
+  input: UpdateManyBrandsInput;
 };
 
 
-export type MutationRemoveBrandArgs = {
-  id: Scalars['Int']['input'];
+export type MutationUpdateManyCategoriesArgs = {
+  input: UpdateManyCategoriesInput;
 };
 
 
-export type MutationRemoveCategoryArgs = {
-  id: Scalars['Int']['input'];
+export type MutationUpdateManyProductVariantsArgs = {
+  input: UpdateManyProductVariantsInput;
 };
 
 
-export type MutationRemovePerfilArgs = {
-  id: Scalars['String']['input'];
+export type MutationUpdateManyProductsArgs = {
+  input: UpdateManyProductsInput;
 };
 
 
-export type MutationRemovePermissionFromRoleArgs = {
-  input: AssignPermissionToRoleInput;
+export type MutationUpdateManyProfilesArgs = {
+  input: UpdateManyProfilesInput;
 };
 
 
-export type MutationRemovePostArgs = {
-  id: Scalars['String']['input'];
+export type MutationUpdateManyTenantsArgs = {
+  input: UpdateManyTenantsInput;
 };
 
 
-export type MutationRemoveProductArgs = {
-  id: Scalars['Int']['input'];
+export type MutationUpdateManyUsersArgs = {
+  input: UpdateManyUsersInput;
 };
 
 
-export type MutationRemoveProductVariantArgs = {
-  id: Scalars['Int']['input'];
+export type MutationUpdateOneAttributeArgs = {
+  input: UpdateOneAttributeInput;
 };
 
 
-export type MutationRemoveProductVariantAttributeArgs = {
-  id: Scalars['Int']['input'];
+export type MutationUpdateOneAttributeValueArgs = {
+  input: UpdateOneAttributeValueInput;
 };
 
 
-export type MutationRemoveProductVariantAttributeByVariantAndAttributeArgs = {
-  attributeId: Scalars['Int']['input'];
-  variantId: Scalars['Int']['input'];
+export type MutationUpdateOneBrandArgs = {
+  input: UpdateOneBrandInput;
 };
 
 
-export type MutationRemoveProductVariantAttributesByVariantArgs = {
-  variantId: Scalars['Int']['input'];
+export type MutationUpdateOneCategoryArgs = {
+  input: UpdateOneCategoryInput;
 };
 
 
-export type MutationRemoveRoleFromUserArgs = {
-  input: AssignRoleToUserInput;
+export type MutationUpdateOneProductArgs = {
+  input: UpdateOneProductInput;
 };
 
 
-export type MutationRemoveUserFromTenantArgs = {
-  input: RemoveUserFromTenantInput;
+export type MutationUpdateOneProductVariantArgs = {
+  input: UpdateOneProductVariantInput;
 };
 
 
-export type MutationRenewAccessTokenArgs = {
-  accessToken: Scalars['String']['input'];
+export type MutationUpdateOneProfileArgs = {
+  input: UpdateOneProfileInput;
 };
 
 
-export type MutationUpdateAttributeArgs = {
-  id: Scalars['Int']['input'];
-  updateAttributeInput: UpdateAttributeDto;
+export type MutationUpdateOneTenantArgs = {
+  input: UpdateOneTenantInput;
 };
 
 
-export type MutationUpdateAttributeValueArgs = {
-  id: Scalars['Int']['input'];
-  updateAttributeValueInput: UpdateAttributeValueDto;
+export type MutationUpdateOneUserArgs = {
+  input: UpdateOneUserInput;
 };
 
 
-export type MutationUpdateBrandArgs = {
-  id: Scalars['Int']['input'];
-  updateBrandInput: UpdateBrandDto;
+export type MutationUpdateTodoItemArgs = {
+  input: UpdateOneTodoItemInput;
 };
 
 
-export type MutationUpdateCategoryArgs = {
-  id: Scalars['Int']['input'];
-  updateCategoryInput: UpdateCategoryDto;
+export type MutationUpdateTodoItemsArgs = {
+  input: UpdateManyTodoItemsInput;
 };
 
-
-export type MutationUpdatePerfilArgs = {
-  id: Scalars['String']['input'];
-  updatePerfilInput: UpdateRequest;
-};
-
-
-export type MutationUpdatePermissionArgs = {
-  input: UpdatePermissionInput;
-};
-
-
-export type MutationUpdatePostArgs = {
-  id: Scalars['String']['input'];
-  updatePostInput: UpdatePostRequest;
-};
-
-
-export type MutationUpdateProductArgs = {
-  id: Scalars['Int']['input'];
-  updateProductInput: UpdateProductDto;
-};
-
-
-export type MutationUpdateProductVariantArgs = {
-  id: Scalars['Int']['input'];
-  updateVariantInput: UpdateProductVariantDto;
-};
-
-
-export type MutationUpdateProductVariantAttributeArgs = {
-  id: Scalars['Int']['input'];
-  updateProductVariantAttributeInput: UpdateProductVariantAttributeDto;
-};
-
-
-export type MutationUpdateRoleArgs = {
-  input: UpdateRoleInput;
-};
-
-
-export type MutationUpdateTenantArgs = {
-  input: UpdateTenantInput;
-};
-
-
-export type MutationVotePostArgs = {
-  postId: Scalars['String']['input'];
-  voteType: Scalars['String']['input'];
-};
-
-export type Perfil = {
-  __typename?: 'Perfil';
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  users: Array<User>;
-};
-
-export type Permission = {
-  __typename?: 'Permission';
-  action: Scalars['String']['output'];
-  createdAt: Scalars['DateTime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  resource: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type Post = {
-  __typename?: 'Post';
-  author: User;
-  content: Scalars['String']['output'];
-  createdAt: Scalars['DateTime']['output'];
-  currentPrice: Scalars['Float']['output'];
-  discountPercentage: Scalars['Float']['output'];
-  downvotes: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
-  originalPrice: Scalars['Float']['output'];
-  originalUrl: Scalars['String']['output'];
-  title: Scalars['String']['output'];
-  upvotes: Scalars['Int']['output'];
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** The cursor of the last returned record. */
+  endCursor?: Maybe<Scalars['ConnectionCursor']['output']>;
+  /** true if paging forward and there are more records. */
+  hasNextPage?: Maybe<Scalars['Boolean']['output']>;
+  /** true if paging backwards and there are more records. */
+  hasPreviousPage?: Maybe<Scalars['Boolean']['output']>;
+  /** The cursor of the first returned record. */
+  startCursor?: Maybe<Scalars['ConnectionCursor']['output']>;
 };
 
 export type Product = {
   __typename?: 'Product';
-  brand?: Maybe<Brand>;
-  brandId?: Maybe<Scalars['Int']['output']>;
-  brands?: Maybe<Array<Brand>>;
-  category?: Maybe<Category>;
-  categoryId?: Maybe<Scalars['Int']['output']>;
-  createdAt: Scalars['DateTime']['output'];
+  active: Scalars['Boolean']['output'];
+  brandId?: Maybe<Scalars['String']['output']>;
+  categoryId?: Maybe<Scalars['String']['output']>;
+  created: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   price: Scalars['Float']['output'];
   slug: Scalars['String']['output'];
-  variants: Array<ProductVariants>;
+  updated: Scalars['DateTime']['output'];
 };
 
-export type ProductVariantAttribute = {
-  __typename?: 'ProductVariantAttribute';
-  attribute: Attribute;
-  attributeId: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
-  value: AttributeValue;
-  valueId: Scalars['Int']['output'];
-  variant: ProductVariants;
-  variantId: Scalars['Int']['output'];
+export type ProductConnection = {
+  __typename?: 'ProductConnection';
+  /** Array of edges. */
+  edges: Array<ProductEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
 };
 
-export type ProductVariants = {
-  __typename?: 'ProductVariants';
-  createdAt: Scalars['DateTime']['output'];
+export type ProductDeleteFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<ProductDeleteFilter>>;
+  brandId?: InputMaybe<StringFieldComparison>;
+  categoryId?: InputMaybe<StringFieldComparison>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<ProductDeleteFilter>>;
+  price?: InputMaybe<FloatFieldComparison>;
+  slug?: InputMaybe<StringFieldComparison>;
+};
+
+export type ProductDeleteResponse = {
+  __typename?: 'ProductDeleteResponse';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  brandId?: Maybe<Scalars['String']['output']>;
+  categoryId?: Maybe<Scalars['String']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  price?: Maybe<Scalars['Float']['output']>;
+  slug?: Maybe<Scalars['String']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ProductEdge = {
+  __typename?: 'ProductEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the Product */
+  node: Product;
+};
+
+export type ProductFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<ProductFilter>>;
+  brandId?: InputMaybe<StringFieldComparison>;
+  categoryId?: InputMaybe<StringFieldComparison>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<ProductFilter>>;
+  price?: InputMaybe<FloatFieldComparison>;
+  slug?: InputMaybe<StringFieldComparison>;
+};
+
+export type ProductSort = {
+  direction: SortDirection;
+  field: ProductSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum ProductSortFields {
+  Active = 'active',
+  BrandId = 'brandId',
+  CategoryId = 'categoryId',
+  Description = 'description',
+  Id = 'id',
+  Name = 'name',
+  Price = 'price',
+  Slug = 'slug'
+}
+
+export type ProductUpdateFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<ProductUpdateFilter>>;
+  brandId?: InputMaybe<StringFieldComparison>;
+  categoryId?: InputMaybe<StringFieldComparison>;
+  description?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<ProductUpdateFilter>>;
+  price?: InputMaybe<FloatFieldComparison>;
+  slug?: InputMaybe<StringFieldComparison>;
+};
+
+export type ProductVariant = {
+  __typename?: 'ProductVariant';
+  active: Scalars['Boolean']['output'];
+  created: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
   imageUrl?: Maybe<Scalars['String']['output']>;
   price: Scalars['Float']['output'];
-  product: Product;
-  productId: Scalars['Int']['output'];
+  productId: Scalars['String']['output'];
   sku: Scalars['String']['output'];
   stock: Scalars['Int']['output'];
+  updated: Scalars['DateTime']['output'];
+};
+
+export type ProductVariantConnection = {
+  __typename?: 'ProductVariantConnection';
+  /** Array of edges. */
+  edges: Array<ProductVariantEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
+};
+
+export type ProductVariantDeleteFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<ProductVariantDeleteFilter>>;
+  id?: InputMaybe<IdFilterComparison>;
+  imageUrl?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<ProductVariantDeleteFilter>>;
+  price?: InputMaybe<FloatFieldComparison>;
+  productId?: InputMaybe<StringFieldComparison>;
+  sku?: InputMaybe<StringFieldComparison>;
+  stock?: InputMaybe<IntFieldComparison>;
+};
+
+export type ProductVariantDeleteResponse = {
+  __typename?: 'ProductVariantDeleteResponse';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  price?: Maybe<Scalars['Float']['output']>;
+  productId?: Maybe<Scalars['String']['output']>;
+  sku?: Maybe<Scalars['String']['output']>;
+  stock?: Maybe<Scalars['Int']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ProductVariantEdge = {
+  __typename?: 'ProductVariantEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the ProductVariant */
+  node: ProductVariant;
+};
+
+export type ProductVariantFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<ProductVariantFilter>>;
+  id?: InputMaybe<IdFilterComparison>;
+  imageUrl?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<ProductVariantFilter>>;
+  price?: InputMaybe<FloatFieldComparison>;
+  productId?: InputMaybe<StringFieldComparison>;
+  sku?: InputMaybe<StringFieldComparison>;
+  stock?: InputMaybe<IntFieldComparison>;
+};
+
+export type ProductVariantSort = {
+  direction: SortDirection;
+  field: ProductVariantSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum ProductVariantSortFields {
+  Active = 'active',
+  Id = 'id',
+  ImageUrl = 'imageUrl',
+  Price = 'price',
+  ProductId = 'productId',
+  Sku = 'sku',
+  Stock = 'stock'
+}
+
+export type ProductVariantUpdateFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<ProductVariantUpdateFilter>>;
+  id?: InputMaybe<IdFilterComparison>;
+  imageUrl?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<ProductVariantUpdateFilter>>;
+  price?: InputMaybe<FloatFieldComparison>;
+  productId?: InputMaybe<StringFieldComparison>;
+  sku?: InputMaybe<StringFieldComparison>;
+  stock?: InputMaybe<IntFieldComparison>;
+};
+
+export type Profile = {
+  __typename?: 'Profile';
+  created: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  resolvers: Array<Scalars['String']['output']>;
+  tenantId: Scalars['String']['output'];
+  updated: Scalars['DateTime']['output'];
+};
+
+export type ProfileConnection = {
+  __typename?: 'ProfileConnection';
+  /** Array of edges. */
+  edges: Array<ProfileEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
+};
+
+export type ProfileDeleteFilter = {
+  and?: InputMaybe<Array<ProfileDeleteFilter>>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<ProfileDeleteFilter>>;
+  tenantId?: InputMaybe<StringFieldComparison>;
+};
+
+export type ProfileDeleteResponse = {
+  __typename?: 'ProfileDeleteResponse';
+  created?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  resolvers?: Maybe<Array<Scalars['String']['output']>>;
+  tenantId?: Maybe<Scalars['String']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ProfileEdge = {
+  __typename?: 'ProfileEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the Profile */
+  node: Profile;
+};
+
+export type ProfileFilter = {
+  and?: InputMaybe<Array<ProfileFilter>>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<ProfileFilter>>;
+  tenantId?: InputMaybe<StringFieldComparison>;
+};
+
+export type ProfileSort = {
+  direction: SortDirection;
+  field: ProfileSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum ProfileSortFields {
+  Id = 'id',
+  TenantId = 'tenantId'
+}
+
+export type ProfileUpdateFilter = {
+  and?: InputMaybe<Array<ProfileUpdateFilter>>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<ProfileUpdateFilter>>;
+  tenantId?: InputMaybe<StringFieldComparison>;
 };
 
 export type Query = {
   __typename?: 'Query';
   attribute: Attribute;
   attributeValue: AttributeValue;
-  attributeValues: Array<AttributeValue>;
-  attributeValuesByAttribute: Array<AttributeValue>;
-  attributes: Array<Attribute>;
+  attributeValues: AttributeValueConnection;
+  attributes: AttributeConnection;
   brand: Brand;
-  brands: Array<Brand>;
-  categories: Array<Category>;
+  brands: BrandConnection;
+  categories: CategoryConnection;
   category: Category;
-  findAllPerfis: Array<Perfil>;
-  findAllPosts: Array<Post>;
-  findOnePerfil: Perfil;
-  findOnePost: Post;
-  getPerfilPermissions: Array<Scalars['String']['output']>;
-  getPostEngagement: EngagementResponse;
+  findTodoItem: TodoItem;
+  findTodoItems: TodoItemConnection;
+  listResolvers: Array<ResolverOperationDto>;
   me: User;
-  permission?: Maybe<Permission>;
-  permissions: Array<Permission>;
   product: Product;
-  productVariant: ProductVariants;
-  productVariantAttribute: ProductVariantAttribute;
-  productVariantAttributes: Array<ProductVariantAttribute>;
-  productVariantAttributesByAttribute: Array<ProductVariantAttribute>;
-  productVariantAttributesByVariant: Array<ProductVariantAttribute>;
-  productVariants: Array<ProductVariants>;
-  productVariantsByProduct: Array<ProductVariants>;
-  products: Array<Product>;
-  role?: Maybe<Role>;
-  roles: Array<Role>;
-  tenant?: Maybe<Tenant>;
-  tenants: Array<Tenant>;
+  productVariant: ProductVariant;
+  productVariants: ProductVariantConnection;
+  products: ProductConnection;
+  profile: Profile;
+  profiles: ProfileConnection;
+  tenant: Tenant;
+  tenants: TenantConnection;
   user: User;
-  userInfo: UserInfoResponse;
-  userPermissions: Array<Scalars['String']['output']>;
-  userRoles: Array<Role>;
-  users: Array<User>;
+  users: UserConnection;
 };
 
 
 export type QueryAttributeArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryAttributeValueArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryAttributeValuesByAttributeArgs = {
-  attributeId: Scalars['Int']['input'];
+export type QueryAttributeValuesArgs = {
+  filter?: AttributeValueFilter;
+  paging?: CursorPaging;
+  sorting?: Array<AttributeValueSort>;
+};
+
+
+export type QueryAttributesArgs = {
+  filter?: AttributeFilter;
+  paging?: CursorPaging;
+  sorting?: Array<AttributeSort>;
 };
 
 
 export type QueryBrandArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryBrandsArgs = {
+  filter?: BrandFilter;
+  paging?: CursorPaging;
+  sorting?: Array<BrandSort>;
+};
+
+
+export type QueryCategoriesArgs = {
+  filter?: CategoryFilter;
+  paging?: CursorPaging;
+  sorting?: Array<CategorySort>;
 };
 
 
 export type QueryCategoryArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryFindOnePerfilArgs = {
-  id: Scalars['String']['input'];
+export type QueryFindTodoItemArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryFindOnePostArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryGetPostEngagementArgs = {
-  postId: Scalars['String']['input'];
-};
-
-
-export type QueryPermissionArgs = {
-  id: Scalars['String']['input'];
+export type QueryFindTodoItemsArgs = {
+  filter?: TodoItemFilter;
+  paging?: CursorPaging;
+  sorting?: Array<TodoItemSort>;
 };
 
 
 export type QueryProductArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryProductVariantArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryProductVariantAttributeArgs = {
-  id: Scalars['Int']['input'];
+export type QueryProductVariantsArgs = {
+  filter?: ProductVariantFilter;
+  paging?: CursorPaging;
+  sorting?: Array<ProductVariantSort>;
 };
 
 
-export type QueryProductVariantAttributesByAttributeArgs = {
-  attributeId: Scalars['Int']['input'];
+export type QueryProductsArgs = {
+  filter?: ProductFilter;
+  paging?: CursorPaging;
+  sorting?: Array<ProductSort>;
 };
 
 
-export type QueryProductVariantAttributesByVariantArgs = {
-  variantId: Scalars['Int']['input'];
+export type QueryProfileArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryProductVariantsByProductArgs = {
-  productId: Scalars['Int']['input'];
-};
-
-
-export type QueryRoleArgs = {
-  id: Scalars['String']['input'];
+export type QueryProfilesArgs = {
+  filter?: ProfileFilter;
+  paging?: CursorPaging;
+  sorting?: Array<ProfileSort>;
 };
 
 
 export type QueryTenantArgs = {
-  id: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryTenantsArgs = {
+  filter?: TenantFilter;
+  paging?: CursorPaging;
+  sorting?: Array<TenantSort>;
 };
 
 
 export type QueryUserArgs = {
-  id: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryUserPermissionsArgs = {
-  userId: Scalars['String']['input'];
+export type QueryUsersArgs = {
+  filter?: UserFilter;
+  paging?: CursorPaging;
+  sorting?: Array<UserSort>;
 };
 
-
-export type QueryUserRolesArgs = {
-  userId: Scalars['String']['input'];
+export type ResolverOperationDto = {
+  __typename?: 'ResolverOperationDTO';
+  methodName: Scalars['String']['output'];
+  moduleName?: Maybe<Scalars['String']['output']>;
+  requiresAuth: Scalars['Boolean']['output'];
+  resolverClass: Scalars['String']['output'];
+  resolverName?: Maybe<Scalars['String']['output']>;
+  schemaName: Scalars['String']['output'];
+  type: Scalars['String']['output'];
 };
 
-export type RemoveUserFromTenantInput = {
-  roleId: Scalars['String']['input'];
-  tenantId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
-};
+/** Sort Directions */
+export enum SortDirection {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
 
-export type Role = {
-  __typename?: 'Role';
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  isGlobal: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
-  tenant?: Maybe<Tenant>;
+/** Sort Nulls Options */
+export enum SortNulls {
+  NullsFirst = 'NULLS_FIRST',
+  NullsLast = 'NULLS_LAST'
+}
+
+export type StringFieldComparison = {
+  eq?: InputMaybe<Scalars['String']['input']>;
+  gt?: InputMaybe<Scalars['String']['input']>;
+  gte?: InputMaybe<Scalars['String']['input']>;
+  iLike?: InputMaybe<Scalars['String']['input']>;
+  in?: InputMaybe<Array<Scalars['String']['input']>>;
+  is?: InputMaybe<Scalars['Boolean']['input']>;
+  isNot?: InputMaybe<Scalars['Boolean']['input']>;
+  like?: InputMaybe<Scalars['String']['input']>;
+  lt?: InputMaybe<Scalars['String']['input']>;
+  lte?: InputMaybe<Scalars['String']['input']>;
+  neq?: InputMaybe<Scalars['String']['input']>;
+  notILike?: InputMaybe<Scalars['String']['input']>;
+  notIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  notLike?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Tenant = {
   __typename?: 'Tenant';
-  createdAt: Scalars['DateTime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  domain?: Maybe<Scalars['String']['output']>;
+  active: Scalars['Boolean']['output'];
+  created: Scalars['DateTime']['output'];
+  domain: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  isActive: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
-  owner: User;
-  settings?: Maybe<Scalars['String']['output']>;
-  slug: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
+  updated: Scalars['DateTime']['output'];
 };
 
-export type TenantSettingsInput = {
-  customization?: InputMaybe<Scalars['String']['input']>;
-  features?: InputMaybe<Scalars['String']['input']>;
-  integrations?: InputMaybe<Scalars['String']['input']>;
-  theme?: InputMaybe<Scalars['String']['input']>;
+export type TenantConnection = {
+  __typename?: 'TenantConnection';
+  /** Array of edges. */
+  edges: Array<TenantEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
 };
 
-export type UpdateAttributeDto = {
+export type TenantDeleteFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<TenantDeleteFilter>>;
+  domain?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<TenantDeleteFilter>>;
+};
+
+export type TenantDeleteResponse = {
+  __typename?: 'TenantDeleteResponse';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  domain?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type TenantEdge = {
+  __typename?: 'TenantEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the Tenant */
+  node: Tenant;
+};
+
+export type TenantFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<TenantFilter>>;
+  domain?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<TenantFilter>>;
+};
+
+export type TenantSort = {
+  direction: SortDirection;
+  field: TenantSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum TenantSortFields {
+  Active = 'active',
+  Domain = 'domain',
+  Id = 'id',
+  Name = 'name'
+}
+
+export type TenantUpdateFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<TenantUpdateFilter>>;
+  domain?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<TenantUpdateFilter>>;
+};
+
+export type TodoItem = {
+  __typename?: 'TodoItem';
+  completed: Scalars['Boolean']['output'];
+  created: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  title: Scalars['String']['output'];
+  updated: Scalars['DateTime']['output'];
+};
+
+export type TodoItemConnection = {
+  __typename?: 'TodoItemConnection';
+  /** Array of edges. */
+  edges: Array<TodoItemEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
+};
+
+export type TodoItemDeleteFilter = {
+  and?: InputMaybe<Array<TodoItemDeleteFilter>>;
+  completed?: InputMaybe<BooleanFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<TodoItemDeleteFilter>>;
+  title?: InputMaybe<StringFieldComparison>;
+};
+
+export type TodoItemDeleteResponse = {
+  __typename?: 'TodoItemDeleteResponse';
+  completed?: Maybe<Scalars['Boolean']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  updated?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type TodoItemEdge = {
+  __typename?: 'TodoItemEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the TodoItem */
+  node: TodoItem;
+};
+
+export type TodoItemFilter = {
+  and?: InputMaybe<Array<TodoItemFilter>>;
+  completed?: InputMaybe<BooleanFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<TodoItemFilter>>;
+  title?: InputMaybe<StringFieldComparison>;
+};
+
+export type TodoItemSort = {
+  direction: SortDirection;
+  field: TodoItemSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum TodoItemSortFields {
+  Completed = 'completed',
+  Id = 'id',
+  Title = 'title'
+}
+
+export type TodoItemUpdateFilter = {
+  and?: InputMaybe<Array<TodoItemUpdateFilter>>;
+  completed?: InputMaybe<BooleanFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  or?: InputMaybe<Array<TodoItemUpdateFilter>>;
+  title?: InputMaybe<StringFieldComparison>;
+};
+
+export type UpdateAttribute = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type UpdateAttributeValueDto = {
+export type UpdateAttributeValue = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  attributeId?: InputMaybe<Scalars['String']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type UpdateBrandDto = {
+export type UpdateBrand = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
   country?: InputMaybe<Scalars['String']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  is_active?: InputMaybe<Scalars['Boolean']['input']>;
-  logo_url?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  logoUrl?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type UpdateCategoryDto = {
+export type UpdateCategory = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type UpdatePermissionInput = {
-  action?: InputMaybe<Scalars['String']['input']>;
+export type UpdateManyAttributeValuesInput = {
+  /** Filter used to find fields to update */
+  filter: AttributeValueUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateAttributeValue;
+};
+
+export type UpdateManyAttributesInput = {
+  /** Filter used to find fields to update */
+  filter: AttributeUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateAttribute;
+};
+
+export type UpdateManyBrandsInput = {
+  /** Filter used to find fields to update */
+  filter: BrandUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateBrand;
+};
+
+export type UpdateManyCategoriesInput = {
+  /** Filter used to find fields to update */
+  filter: CategoryUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateCategory;
+};
+
+export type UpdateManyProductVariantsInput = {
+  /** Filter used to find fields to update */
+  filter: ProductVariantUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateProductVariant;
+};
+
+export type UpdateManyProductsInput = {
+  /** Filter used to find fields to update */
+  filter: ProductUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateProduct;
+};
+
+export type UpdateManyProfilesInput = {
+  /** Filter used to find fields to update */
+  filter: ProfileUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateProfile;
+};
+
+export type UpdateManyResponse = {
+  __typename?: 'UpdateManyResponse';
+  /** The number of records updated. */
+  updatedCount: Scalars['Int']['output'];
+};
+
+export type UpdateManyTenantsInput = {
+  /** Filter used to find fields to update */
+  filter: TenantUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateTenant;
+};
+
+export type UpdateManyTodoItemsInput = {
+  /** Filter used to find fields to update */
+  filter: TodoItemUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateTodoItem;
+};
+
+export type UpdateManyUsersInput = {
+  /** Filter used to find fields to update */
+  filter: UserUpdateFilter;
+  /** The update to apply to all records found using the filter */
+  update: UpdateUser;
+};
+
+export type UpdateOneAttributeInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateAttribute;
+};
+
+export type UpdateOneAttributeValueInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateAttributeValue;
+};
+
+export type UpdateOneBrandInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateBrand;
+};
+
+export type UpdateOneCategoryInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateCategory;
+};
+
+export type UpdateOneProductInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateProduct;
+};
+
+export type UpdateOneProductVariantInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateProductVariant;
+};
+
+export type UpdateOneProfileInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateProfile;
+};
+
+export type UpdateOneTenantInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateTenant;
+};
+
+export type UpdateOneTodoItemInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateTodoItem;
+};
+
+export type UpdateOneUserInput = {
+  /** The id of the record to update */
+  id: Scalars['ID']['input'];
+  /** The update to apply. */
+  update: UpdateUser;
+};
+
+export type UpdateProduct = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  brandId?: InputMaybe<Scalars['String']['input']>;
+  categoryId?: InputMaybe<Scalars['String']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['String']['input'];
-  isGlobal?: InputMaybe<Scalars['Boolean']['input']>;
-  resource?: InputMaybe<Scalars['String']['input']>;
-  tenantId?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type UpdatePostRequest = {
-  content?: InputMaybe<Scalars['String']['input']>;
-  currentPrice?: InputMaybe<Scalars['Float']['input']>;
-  discountPercentage?: InputMaybe<Scalars['Float']['input']>;
-  originalPrice?: InputMaybe<Scalars['Float']['input']>;
-  originalUrl?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type UpdateProductDto = {
-  brandId?: InputMaybe<Scalars['Int']['input']>;
-  categoryId?: InputMaybe<Scalars['Int']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   price?: InputMaybe<Scalars['Float']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type UpdateProductVariantAttributeDto = {
-  attributeId?: InputMaybe<Scalars['Int']['input']>;
-  valueId?: InputMaybe<Scalars['Int']['input']>;
-  variantId?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type UpdateProductVariantDto = {
+export type UpdateProductVariant = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   imageUrl?: InputMaybe<Scalars['String']['input']>;
   price?: InputMaybe<Scalars['Float']['input']>;
-  productId?: InputMaybe<Scalars['Int']['input']>;
+  productId?: InputMaybe<Scalars['String']['input']>;
   sku?: InputMaybe<Scalars['String']['input']>;
   stock?: InputMaybe<Scalars['Int']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type UpdateRequest = {
-  name: Scalars['String']['input'];
-  permissions?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-export type UpdateRoleInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['String']['input'];
-  isGlobal?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+export type UpdateProfile = {
+  created?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  resolvers?: InputMaybe<Array<Scalars['String']['input']>>;
   tenantId?: InputMaybe<Scalars['String']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type UpdateTenantInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
+export type UpdateTenant = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
   domain?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  ownerId?: InputMaybe<Scalars['String']['input']>;
-  settings?: InputMaybe<TenantSettingsInput>;
-  slug?: InputMaybe<Scalars['String']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type UpdateTodoItem = {
+  completed?: InputMaybe<Scalars['Boolean']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updated?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type UpdateUser = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  roles?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type User = {
   __typename?: 'User';
-  createdAt: Scalars['DateTime']['output'];
+  active: Scalars['Boolean']['output'];
+  created: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  perfil?: Maybe<Perfil>;
-  posts: Array<Post>;
+  name: Scalars['String']['output'];
+  roles: Array<Scalars['String']['output']>;
+  tenantId: Scalars['String']['output'];
 };
 
-export type UserInfoResponse = {
-  __typename?: 'UserInfoResponse';
-  currentTenantId?: Maybe<Scalars['String']['output']>;
-  permissions: Array<EffectivePermissionType>;
-  roles: Array<Role>;
-  tenants: Array<Tenant>;
-  user: User;
+export type UserConnection = {
+  __typename?: 'UserConnection';
+  /** Array of edges. */
+  edges: Array<UserEdge>;
+  /** Paging information */
+  pageInfo: PageInfo;
 };
 
-export type VoteResponse = {
-  __typename?: 'VoteResponse';
-  downvotes: Scalars['Int']['output'];
-  upvotes: Scalars['Int']['output'];
+export type UserDeleteFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<UserDeleteFilter>>;
+  email?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<UserDeleteFilter>>;
+  tenantId?: InputMaybe<StringFieldComparison>;
+};
+
+export type UserDeleteResponse = {
+  __typename?: 'UserDeleteResponse';
+  active?: Maybe<Scalars['Boolean']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  roles?: Maybe<Array<Scalars['String']['output']>>;
+  tenantId?: Maybe<Scalars['String']['output']>;
+};
+
+export type UserEdge = {
+  __typename?: 'UserEdge';
+  /** Cursor for this node. */
+  cursor: Scalars['ConnectionCursor']['output'];
+  /** The node containing the User */
+  node: User;
+};
+
+export type UserFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<UserFilter>>;
+  email?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<UserFilter>>;
+  tenantId?: InputMaybe<StringFieldComparison>;
+};
+
+export type UserSort = {
+  direction: SortDirection;
+  field: UserSortFields;
+  nulls?: InputMaybe<SortNulls>;
+};
+
+export enum UserSortFields {
+  Active = 'active',
+  Email = 'email',
+  Id = 'id',
+  Name = 'name',
+  TenantId = 'tenantId'
+}
+
+export type UserUpdateFilter = {
+  active?: InputMaybe<BooleanFieldComparison>;
+  and?: InputMaybe<Array<UserUpdateFilter>>;
+  email?: InputMaybe<StringFieldComparison>;
+  id?: InputMaybe<IdFilterComparison>;
+  name?: InputMaybe<StringFieldComparison>;
+  or?: InputMaybe<Array<UserUpdateFilter>>;
+  tenantId?: InputMaybe<StringFieldComparison>;
 };
 
 export type LoginMutationVariables = Exact<{
@@ -864,310 +2022,207 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken: string } };
 
-export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutResponse', message: string } };
-
-export type RefreshTokensMutationVariables = Exact<{
-  refreshToken: Scalars['String']['input'];
+export type CreateOneBrandMutationVariables = Exact<{
+  input: CreateOneBrandInput;
 }>;
 
 
-export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
+export type CreateOneBrandMutation = { __typename?: 'Mutation', createOneBrand: { __typename?: 'Brand', id: string, name: string, slug: string, description?: string | null, logoUrl?: string | null, website?: string | null, country?: string | null, active: boolean, created: any, updated: any } };
 
-export type RenewAccessTokenMutationVariables = Exact<{
-  accessToken: Scalars['String']['input'];
+export type DeleteOneBrandMutationVariables = Exact<{
+  input: DeleteOneBrandInput;
 }>;
 
 
-export type RenewAccessTokenMutation = { __typename?: 'Mutation', renewAccessToken: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
+export type DeleteOneBrandMutation = { __typename?: 'Mutation', deleteOneBrand: { __typename?: 'BrandDeleteResponse', id?: string | null } };
 
-export type CreateBrandMutationVariables = Exact<{
-  createBrandInput: CreateBrandDto;
+export type UpdateOneBrandMutationVariables = Exact<{
+  input: UpdateOneBrandInput;
 }>;
 
 
-export type CreateBrandMutation = { __typename?: 'Mutation', createBrand: { __typename?: 'Brand', id: string, name: string, slug: string, description?: string | null, logo_url?: string | null, website?: string | null, country?: string | null, is_active: boolean } };
+export type UpdateOneBrandMutation = { __typename?: 'Mutation', updateOneBrand: { __typename?: 'Brand', id: string, name: string, slug: string, description?: string | null, logoUrl?: string | null, website?: string | null, country?: string | null, active: boolean, created: any, updated: any } };
 
-export type UpdateBrandMutationVariables = Exact<{
-  id: Scalars['Int']['input'];
-  updateBrandInput: UpdateBrandDto;
+export type CreateOneCategoryMutationVariables = Exact<{
+  input: CreateOneCategoryInput;
 }>;
 
 
-export type UpdateBrandMutation = { __typename?: 'Mutation', updateBrand: { __typename?: 'Brand', id: string, name: string, slug: string, description?: string | null, logo_url?: string | null, website?: string | null, country?: string | null, is_active: boolean } };
+export type CreateOneCategoryMutation = { __typename?: 'Mutation', createOneCategory: { __typename?: 'Category', id: string, name: string, description?: string | null, slug: string, active: boolean, created: any, updated: any } };
 
-export type RemoveBrandMutationVariables = Exact<{
-  id: Scalars['Int']['input'];
+export type DeleteOneCategoryMutationVariables = Exact<{
+  input: DeleteOneCategoryInput;
 }>;
 
 
-export type RemoveBrandMutation = { __typename?: 'Mutation', removeBrand: boolean };
+export type DeleteOneCategoryMutation = { __typename?: 'Mutation', deleteOneCategory: { __typename?: 'CategoryDeleteResponse', id?: string | null } };
 
-export type CreateCategoryMutationVariables = Exact<{
-  createCategoryInput: CreateCategoryDto;
+export type UpdateOneCategoryMutationVariables = Exact<{
+  input: UpdateOneCategoryInput;
 }>;
 
 
-export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', id: string, name: string } };
+export type UpdateOneCategoryMutation = { __typename?: 'Mutation', updateOneCategory: { __typename?: 'Category', id: string, name: string, slug: string, description?: string | null, active: boolean, created: any, updated: any } };
 
-export type UpdateCategoryMutationVariables = Exact<{
-  id: Scalars['Int']['input'];
-  updateCategoryInput: UpdateCategoryDto;
+export type CreateOneProductMutationVariables = Exact<{
+  input: CreateOneProductInput;
 }>;
 
 
-export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', id: string, name: string } };
+export type CreateOneProductMutation = { __typename?: 'Mutation', createOneProduct: { __typename?: 'Product', id: string, name: string, slug: string, description?: string | null, price: number, categoryId?: string | null, brandId?: string | null, active: boolean, created: any, updated: any } };
 
-export type RemoveCategoryMutationVariables = Exact<{
-  id: Scalars['Int']['input'];
+export type DeleteOneProductMutationVariables = Exact<{
+  input: DeleteOneProductInput;
 }>;
 
 
-export type RemoveCategoryMutation = { __typename?: 'Mutation', removeCategory: boolean };
+export type DeleteOneProductMutation = { __typename?: 'Mutation', deleteOneProduct: { __typename?: 'ProductDeleteResponse', id?: string | null } };
 
-export type RemovePerfilMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+export type UpdateOneProductMutationVariables = Exact<{
+  input: UpdateOneProductInput;
 }>;
 
 
-export type RemovePerfilMutation = { __typename?: 'Mutation', removePerfil: boolean };
+export type UpdateOneProductMutation = { __typename?: 'Mutation', updateOneProduct: { __typename?: 'Product', id: string, name: string, slug: string, description?: string | null, price: number, categoryId?: string | null, brandId?: string | null, active: boolean, created: any, updated: any } };
 
-export type CreatePermissionMutationVariables = Exact<{
-  input: CreatePermissionInput;
+export type CreateOneProfileMutationVariables = Exact<{
+  input: CreateOneProfileInput;
 }>;
 
 
-export type CreatePermissionMutation = { __typename?: 'Mutation', createPermission: { __typename?: 'Permission', id: string, name: string, resource: string, action: string, description?: string | null, createdAt: any, updatedAt: any } };
+export type CreateOneProfileMutation = { __typename?: 'Mutation', createOneProfile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
 
-export type UpdatePermissionMutationVariables = Exact<{
-  input: UpdatePermissionInput;
+export type UpdateOneProfileMutationVariables = Exact<{
+  input: UpdateOneProfileInput;
 }>;
 
 
-export type UpdatePermissionMutation = { __typename?: 'Mutation', updatePermission: { __typename?: 'Permission', id: string, name: string, resource: string, action: string, description?: string | null, createdAt: any, updatedAt: any } };
+export type UpdateOneProfileMutation = { __typename?: 'Mutation', updateOneProfile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
 
-export type DeletePermissionMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+export type DeleteOneProfileMutationVariables = Exact<{
+  input: DeleteOneProfileInput;
 }>;
 
 
-export type DeletePermissionMutation = { __typename?: 'Mutation', deletePermission: boolean };
-
-export type CreateProductMutationVariables = Exact<{
-  createProductInput: CreateProductDto;
-}>;
-
-
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', id: string, name: string, description?: string | null, categoryId?: number | null, brandId?: number | null, createdAt: any, category?: { __typename?: 'Category', id: string, name: string } | null, brand?: { __typename?: 'Brand', id: string, name: string } | null } };
-
-export type UpdateProductMutationVariables = Exact<{
-  id: Scalars['Int']['input'];
-  updateProductInput: UpdateProductDto;
-}>;
-
-
-export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', id: string, name: string, description?: string | null, categoryId?: number | null, brandId?: number | null, createdAt: any, category?: { __typename?: 'Category', id: string, name: string } | null, brand?: { __typename?: 'Brand', id: string, name: string } | null } };
-
-export type RemoveProductMutationVariables = Exact<{
-  id: Scalars['Int']['input'];
-}>;
-
-
-export type RemoveProductMutation = { __typename?: 'Mutation', removeProduct: boolean };
-
-export type CreateRoleMutationVariables = Exact<{
-  input: CreateRoleInput;
-}>;
-
-
-export type CreateRoleMutation = { __typename?: 'Mutation', createRole: { __typename?: 'Role', id: string, name: string, description?: string | null, isGlobal: boolean, tenant?: { __typename?: 'Tenant', id: string, name: string } | null } };
-
-export type UpdateRoleMutationVariables = Exact<{
-  input: UpdateRoleInput;
-}>;
-
-
-export type UpdateRoleMutation = { __typename?: 'Mutation', updateRole: { __typename?: 'Role', id: string, name: string, description?: string | null, isGlobal: boolean, tenant?: { __typename?: 'Tenant', id: string, name: string } | null } };
-
-export type DeleteRoleMutationVariables = Exact<{
-  id: Scalars['String']['input'];
-}>;
-
-
-export type DeleteRoleMutation = { __typename?: 'Mutation', deleteRole: boolean };
-
-export type AssignRoleToUserMutationVariables = Exact<{
-  input: AssignRoleToUserInput;
-}>;
-
-
-export type AssignRoleToUserMutation = { __typename?: 'Mutation', assignRoleToUser: boolean };
+export type DeleteOneProfileMutation = { __typename?: 'Mutation', deleteOneProfile: { __typename?: 'ProfileDeleteResponse', id?: string | null } };
 
 export type CreateTenantMutationVariables = Exact<{
-  input: CreateTenantInput;
+  input: CreateOneTenantInput;
 }>;
 
 
-export type CreateTenantMutation = { __typename?: 'Mutation', createTenant: { __typename?: 'Tenant', id: string, name: string, description?: string | null, domain?: string | null, settings?: string | null, createdAt: any, updatedAt: any } };
+export type CreateTenantMutation = { __typename?: 'Mutation', createOneTenant: { __typename?: 'Tenant', id: string, name: string, domain: string, active: boolean, created: any, updated: any } };
 
 export type UpdateTenantMutationVariables = Exact<{
-  input: UpdateTenantInput;
+  input: UpdateOneTenantInput;
 }>;
 
 
-export type UpdateTenantMutation = { __typename?: 'Mutation', updateTenant: { __typename?: 'Tenant', id: string, name: string, description?: string | null, domain?: string | null, settings?: string | null, createdAt: any, updatedAt: any } };
+export type UpdateTenantMutation = { __typename?: 'Mutation', updateOneTenant: { __typename?: 'Tenant', id: string, name: string, domain: string, active: boolean, created: any, updated: any } };
 
 export type DeleteTenantMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  input: DeleteOneTenantInput;
 }>;
 
 
-export type DeleteTenantMutation = { __typename?: 'Mutation', deleteTenant: boolean };
-
-export type AddUserToTenantMutationVariables = Exact<{
-  input: AddUserToTenantInput;
-}>;
-
-
-export type AddUserToTenantMutation = { __typename?: 'Mutation', addUserToTenant: boolean };
-
-export type RemoveUserFromTenantMutationVariables = Exact<{
-  input: RemoveUserFromTenantInput;
-}>;
-
-
-export type RemoveUserFromTenantMutation = { __typename?: 'Mutation', removeUserFromTenant: boolean };
+export type DeleteTenantMutation = { __typename?: 'Mutation', deleteOneTenant: { __typename?: 'TenantDeleteResponse', id?: string | null } };
 
 export type CreateUserMutationVariables = Exact<{
-  createUserInput: CreateUserRequest;
+  input: CreateOneUserInput;
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, email: string, createdAt: any } };
+export type CreateUserMutation = { __typename?: 'Mutation', createOneUser: { __typename?: 'User', id: string, email: string, created: any } };
 
 export type GetAllBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllBrandsQuery = { __typename?: 'Query', brands: Array<{ __typename?: 'Brand', id: string, name: string, slug: string, description?: string | null, logo_url?: string | null, website?: string | null, country?: string | null, is_active: boolean }> };
+export type GetAllBrandsQuery = { __typename?: 'Query', brands: { __typename?: 'BrandConnection', edges: Array<{ __typename?: 'BrandEdge', node: { __typename?: 'Brand', id: string, name: string, slug: string, description?: string | null, logoUrl?: string | null, website?: string | null, country?: string | null, active: boolean, created: any, updated: any } }> } };
 
 export type GetBrandQueryVariables = Exact<{
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type GetBrandQuery = { __typename?: 'Query', brand: { __typename?: 'Brand', id: string, name: string, slug: string, description?: string | null, logo_url?: string | null, website?: string | null, country?: string | null, is_active: boolean, products: Array<{ __typename?: 'Product', id: string, name: string }> } };
+export type GetBrandQuery = { __typename?: 'Query', brand: { __typename?: 'Brand', id: string, name: string, slug: string, description?: string | null, logoUrl?: string | null, website?: string | null, country?: string | null, active: boolean, created: any, updated: any } };
 
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string }> };
+export type GetAllCategoriesQuery = { __typename?: 'Query', categories: { __typename?: 'CategoryConnection', edges: Array<{ __typename?: 'CategoryEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, description?: string | null, active: boolean, created: any, updated: any } }> } };
 
 export type GetCategoryQueryVariables = Exact<{
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type GetCategoryQuery = { __typename?: 'Query', category: { __typename?: 'Category', id: string, name: string, products: Array<{ __typename?: 'Product', id: string, name: string }> } };
-
-export type GetCurrentUserPermissionsQueryVariables = Exact<{
-  userId: Scalars['String']['input'];
-}>;
-
-
-export type GetCurrentUserPermissionsQuery = { __typename?: 'Query', userPermissions: Array<string> };
-
-export type GetCurrentUserRolesQueryVariables = Exact<{
-  userId: Scalars['String']['input'];
-}>;
-
-
-export type GetCurrentUserRolesQuery = { __typename?: 'Query', userRoles: Array<{ __typename?: 'Role', id: string, name: string, description?: string | null, isGlobal: boolean, tenant?: { __typename?: 'Tenant', id: string, name: string } | null }> };
+export type GetCategoryQuery = { __typename?: 'Query', category: { __typename?: 'Category', id: string, name: string, slug: string, description?: string | null, active: boolean, created: any, updated: any } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, email: string, createdAt: any, perfil?: { __typename?: 'Perfil', id: string, name: string } | null } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, email: string, active: boolean, roles: Array<string> } };
 
-export type GetPerfilPermissionsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetPerfilPermissionsQuery = { __typename?: 'Query', getPerfilPermissions: Array<string> };
-
-export type GetPermissionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetProfilesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetPermissionsQuery = { __typename?: 'Query', permissions: Array<{ __typename?: 'Permission', id: string, name: string, resource: string, action: string, description?: string | null, createdAt: any, updatedAt: any }> };
+export type GetProfilesQuery = { __typename?: 'Query', profiles: { __typename?: 'ProfileConnection', edges: Array<{ __typename?: 'ProfileEdge', node: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } }> } };
 
-export type GetPermissionQueryVariables = Exact<{
-  id: Scalars['String']['input'];
+export type GetProfileQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type GetPermissionQuery = { __typename?: 'Query', permission?: { __typename?: 'Permission', id: string, name: string, resource: string, action: string, description?: string | null, createdAt: any, updatedAt: any } | null };
+export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
 
 export type GetAllProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, name: string, description?: string | null, categoryId?: number | null, brandId?: number | null, createdAt: any, category?: { __typename?: 'Category', id: string, name: string } | null, brand?: { __typename?: 'Brand', id: string, name: string } | null, variants: Array<{ __typename?: 'ProductVariants', id: string, sku: string, price: number, stock: number, imageUrl?: string | null }> }> };
+export type GetAllProductsQuery = { __typename?: 'Query', products: { __typename?: 'ProductConnection', edges: Array<{ __typename?: 'ProductEdge', node: { __typename?: 'Product', id: string, name: string, slug: string, description?: string | null, price: number, categoryId?: string | null, brandId?: string | null, active: boolean, created: any, updated: any } }> } };
 
 export type GetProductQueryVariables = Exact<{
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type GetProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: string, name: string, description?: string | null, categoryId?: number | null, brandId?: number | null, createdAt: any, category?: { __typename?: 'Category', id: string, name: string } | null, brand?: { __typename?: 'Brand', id: string, name: string } | null, variants: Array<{ __typename?: 'ProductVariants', id: string, sku: string, price: number, stock: number, imageUrl?: string | null }> } };
+export type GetProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: string, name: string, slug: string, description?: string | null, price: number, categoryId?: string | null, brandId?: string | null, active: boolean, created: any, updated: any } };
 
-export type GetRolesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetRolesQuery = { __typename?: 'Query', roles: Array<{ __typename?: 'Role', id: string, name: string, description?: string | null, isGlobal: boolean, tenant?: { __typename?: 'Tenant', id: string, name: string } | null }> };
-
-export type GetRoleQueryVariables = Exact<{
-  id: Scalars['String']['input'];
-}>;
+export type ListResolversQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRoleQuery = { __typename?: 'Query', role?: { __typename?: 'Role', id: string, name: string, description?: string | null, isGlobal: boolean, tenant?: { __typename?: 'Tenant', id: string, name: string } | null } | null };
+export type ListResolversQuery = { __typename?: 'Query', listResolvers: Array<{ __typename?: 'ResolverOperationDTO', moduleName?: string | null, resolverClass: string, resolverName?: string | null, methodName: string, schemaName: string, type: string, requiresAuth: boolean }> };
 
 export type GetTenantsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTenantsQuery = { __typename?: 'Query', tenants: Array<{ __typename?: 'Tenant', id: string, name: string, description?: string | null, domain?: string | null, settings?: string | null, createdAt: any, updatedAt: any }> };
+export type GetTenantsQuery = { __typename?: 'Query', tenants: { __typename?: 'TenantConnection', edges: Array<{ __typename?: 'TenantEdge', node: { __typename?: 'Tenant', id: string, name: string, domain: string, created: any, updated: any } }> } };
 
 export type GetTenantQueryVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type GetTenantQuery = { __typename?: 'Query', tenant?: { __typename?: 'Tenant', id: string, name: string, description?: string | null, domain?: string | null, settings?: string | null, createdAt: any, updatedAt: any } | null };
-
-export type UserInfoQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UserInfoQuery = { __typename?: 'Query', userInfo: { __typename?: 'UserInfoResponse', currentTenantId?: string | null, user: { __typename?: 'User', id: string, email: string }, permissions: Array<{ __typename?: 'EffectivePermissionType', resource: string, action: string, name: string }>, roles: Array<{ __typename?: 'Role', id: string, name: string }>, tenants: Array<{ __typename?: 'Tenant', id: string, name: string }> } };
+export type GetTenantQuery = { __typename?: 'Query', tenant: { __typename?: 'Tenant', id: string, name: string, domain: string, created: any, updated: any } };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, email: string, createdAt: any }> };
+export type GetAllUsersQuery = { __typename?: 'Query', users: { __typename?: 'UserConnection', edges: Array<{ __typename?: 'UserEdge', node: { __typename?: 'User', id: string, email: string, created: any } }> } };
 
 export type GetUserQueryVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, createdAt: any } };
+export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, created: any } };
 
 
 export const LoginDocument = gql`
     mutation Login($loginInput: LoginInput!) {
   login(loginInput: $loginInput) {
     accessToken
-    refreshToken
   }
 }
     `;
@@ -1193,651 +2248,419 @@ export function useLoginMutation(options: VueApolloComposable.UseMutationOptions
   return VueApolloComposable.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
 }
 export type LoginMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<LoginMutation, LoginMutationVariables>;
-export const LogoutDocument = gql`
-    mutation Logout {
-  logout {
-    message
-  }
-}
-    `;
-
-/**
- * __useLogoutMutation__
- *
- * To run a mutation, you first call `useLogoutMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useLogoutMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useLogoutMutation();
- */
-export function useLogoutMutation(options: VueApolloComposable.UseMutationOptions<LogoutMutation, LogoutMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<LogoutMutation, LogoutMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
-}
-export type LogoutMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<LogoutMutation, LogoutMutationVariables>;
-export const RefreshTokensDocument = gql`
-    mutation RefreshTokens($refreshToken: String!) {
-  refreshTokens(refreshToken: $refreshToken) {
-    accessToken
-    refreshToken
-  }
-}
-    `;
-
-/**
- * __useRefreshTokensMutation__
- *
- * To run a mutation, you first call `useRefreshTokensMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRefreshTokensMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRefreshTokensMutation({
- *   variables: {
- *     refreshToken: // value for 'refreshToken'
- *   },
- * });
- */
-export function useRefreshTokensMutation(options: VueApolloComposable.UseMutationOptions<RefreshTokensMutation, RefreshTokensMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RefreshTokensMutation, RefreshTokensMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, options);
-}
-export type RefreshTokensMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RefreshTokensMutation, RefreshTokensMutationVariables>;
-export const RenewAccessTokenDocument = gql`
-    mutation RenewAccessToken($accessToken: String!) {
-  renewAccessToken(accessToken: $accessToken) {
-    accessToken
-    refreshToken
-  }
-}
-    `;
-
-/**
- * __useRenewAccessTokenMutation__
- *
- * To run a mutation, you first call `useRenewAccessTokenMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRenewAccessTokenMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRenewAccessTokenMutation({
- *   variables: {
- *     accessToken: // value for 'accessToken'
- *   },
- * });
- */
-export function useRenewAccessTokenMutation(options: VueApolloComposable.UseMutationOptions<RenewAccessTokenMutation, RenewAccessTokenMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RenewAccessTokenMutation, RenewAccessTokenMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RenewAccessTokenMutation, RenewAccessTokenMutationVariables>(RenewAccessTokenDocument, options);
-}
-export type RenewAccessTokenMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RenewAccessTokenMutation, RenewAccessTokenMutationVariables>;
-export const CreateBrandDocument = gql`
-    mutation CreateBrand($createBrandInput: CreateBrandDto!) {
-  createBrand(createBrandInput: $createBrandInput) {
+export const CreateOneBrandDocument = gql`
+    mutation CreateOneBrand($input: CreateOneBrandInput!) {
+  createOneBrand(input: $input) {
     id
     name
     slug
     description
-    logo_url
+    logoUrl
     website
     country
-    is_active
+    active
+    created
+    updated
   }
 }
     `;
 
 /**
- * __useCreateBrandMutation__
+ * __useCreateOneBrandMutation__
  *
- * To run a mutation, you first call `useCreateBrandMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreateBrandMutation` returns an object that includes:
+ * To run a mutation, you first call `useCreateOneBrandMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOneBrandMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useCreateBrandMutation({
+ * const { mutate, loading, error, onDone } = useCreateOneBrandMutation({
  *   variables: {
- *     createBrandInput: // value for 'createBrandInput'
+ *     input: // value for 'input'
  *   },
  * });
  */
-export function useCreateBrandMutation(options: VueApolloComposable.UseMutationOptions<CreateBrandMutation, CreateBrandMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateBrandMutation, CreateBrandMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreateBrandMutation, CreateBrandMutationVariables>(CreateBrandDocument, options);
+export function useCreateOneBrandMutation(options: VueApolloComposable.UseMutationOptions<CreateOneBrandMutation, CreateOneBrandMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateOneBrandMutation, CreateOneBrandMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateOneBrandMutation, CreateOneBrandMutationVariables>(CreateOneBrandDocument, options);
 }
-export type CreateBrandMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateBrandMutation, CreateBrandMutationVariables>;
-export const UpdateBrandDocument = gql`
-    mutation UpdateBrand($id: Int!, $updateBrandInput: UpdateBrandDto!) {
-  updateBrand(id: $id, updateBrandInput: $updateBrandInput) {
+export type CreateOneBrandMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateOneBrandMutation, CreateOneBrandMutationVariables>;
+export const DeleteOneBrandDocument = gql`
+    mutation DeleteOneBrand($input: DeleteOneBrandInput!) {
+  deleteOneBrand(input: $input) {
+    id
+  }
+}
+    `;
+
+/**
+ * __useDeleteOneBrandMutation__
+ *
+ * To run a mutation, you first call `useDeleteOneBrandMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOneBrandMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDeleteOneBrandMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteOneBrandMutation(options: VueApolloComposable.UseMutationOptions<DeleteOneBrandMutation, DeleteOneBrandMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteOneBrandMutation, DeleteOneBrandMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteOneBrandMutation, DeleteOneBrandMutationVariables>(DeleteOneBrandDocument, options);
+}
+export type DeleteOneBrandMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteOneBrandMutation, DeleteOneBrandMutationVariables>;
+export const UpdateOneBrandDocument = gql`
+    mutation UpdateOneBrand($input: UpdateOneBrandInput!) {
+  updateOneBrand(input: $input) {
     id
     name
     slug
     description
-    logo_url
+    logoUrl
     website
     country
-    is_active
+    active
+    created
+    updated
   }
 }
     `;
 
 /**
- * __useUpdateBrandMutation__
+ * __useUpdateOneBrandMutation__
  *
- * To run a mutation, you first call `useUpdateBrandMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdateBrandMutation` returns an object that includes:
+ * To run a mutation, you first call `useUpdateOneBrandMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOneBrandMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useUpdateBrandMutation({
- *   variables: {
- *     id: // value for 'id'
- *     updateBrandInput: // value for 'updateBrandInput'
- *   },
- * });
- */
-export function useUpdateBrandMutation(options: VueApolloComposable.UseMutationOptions<UpdateBrandMutation, UpdateBrandMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateBrandMutation, UpdateBrandMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdateBrandMutation, UpdateBrandMutationVariables>(UpdateBrandDocument, options);
-}
-export type UpdateBrandMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateBrandMutation, UpdateBrandMutationVariables>;
-export const RemoveBrandDocument = gql`
-    mutation RemoveBrand($id: Int!) {
-  removeBrand(id: $id)
-}
-    `;
-
-/**
- * __useRemoveBrandMutation__
- *
- * To run a mutation, you first call `useRemoveBrandMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveBrandMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRemoveBrandMutation({
- *   variables: {
- *     id: // value for 'id'
- *   },
- * });
- */
-export function useRemoveBrandMutation(options: VueApolloComposable.UseMutationOptions<RemoveBrandMutation, RemoveBrandMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveBrandMutation, RemoveBrandMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveBrandMutation, RemoveBrandMutationVariables>(RemoveBrandDocument, options);
-}
-export type RemoveBrandMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveBrandMutation, RemoveBrandMutationVariables>;
-export const CreateCategoryDocument = gql`
-    mutation CreateCategory($createCategoryInput: CreateCategoryDto!) {
-  createCategory(createCategoryInput: $createCategoryInput) {
-    id
-    name
-  }
-}
-    `;
-
-/**
- * __useCreateCategoryMutation__
- *
- * To run a mutation, you first call `useCreateCategoryMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreateCategoryMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useCreateCategoryMutation({
- *   variables: {
- *     createCategoryInput: // value for 'createCategoryInput'
- *   },
- * });
- */
-export function useCreateCategoryMutation(options: VueApolloComposable.UseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument, options);
-}
-export type CreateCategoryMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateCategoryMutation, CreateCategoryMutationVariables>;
-export const UpdateCategoryDocument = gql`
-    mutation UpdateCategory($id: Int!, $updateCategoryInput: UpdateCategoryDto!) {
-  updateCategory(id: $id, updateCategoryInput: $updateCategoryInput) {
-    id
-    name
-  }
-}
-    `;
-
-/**
- * __useUpdateCategoryMutation__
- *
- * To run a mutation, you first call `useUpdateCategoryMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCategoryMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useUpdateCategoryMutation({
- *   variables: {
- *     id: // value for 'id'
- *     updateCategoryInput: // value for 'updateCategoryInput'
- *   },
- * });
- */
-export function useUpdateCategoryMutation(options: VueApolloComposable.UseMutationOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdateCategoryMutation, UpdateCategoryMutationVariables>(UpdateCategoryDocument, options);
-}
-export type UpdateCategoryMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
-export const RemoveCategoryDocument = gql`
-    mutation RemoveCategory($id: Int!) {
-  removeCategory(id: $id)
-}
-    `;
-
-/**
- * __useRemoveCategoryMutation__
- *
- * To run a mutation, you first call `useRemoveCategoryMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveCategoryMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRemoveCategoryMutation({
- *   variables: {
- *     id: // value for 'id'
- *   },
- * });
- */
-export function useRemoveCategoryMutation(options: VueApolloComposable.UseMutationOptions<RemoveCategoryMutation, RemoveCategoryMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveCategoryMutation, RemoveCategoryMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveCategoryMutation, RemoveCategoryMutationVariables>(RemoveCategoryDocument, options);
-}
-export type RemoveCategoryMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveCategoryMutation, RemoveCategoryMutationVariables>;
-export const RemovePerfilDocument = gql`
-    mutation RemovePerfil($id: String!) {
-  removePerfil(id: $id)
-}
-    `;
-
-/**
- * __useRemovePerfilMutation__
- *
- * To run a mutation, you first call `useRemovePerfilMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemovePerfilMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRemovePerfilMutation({
- *   variables: {
- *     id: // value for 'id'
- *   },
- * });
- */
-export function useRemovePerfilMutation(options: VueApolloComposable.UseMutationOptions<RemovePerfilMutation, RemovePerfilMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemovePerfilMutation, RemovePerfilMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemovePerfilMutation, RemovePerfilMutationVariables>(RemovePerfilDocument, options);
-}
-export type RemovePerfilMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemovePerfilMutation, RemovePerfilMutationVariables>;
-export const CreatePermissionDocument = gql`
-    mutation CreatePermission($input: CreatePermissionInput!) {
-  createPermission(input: $input) {
-    id
-    name
-    resource
-    action
-    description
-    createdAt
-    updatedAt
-  }
-}
-    `;
-
-/**
- * __useCreatePermissionMutation__
- *
- * To run a mutation, you first call `useCreatePermissionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreatePermissionMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useCreatePermissionMutation({
+ * const { mutate, loading, error, onDone } = useUpdateOneBrandMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useCreatePermissionMutation(options: VueApolloComposable.UseMutationOptions<CreatePermissionMutation, CreatePermissionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreatePermissionMutation, CreatePermissionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreatePermissionMutation, CreatePermissionMutationVariables>(CreatePermissionDocument, options);
+export function useUpdateOneBrandMutation(options: VueApolloComposable.UseMutationOptions<UpdateOneBrandMutation, UpdateOneBrandMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateOneBrandMutation, UpdateOneBrandMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateOneBrandMutation, UpdateOneBrandMutationVariables>(UpdateOneBrandDocument, options);
 }
-export type CreatePermissionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreatePermissionMutation, CreatePermissionMutationVariables>;
-export const UpdatePermissionDocument = gql`
-    mutation UpdatePermission($input: UpdatePermissionInput!) {
-  updatePermission(input: $input) {
+export type UpdateOneBrandMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateOneBrandMutation, UpdateOneBrandMutationVariables>;
+export const CreateOneCategoryDocument = gql`
+    mutation CreateOneCategory($input: CreateOneCategoryInput!) {
+  createOneCategory(input: $input) {
     id
     name
-    resource
-    action
     description
-    createdAt
-    updatedAt
+    slug
+    active
+    created
+    updated
   }
 }
     `;
 
 /**
- * __useUpdatePermissionMutation__
+ * __useCreateOneCategoryMutation__
  *
- * To run a mutation, you first call `useUpdatePermissionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePermissionMutation` returns an object that includes:
+ * To run a mutation, you first call `useCreateOneCategoryMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOneCategoryMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useUpdatePermissionMutation({
+ * const { mutate, loading, error, onDone } = useCreateOneCategoryMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useUpdatePermissionMutation(options: VueApolloComposable.UseMutationOptions<UpdatePermissionMutation, UpdatePermissionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdatePermissionMutation, UpdatePermissionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdatePermissionMutation, UpdatePermissionMutationVariables>(UpdatePermissionDocument, options);
+export function useCreateOneCategoryMutation(options: VueApolloComposable.UseMutationOptions<CreateOneCategoryMutation, CreateOneCategoryMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateOneCategoryMutation, CreateOneCategoryMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateOneCategoryMutation, CreateOneCategoryMutationVariables>(CreateOneCategoryDocument, options);
 }
-export type UpdatePermissionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdatePermissionMutation, UpdatePermissionMutationVariables>;
-export const DeletePermissionDocument = gql`
-    mutation DeletePermission($id: String!) {
-  deletePermission(id: $id)
+export type CreateOneCategoryMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateOneCategoryMutation, CreateOneCategoryMutationVariables>;
+export const DeleteOneCategoryDocument = gql`
+    mutation DeleteOneCategory($input: DeleteOneCategoryInput!) {
+  deleteOneCategory(input: $input) {
+    id
+  }
 }
     `;
 
 /**
- * __useDeletePermissionMutation__
+ * __useDeleteOneCategoryMutation__
  *
- * To run a mutation, you first call `useDeletePermissionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDeletePermissionMutation` returns an object that includes:
+ * To run a mutation, you first call `useDeleteOneCategoryMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOneCategoryMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useDeletePermissionMutation({
+ * const { mutate, loading, error, onDone } = useDeleteOneCategoryMutation({
  *   variables: {
- *     id: // value for 'id'
+ *     input: // value for 'input'
  *   },
  * });
  */
-export function useDeletePermissionMutation(options: VueApolloComposable.UseMutationOptions<DeletePermissionMutation, DeletePermissionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeletePermissionMutation, DeletePermissionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DeletePermissionMutation, DeletePermissionMutationVariables>(DeletePermissionDocument, options);
+export function useDeleteOneCategoryMutation(options: VueApolloComposable.UseMutationOptions<DeleteOneCategoryMutation, DeleteOneCategoryMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteOneCategoryMutation, DeleteOneCategoryMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteOneCategoryMutation, DeleteOneCategoryMutationVariables>(DeleteOneCategoryDocument, options);
 }
-export type DeletePermissionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeletePermissionMutation, DeletePermissionMutationVariables>;
-export const CreateProductDocument = gql`
-    mutation CreateProduct($createProductInput: CreateProductDto!) {
-  createProduct(createProductInput: $createProductInput) {
+export type DeleteOneCategoryMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteOneCategoryMutation, DeleteOneCategoryMutationVariables>;
+export const UpdateOneCategoryDocument = gql`
+    mutation UpdateOneCategory($input: UpdateOneCategoryInput!) {
+  updateOneCategory(input: $input) {
     id
     name
+    slug
     description
+    active
+    created
+    updated
+  }
+}
+    `;
+
+/**
+ * __useUpdateOneCategoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateOneCategoryMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOneCategoryMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateOneCategoryMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateOneCategoryMutation(options: VueApolloComposable.UseMutationOptions<UpdateOneCategoryMutation, UpdateOneCategoryMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateOneCategoryMutation, UpdateOneCategoryMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateOneCategoryMutation, UpdateOneCategoryMutationVariables>(UpdateOneCategoryDocument, options);
+}
+export type UpdateOneCategoryMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateOneCategoryMutation, UpdateOneCategoryMutationVariables>;
+export const CreateOneProductDocument = gql`
+    mutation CreateOneProduct($input: CreateOneProductInput!) {
+  createOneProduct(input: $input) {
+    id
+    name
+    slug
+    description
+    price
     categoryId
     brandId
-    createdAt
-    category {
-      id
-      name
-    }
-    brand {
-      id
-      name
-    }
+    active
+    created
+    updated
   }
 }
     `;
 
 /**
- * __useCreateProductMutation__
+ * __useCreateOneProductMutation__
  *
- * To run a mutation, you first call `useCreateProductMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreateProductMutation` returns an object that includes:
+ * To run a mutation, you first call `useCreateOneProductMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOneProductMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useCreateProductMutation({
+ * const { mutate, loading, error, onDone } = useCreateOneProductMutation({
  *   variables: {
- *     createProductInput: // value for 'createProductInput'
+ *     input: // value for 'input'
  *   },
  * });
  */
-export function useCreateProductMutation(options: VueApolloComposable.UseMutationOptions<CreateProductMutation, CreateProductMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateProductMutation, CreateProductMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+export function useCreateOneProductMutation(options: VueApolloComposable.UseMutationOptions<CreateOneProductMutation, CreateOneProductMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateOneProductMutation, CreateOneProductMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateOneProductMutation, CreateOneProductMutationVariables>(CreateOneProductDocument, options);
 }
-export type CreateProductMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateProductMutation, CreateProductMutationVariables>;
-export const UpdateProductDocument = gql`
-    mutation UpdateProduct($id: Int!, $updateProductInput: UpdateProductDto!) {
-  updateProduct(id: $id, updateProductInput: $updateProductInput) {
+export type CreateOneProductMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateOneProductMutation, CreateOneProductMutationVariables>;
+export const DeleteOneProductDocument = gql`
+    mutation DeleteOneProduct($input: DeleteOneProductInput!) {
+  deleteOneProduct(input: $input) {
+    id
+  }
+}
+    `;
+
+/**
+ * __useDeleteOneProductMutation__
+ *
+ * To run a mutation, you first call `useDeleteOneProductMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOneProductMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDeleteOneProductMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteOneProductMutation(options: VueApolloComposable.UseMutationOptions<DeleteOneProductMutation, DeleteOneProductMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteOneProductMutation, DeleteOneProductMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteOneProductMutation, DeleteOneProductMutationVariables>(DeleteOneProductDocument, options);
+}
+export type DeleteOneProductMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteOneProductMutation, DeleteOneProductMutationVariables>;
+export const UpdateOneProductDocument = gql`
+    mutation UpdateOneProduct($input: UpdateOneProductInput!) {
+  updateOneProduct(input: $input) {
     id
     name
+    slug
     description
+    price
     categoryId
     brandId
-    createdAt
-    category {
-      id
-      name
-    }
-    brand {
-      id
-      name
-    }
+    active
+    created
+    updated
   }
 }
     `;
 
 /**
- * __useUpdateProductMutation__
+ * __useUpdateOneProductMutation__
  *
- * To run a mutation, you first call `useUpdateProductMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProductMutation` returns an object that includes:
+ * To run a mutation, you first call `useUpdateOneProductMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOneProductMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useUpdateProductMutation({
+ * const { mutate, loading, error, onDone } = useUpdateOneProductMutation({
  *   variables: {
- *     id: // value for 'id'
- *     updateProductInput: // value for 'updateProductInput'
+ *     input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateProductMutation(options: VueApolloComposable.UseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, options);
+export function useUpdateOneProductMutation(options: VueApolloComposable.UseMutationOptions<UpdateOneProductMutation, UpdateOneProductMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateOneProductMutation, UpdateOneProductMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateOneProductMutation, UpdateOneProductMutationVariables>(UpdateOneProductDocument, options);
 }
-export type UpdateProductMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateProductMutation, UpdateProductMutationVariables>;
-export const RemoveProductDocument = gql`
-    mutation RemoveProduct($id: Int!) {
-  removeProduct(id: $id)
-}
-    `;
-
-/**
- * __useRemoveProductMutation__
- *
- * To run a mutation, you first call `useRemoveProductMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveProductMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRemoveProductMutation({
- *   variables: {
- *     id: // value for 'id'
- *   },
- * });
- */
-export function useRemoveProductMutation(options: VueApolloComposable.UseMutationOptions<RemoveProductMutation, RemoveProductMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveProductMutation, RemoveProductMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveProductMutation, RemoveProductMutationVariables>(RemoveProductDocument, options);
-}
-export type RemoveProductMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveProductMutation, RemoveProductMutationVariables>;
-export const CreateRoleDocument = gql`
-    mutation CreateRole($input: CreateRoleInput!) {
-  createRole(input: $input) {
+export type UpdateOneProductMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateOneProductMutation, UpdateOneProductMutationVariables>;
+export const CreateOneProfileDocument = gql`
+    mutation CreateOneProfile($input: CreateOneProfileInput!) {
+  createOneProfile(input: $input) {
     id
-    name
-    description
-    isGlobal
-    tenant {
-      id
-      name
-    }
+    tenantId
+    resolvers
+    created
+    updated
   }
 }
     `;
 
 /**
- * __useCreateRoleMutation__
+ * __useCreateOneProfileMutation__
  *
- * To run a mutation, you first call `useCreateRoleMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreateRoleMutation` returns an object that includes:
+ * To run a mutation, you first call `useCreateOneProfileMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOneProfileMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useCreateRoleMutation({
+ * const { mutate, loading, error, onDone } = useCreateOneProfileMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useCreateRoleMutation(options: VueApolloComposable.UseMutationOptions<CreateRoleMutation, CreateRoleMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateRoleMutation, CreateRoleMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreateRoleMutation, CreateRoleMutationVariables>(CreateRoleDocument, options);
+export function useCreateOneProfileMutation(options: VueApolloComposable.UseMutationOptions<CreateOneProfileMutation, CreateOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateOneProfileMutation, CreateOneProfileMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateOneProfileMutation, CreateOneProfileMutationVariables>(CreateOneProfileDocument, options);
 }
-export type CreateRoleMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateRoleMutation, CreateRoleMutationVariables>;
-export const UpdateRoleDocument = gql`
-    mutation UpdateRole($input: UpdateRoleInput!) {
-  updateRole(input: $input) {
+export type CreateOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateOneProfileMutation, CreateOneProfileMutationVariables>;
+export const UpdateOneProfileDocument = gql`
+    mutation UpdateOneProfile($input: UpdateOneProfileInput!) {
+  updateOneProfile(input: $input) {
     id
-    name
-    description
-    isGlobal
-    tenant {
-      id
-      name
-    }
+    tenantId
+    resolvers
+    created
+    updated
   }
 }
     `;
 
 /**
- * __useUpdateRoleMutation__
+ * __useUpdateOneProfileMutation__
  *
- * To run a mutation, you first call `useUpdateRoleMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdateRoleMutation` returns an object that includes:
+ * To run a mutation, you first call `useUpdateOneProfileMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOneProfileMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useUpdateRoleMutation({
+ * const { mutate, loading, error, onDone } = useUpdateOneProfileMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateRoleMutation(options: VueApolloComposable.UseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdateRoleMutation, UpdateRoleMutationVariables>(UpdateRoleDocument, options);
+export function useUpdateOneProfileMutation(options: VueApolloComposable.UseMutationOptions<UpdateOneProfileMutation, UpdateOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>(UpdateOneProfileDocument, options);
 }
-export type UpdateRoleMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateRoleMutation, UpdateRoleMutationVariables>;
-export const DeleteRoleDocument = gql`
-    mutation DeleteRole($id: String!) {
-  deleteRole(id: $id)
+export type UpdateOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>;
+export const DeleteOneProfileDocument = gql`
+    mutation DeleteOneProfile($input: DeleteOneProfileInput!) {
+  deleteOneProfile(input: $input) {
+    id
+  }
 }
     `;
 
 /**
- * __useDeleteRoleMutation__
+ * __useDeleteOneProfileMutation__
  *
- * To run a mutation, you first call `useDeleteRoleMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDeleteRoleMutation` returns an object that includes:
+ * To run a mutation, you first call `useDeleteOneProfileMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOneProfileMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useDeleteRoleMutation({
- *   variables: {
- *     id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteRoleMutation(options: VueApolloComposable.UseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DeleteRoleMutation, DeleteRoleMutationVariables>(DeleteRoleDocument, options);
-}
-export type DeleteRoleMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteRoleMutation, DeleteRoleMutationVariables>;
-export const AssignRoleToUserDocument = gql`
-    mutation AssignRoleToUser($input: AssignRoleToUserInput!) {
-  assignRoleToUser(input: $input)
-}
-    `;
-
-/**
- * __useAssignRoleToUserMutation__
- *
- * To run a mutation, you first call `useAssignRoleToUserMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useAssignRoleToUserMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useAssignRoleToUserMutation({
+ * const { mutate, loading, error, onDone } = useDeleteOneProfileMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useAssignRoleToUserMutation(options: VueApolloComposable.UseMutationOptions<AssignRoleToUserMutation, AssignRoleToUserMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AssignRoleToUserMutation, AssignRoleToUserMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<AssignRoleToUserMutation, AssignRoleToUserMutationVariables>(AssignRoleToUserDocument, options);
+export function useDeleteOneProfileMutation(options: VueApolloComposable.UseMutationOptions<DeleteOneProfileMutation, DeleteOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>(DeleteOneProfileDocument, options);
 }
-export type AssignRoleToUserMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AssignRoleToUserMutation, AssignRoleToUserMutationVariables>;
+export type DeleteOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>;
 export const CreateTenantDocument = gql`
-    mutation CreateTenant($input: CreateTenantInput!) {
-  createTenant(input: $input) {
+    mutation CreateTenant($input: CreateOneTenantInput!) {
+  createOneTenant(input: $input) {
     id
     name
-    description
     domain
-    settings
-    createdAt
-    updatedAt
+    active
+    created
+    updated
   }
 }
     `;
@@ -1864,15 +2687,14 @@ export function useCreateTenantMutation(options: VueApolloComposable.UseMutation
 }
 export type CreateTenantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateTenantMutation, CreateTenantMutationVariables>;
 export const UpdateTenantDocument = gql`
-    mutation UpdateTenant($input: UpdateTenantInput!) {
-  updateTenant(input: $input) {
+    mutation UpdateTenant($input: UpdateOneTenantInput!) {
+  updateOneTenant(input: $input) {
     id
     name
-    description
     domain
-    settings
-    createdAt
-    updatedAt
+    active
+    created
+    updated
   }
 }
     `;
@@ -1899,8 +2721,10 @@ export function useUpdateTenantMutation(options: VueApolloComposable.UseMutation
 }
 export type UpdateTenantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateTenantMutation, UpdateTenantMutationVariables>;
 export const DeleteTenantDocument = gql`
-    mutation DeleteTenant($id: String!) {
-  deleteTenant(id: $id)
+    mutation DeleteTenant($input: DeleteOneTenantInput!) {
+  deleteOneTenant(input: $input) {
+    id
+  }
 }
     `;
 
@@ -1917,7 +2741,7 @@ export const DeleteTenantDocument = gql`
  * @example
  * const { mutate, loading, error, onDone } = useDeleteTenantMutation({
  *   variables: {
- *     id: // value for 'id'
+ *     input: // value for 'input'
  *   },
  * });
  */
@@ -1925,66 +2749,12 @@ export function useDeleteTenantMutation(options: VueApolloComposable.UseMutation
   return VueApolloComposable.useMutation<DeleteTenantMutation, DeleteTenantMutationVariables>(DeleteTenantDocument, options);
 }
 export type DeleteTenantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteTenantMutation, DeleteTenantMutationVariables>;
-export const AddUserToTenantDocument = gql`
-    mutation AddUserToTenant($input: AddUserToTenantInput!) {
-  addUserToTenant(input: $input)
-}
-    `;
-
-/**
- * __useAddUserToTenantMutation__
- *
- * To run a mutation, you first call `useAddUserToTenantMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useAddUserToTenantMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useAddUserToTenantMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useAddUserToTenantMutation(options: VueApolloComposable.UseMutationOptions<AddUserToTenantMutation, AddUserToTenantMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AddUserToTenantMutation, AddUserToTenantMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<AddUserToTenantMutation, AddUserToTenantMutationVariables>(AddUserToTenantDocument, options);
-}
-export type AddUserToTenantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AddUserToTenantMutation, AddUserToTenantMutationVariables>;
-export const RemoveUserFromTenantDocument = gql`
-    mutation RemoveUserFromTenant($input: RemoveUserFromTenantInput!) {
-  removeUserFromTenant(input: $input)
-}
-    `;
-
-/**
- * __useRemoveUserFromTenantMutation__
- *
- * To run a mutation, you first call `useRemoveUserFromTenantMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserFromTenantMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRemoveUserFromTenantMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserFromTenantMutation(options: VueApolloComposable.UseMutationOptions<RemoveUserFromTenantMutation, RemoveUserFromTenantMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveUserFromTenantMutation, RemoveUserFromTenantMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveUserFromTenantMutation, RemoveUserFromTenantMutationVariables>(RemoveUserFromTenantDocument, options);
-}
-export type RemoveUserFromTenantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveUserFromTenantMutation, RemoveUserFromTenantMutationVariables>;
 export const CreateUserDocument = gql`
-    mutation CreateUser($createUserInput: CreateUserRequest!) {
-  createUser(createUserInput: $createUserInput) {
+    mutation CreateUser($input: CreateOneUserInput!) {
+  createOneUser(input: $input) {
     id
     email
-    createdAt
+    created
   }
 }
     `;
@@ -2002,7 +2772,7 @@ export const CreateUserDocument = gql`
  * @example
  * const { mutate, loading, error, onDone } = useCreateUserMutation({
  *   variables: {
- *     createUserInput: // value for 'createUserInput'
+ *     input: // value for 'input'
  *   },
  * });
  */
@@ -2013,14 +2783,20 @@ export type CreateUserMutationCompositionFunctionResult = VueApolloComposable.Us
 export const GetAllBrandsDocument = gql`
     query GetAllBrands {
   brands {
-    id
-    name
-    slug
-    description
-    logo_url
-    website
-    country
-    is_active
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        logoUrl
+        website
+        country
+        active
+        created
+        updated
+      }
+    }
   }
 }
     `;
@@ -2045,20 +2821,18 @@ export function useGetAllBrandsLazyQuery(options: VueApolloComposable.UseQueryOp
 }
 export type GetAllBrandsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAllBrandsQuery, GetAllBrandsQueryVariables>;
 export const GetBrandDocument = gql`
-    query GetBrand($id: Int!) {
+    query GetBrand($id: ID!) {
   brand(id: $id) {
     id
     name
     slug
     description
-    logo_url
+    logoUrl
     website
     country
-    is_active
-    products {
-      id
-      name
-    }
+    active
+    created
+    updated
   }
 }
     `;
@@ -2088,8 +2862,17 @@ export type GetBrandQueryCompositionFunctionResult = VueApolloComposable.UseQuer
 export const GetAllCategoriesDocument = gql`
     query GetAllCategories {
   categories {
-    id
-    name
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        active
+        created
+        updated
+      }
+    }
   }
 }
     `;
@@ -2114,14 +2897,15 @@ export function useGetAllCategoriesLazyQuery(options: VueApolloComposable.UseQue
 }
 export type GetAllCategoriesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAllCategoriesQuery, GetAllCategoriesQueryVariables>;
 export const GetCategoryDocument = gql`
-    query GetCategory($id: Int!) {
+    query GetCategory($id: ID!) {
   category(id: $id) {
     id
     name
-    products {
-      id
-      name
-    }
+    slug
+    description
+    active
+    created
+    updated
   }
 }
     `;
@@ -2148,81 +2932,13 @@ export function useGetCategoryLazyQuery(variables?: GetCategoryQueryVariables | 
   return VueApolloComposable.useLazyQuery<GetCategoryQuery, GetCategoryQueryVariables>(GetCategoryDocument, variables, options);
 }
 export type GetCategoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetCategoryQuery, GetCategoryQueryVariables>;
-export const GetCurrentUserPermissionsDocument = gql`
-    query GetCurrentUserPermissions($userId: String!) {
-  userPermissions(userId: $userId)
-}
-    `;
-
-/**
- * __useGetCurrentUserPermissionsQuery__
- *
- * To run a query within a Vue component, call `useGetCurrentUserPermissionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCurrentUserPermissionsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetCurrentUserPermissionsQuery({
- *   userId: // value for 'userId'
- * });
- */
-export function useGetCurrentUserPermissionsQuery(variables: GetCurrentUserPermissionsQueryVariables | VueCompositionApi.Ref<GetCurrentUserPermissionsQueryVariables> | ReactiveFunction<GetCurrentUserPermissionsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables>(GetCurrentUserPermissionsDocument, variables, options);
-}
-export function useGetCurrentUserPermissionsLazyQuery(variables?: GetCurrentUserPermissionsQueryVariables | VueCompositionApi.Ref<GetCurrentUserPermissionsQueryVariables> | ReactiveFunction<GetCurrentUserPermissionsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables>(GetCurrentUserPermissionsDocument, variables, options);
-}
-export type GetCurrentUserPermissionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetCurrentUserPermissionsQuery, GetCurrentUserPermissionsQueryVariables>;
-export const GetCurrentUserRolesDocument = gql`
-    query GetCurrentUserRoles($userId: String!) {
-  userRoles(userId: $userId) {
-    id
-    name
-    description
-    isGlobal
-    tenant {
-      id
-      name
-    }
-  }
-}
-    `;
-
-/**
- * __useGetCurrentUserRolesQuery__
- *
- * To run a query within a Vue component, call `useGetCurrentUserRolesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCurrentUserRolesQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetCurrentUserRolesQuery({
- *   userId: // value for 'userId'
- * });
- */
-export function useGetCurrentUserRolesQuery(variables: GetCurrentUserRolesQueryVariables | VueCompositionApi.Ref<GetCurrentUserRolesQueryVariables> | ReactiveFunction<GetCurrentUserRolesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables>(GetCurrentUserRolesDocument, variables, options);
-}
-export function useGetCurrentUserRolesLazyQuery(variables?: GetCurrentUserRolesQueryVariables | VueCompositionApi.Ref<GetCurrentUserRolesQueryVariables> | ReactiveFunction<GetCurrentUserRolesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables>(GetCurrentUserRolesDocument, variables, options);
-}
-export type GetCurrentUserRolesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetCurrentUserRolesQuery, GetCurrentUserRolesQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
     id
     email
-    createdAt
-    perfil {
-      id
-      name
-    }
+    active
+    roles
   }
 }
     `;
@@ -2246,123 +2962,91 @@ export function useMeLazyQuery(options: VueApolloComposable.UseQueryOptions<MeQu
   return VueApolloComposable.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, {}, options);
 }
 export type MeQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<MeQuery, MeQueryVariables>;
-export const GetPerfilPermissionsDocument = gql`
-    query GetPerfilPermissions {
-  getPerfilPermissions
-}
-    `;
-
-/**
- * __useGetPerfilPermissionsQuery__
- *
- * To run a query within a Vue component, call `useGetPerfilPermissionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPerfilPermissionsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetPerfilPermissionsQuery();
- */
-export function useGetPerfilPermissionsQuery(options: VueApolloComposable.UseQueryOptions<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables>(GetPerfilPermissionsDocument, {}, options);
-}
-export function useGetPerfilPermissionsLazyQuery(options: VueApolloComposable.UseQueryOptions<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables>(GetPerfilPermissionsDocument, {}, options);
-}
-export type GetPerfilPermissionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetPerfilPermissionsQuery, GetPerfilPermissionsQueryVariables>;
-export const GetPermissionsDocument = gql`
-    query GetPermissions {
-  permissions {
-    id
-    name
-    resource
-    action
-    description
-    createdAt
-    updatedAt
+export const GetProfilesDocument = gql`
+    query GetProfiles {
+  profiles {
+    edges {
+      node {
+        id
+        tenantId
+        resolvers
+        created
+        updated
+      }
+    }
   }
 }
     `;
 
 /**
- * __useGetPermissionsQuery__
+ * __useGetProfilesQuery__
  *
- * To run a query within a Vue component, call `useGetPermissionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPermissionsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetProfilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfilesQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetPermissionsQuery();
+ * const { result, loading, error } = useGetProfilesQuery();
  */
-export function useGetPermissionsQuery(options: VueApolloComposable.UseQueryOptions<GetPermissionsQuery, GetPermissionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPermissionsQuery, GetPermissionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPermissionsQuery, GetPermissionsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetPermissionsQuery, GetPermissionsQueryVariables>(GetPermissionsDocument, {}, options);
+export function useGetProfilesQuery(options: VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProfilesQuery, GetProfilesQueryVariables>(GetProfilesDocument, {}, options);
 }
-export function useGetPermissionsLazyQuery(options: VueApolloComposable.UseQueryOptions<GetPermissionsQuery, GetPermissionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPermissionsQuery, GetPermissionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPermissionsQuery, GetPermissionsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetPermissionsQuery, GetPermissionsQueryVariables>(GetPermissionsDocument, {}, options);
+export function useGetProfilesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProfilesQuery, GetProfilesQueryVariables>(GetProfilesDocument, {}, options);
 }
-export type GetPermissionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetPermissionsQuery, GetPermissionsQueryVariables>;
-export const GetPermissionDocument = gql`
-    query GetPermission($id: String!) {
-  permission(id: $id) {
+export type GetProfilesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProfilesQuery, GetProfilesQueryVariables>;
+export const GetProfileDocument = gql`
+    query GetProfile($id: ID!) {
+  profile(id: $id) {
     id
-    name
-    resource
-    action
-    description
-    createdAt
-    updatedAt
+    tenantId
+    resolvers
+    created
+    updated
   }
 }
     `;
 
 /**
- * __useGetPermissionQuery__
+ * __useGetProfileQuery__
  *
- * To run a query within a Vue component, call `useGetPermissionQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPermissionQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfileQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetPermissionQuery({
+ * const { result, loading, error } = useGetProfileQuery({
  *   id: // value for 'id'
  * });
  */
-export function useGetPermissionQuery(variables: GetPermissionQueryVariables | VueCompositionApi.Ref<GetPermissionQueryVariables> | ReactiveFunction<GetPermissionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetPermissionQuery, GetPermissionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPermissionQuery, GetPermissionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPermissionQuery, GetPermissionQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetPermissionQuery, GetPermissionQueryVariables>(GetPermissionDocument, variables, options);
+export function useGetProfileQuery(variables: GetProfileQueryVariables | VueCompositionApi.Ref<GetProfileQueryVariables> | ReactiveFunction<GetProfileQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, variables, options);
 }
-export function useGetPermissionLazyQuery(variables?: GetPermissionQueryVariables | VueCompositionApi.Ref<GetPermissionQueryVariables> | ReactiveFunction<GetPermissionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetPermissionQuery, GetPermissionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPermissionQuery, GetPermissionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPermissionQuery, GetPermissionQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetPermissionQuery, GetPermissionQueryVariables>(GetPermissionDocument, variables, options);
+export function useGetProfileLazyQuery(variables?: GetProfileQueryVariables | VueCompositionApi.Ref<GetProfileQueryVariables> | ReactiveFunction<GetProfileQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, variables, options);
 }
-export type GetPermissionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetPermissionQuery, GetPermissionQueryVariables>;
+export type GetProfileQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProfileQuery, GetProfileQueryVariables>;
 export const GetAllProductsDocument = gql`
     query GetAllProducts {
   products {
-    id
-    name
-    description
-    categoryId
-    brandId
-    createdAt
-    category {
-      id
-      name
-    }
-    brand {
-      id
-      name
-    }
-    variants {
-      id
-      sku
-      price
-      stock
-      imageUrl
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        price
+        categoryId
+        brandId
+        active
+        created
+        updated
+      }
     }
   }
 }
@@ -2388,29 +3072,18 @@ export function useGetAllProductsLazyQuery(options: VueApolloComposable.UseQuery
 }
 export type GetAllProductsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAllProductsQuery, GetAllProductsQueryVariables>;
 export const GetProductDocument = gql`
-    query GetProduct($id: Int!) {
+    query GetProduct($id: ID!) {
   product(id: $id) {
     id
     name
+    slug
     description
+    price
     categoryId
     brandId
-    createdAt
-    category {
-      id
-      name
-    }
-    brand {
-      id
-      name
-    }
-    variants {
-      id
-      sku
-      price
-      stock
-      imageUrl
-    }
+    active
+    created
+    updated
   }
 }
     `;
@@ -2437,87 +3110,51 @@ export function useGetProductLazyQuery(variables?: GetProductQueryVariables | Vu
   return VueApolloComposable.useLazyQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, variables, options);
 }
 export type GetProductQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProductQuery, GetProductQueryVariables>;
-export const GetRolesDocument = gql`
-    query GetRoles {
-  roles {
-    id
-    name
-    description
-    isGlobal
-    tenant {
-      id
-      name
-    }
+export const ListResolversDocument = gql`
+    query ListResolvers {
+  listResolvers {
+    moduleName
+    resolverClass
+    resolverName
+    methodName
+    schemaName
+    type
+    requiresAuth
   }
 }
     `;
 
 /**
- * __useGetRolesQuery__
+ * __useListResolversQuery__
  *
- * To run a query within a Vue component, call `useGetRolesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRolesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useListResolversQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListResolversQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetRolesQuery();
+ * const { result, loading, error } = useListResolversQuery();
  */
-export function useGetRolesQuery(options: VueApolloComposable.UseQueryOptions<GetRolesQuery, GetRolesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRolesQuery, GetRolesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRolesQuery, GetRolesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetRolesQuery, GetRolesQueryVariables>(GetRolesDocument, {}, options);
+export function useListResolversQuery(options: VueApolloComposable.UseQueryOptions<ListResolversQuery, ListResolversQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListResolversQuery, ListResolversQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListResolversQuery, ListResolversQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListResolversQuery, ListResolversQueryVariables>(ListResolversDocument, {}, options);
 }
-export function useGetRolesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetRolesQuery, GetRolesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRolesQuery, GetRolesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRolesQuery, GetRolesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetRolesQuery, GetRolesQueryVariables>(GetRolesDocument, {}, options);
+export function useListResolversLazyQuery(options: VueApolloComposable.UseQueryOptions<ListResolversQuery, ListResolversQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListResolversQuery, ListResolversQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListResolversQuery, ListResolversQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListResolversQuery, ListResolversQueryVariables>(ListResolversDocument, {}, options);
 }
-export type GetRolesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRolesQuery, GetRolesQueryVariables>;
-export const GetRoleDocument = gql`
-    query GetRole($id: String!) {
-  role(id: $id) {
-    id
-    name
-    description
-    isGlobal
-    tenant {
-      id
-      name
-    }
-  }
-}
-    `;
-
-/**
- * __useGetRoleQuery__
- *
- * To run a query within a Vue component, call `useGetRoleQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRoleQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetRoleQuery({
- *   id: // value for 'id'
- * });
- */
-export function useGetRoleQuery(variables: GetRoleQueryVariables | VueCompositionApi.Ref<GetRoleQueryVariables> | ReactiveFunction<GetRoleQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRoleQuery, GetRoleQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRoleQuery, GetRoleQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRoleQuery, GetRoleQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, variables, options);
-}
-export function useGetRoleLazyQuery(variables?: GetRoleQueryVariables | VueCompositionApi.Ref<GetRoleQueryVariables> | ReactiveFunction<GetRoleQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRoleQuery, GetRoleQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRoleQuery, GetRoleQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRoleQuery, GetRoleQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, variables, options);
-}
-export type GetRoleQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRoleQuery, GetRoleQueryVariables>;
+export type ListResolversQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListResolversQuery, ListResolversQueryVariables>;
 export const GetTenantsDocument = gql`
     query GetTenants {
   tenants {
-    id
-    name
-    description
-    domain
-    settings
-    createdAt
-    updatedAt
+    edges {
+      node {
+        id
+        name
+        domain
+        created
+        updated
+      }
+    }
   }
 }
     `;
@@ -2542,15 +3179,13 @@ export function useGetTenantsLazyQuery(options: VueApolloComposable.UseQueryOpti
 }
 export type GetTenantsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTenantsQuery, GetTenantsQueryVariables>;
 export const GetTenantDocument = gql`
-    query GetTenant($id: String!) {
+    query GetTenant($id: ID!) {
   tenant(id: $id) {
     id
     name
-    description
     domain
-    settings
-    createdAt
-    updatedAt
+    created
+    updated
   }
 }
     `;
@@ -2577,56 +3212,16 @@ export function useGetTenantLazyQuery(variables?: GetTenantQueryVariables | VueC
   return VueApolloComposable.useLazyQuery<GetTenantQuery, GetTenantQueryVariables>(GetTenantDocument, variables, options);
 }
 export type GetTenantQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTenantQuery, GetTenantQueryVariables>;
-export const UserInfoDocument = gql`
-    query UserInfo {
-  userInfo {
-    user {
-      id
-      email
-    }
-    permissions {
-      resource
-      action
-      name
-    }
-    roles {
-      id
-      name
-    }
-    tenants {
-      id
-      name
-    }
-    currentTenantId
-  }
-}
-    `;
-
-/**
- * __useUserInfoQuery__
- *
- * To run a query within a Vue component, call `useUserInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserInfoQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useUserInfoQuery();
- */
-export function useUserInfoQuery(options: VueApolloComposable.UseQueryOptions<UserInfoQuery, UserInfoQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<UserInfoQuery, UserInfoQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<UserInfoQuery, UserInfoQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<UserInfoQuery, UserInfoQueryVariables>(UserInfoDocument, {}, options);
-}
-export function useUserInfoLazyQuery(options: VueApolloComposable.UseQueryOptions<UserInfoQuery, UserInfoQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<UserInfoQuery, UserInfoQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<UserInfoQuery, UserInfoQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<UserInfoQuery, UserInfoQueryVariables>(UserInfoDocument, {}, options);
-}
-export type UserInfoQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<UserInfoQuery, UserInfoQueryVariables>;
 export const GetAllUsersDocument = gql`
     query GetAllUsers {
   users {
-    id
-    email
-    createdAt
+    edges {
+      node {
+        id
+        email
+        created
+      }
+    }
   }
 }
     `;
@@ -2651,11 +3246,11 @@ export function useGetAllUsersLazyQuery(options: VueApolloComposable.UseQueryOpt
 }
 export type GetAllUsersQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAllUsersQuery, GetAllUsersQueryVariables>;
 export const GetUserDocument = gql`
-    query GetUser($id: String!) {
+    query GetUser($id: ID!) {
   user(id: $id) {
     id
     email
-    createdAt
+    created
   }
 }
     `;

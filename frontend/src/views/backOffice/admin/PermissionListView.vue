@@ -84,7 +84,15 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { ref, computed, onMounted, watch } from 'vue'
-import { useGetPermissionsQuery, useDeletePermissionMutation } from '@/generated/graphql'
+import { useListResolversQuery } from '@/generated/graphql'
+
+type PermissionItem = {
+  id: string
+  name: string
+  resource: string
+  action: string
+  description?: string
+}
 
 const searchName = ref('')
 const searchResource = ref('')
@@ -92,10 +100,9 @@ const actionFilter = ref('')
 const page = ref(1)
 const limit = ref(10)
 
-const { result: permissionsResult, refetch: refetchPermissions } = useGetPermissionsQuery()
-const { mutate: deletePermissionMutation } = useDeletePermissionMutation()
+const { result: resolversResult, refetch: refetchResolvers } = useListResolversQuery()
 
-const headers = {
+const headers: Record<string, string> = {
   action: '#',
   name: 'Nome',
   resource: 'Recurso',
@@ -103,33 +110,36 @@ const headers = {
   description: 'Descrição'
 }
 
-const actionOptions = [
-  { title: 'Criar', value: 'create' },
-  { title: 'Ler', value: 'read' },
-  { title: 'Atualizar', value: 'update' },
-  { title: 'Deletar', value: 'delete' },
-  { title: 'Gerenciar', value: 'manage' }
+const actionOptions: Array<{ title: string; value: string }> = [
+  { title: 'Consulta', value: 'query' },
+  { title: 'Mutação', value: 'mutation' }
 ]
 
-const filteredPermissions = computed(() => {
-  if (!permissionsResult.value?.permissions) return []
-  
-  let filtered = permissionsResult.value.permissions
+const filteredPermissions = computed<PermissionItem[]>(() => {
+  const baseRaw = resolversResult.value?.listResolvers ?? []
+  const base: PermissionItem[] = baseRaw.map(r => ({
+    id: `${r.resolverClass}.${r.methodName}`,
+    name: r.resolverName ?? `${r.resolverClass}.${r.methodName}`,
+    resource: r.schemaName ?? r.moduleName ?? '-',
+    action: r.type ?? 'query',
+    description: r.requiresAuth ? 'Requires auth' : 'Public'
+  }))
+  let filtered = base
   
   if (searchName.value) {
-    filtered = filtered.filter(permission => 
+    filtered = filtered.filter((permission) =>
       permission.name.toLowerCase().includes(searchName.value.toLowerCase())
     )
   }
   
   if (searchResource.value) {
-    filtered = filtered.filter(permission => 
+    filtered = filtered.filter((permission) =>
       permission.resource.toLowerCase().includes(searchResource.value.toLowerCase())
     )
   }
   
   if (actionFilter.value) {
-    filtered = filtered.filter(permission => 
+    filtered = filtered.filter((permission) =>
       permission.action === actionFilter.value
     )
   }
@@ -137,13 +147,13 @@ const filteredPermissions = computed(() => {
   return filtered
 })
 
-const permissions = computed(() => 
-  filteredPermissions.value.map(permission => ({
+const permissions = computed(() =>
+  filteredPermissions.value.map((permission) => ({
     id: permission.id,
     name: permission.name,
     resource: permission.resource,
     action_name: getActionLabel(permission.action),
-    description: permission.description || '-'
+    description: permission.description ?? '-'
   }))
 )
 
@@ -151,32 +161,22 @@ const totalItems = computed(() => permissions.value.length)
 
 const getActionLabel = (action: string) => {
   const actionMap: Record<string, string> = {
-    create: 'Criar',
-    read: 'Ler',
-    update: 'Atualizar',
-    delete: 'Deletar',
-    manage: 'Gerenciar'
+    query: 'Consulta',
+    mutation: 'Mutação'
   }
   return actionMap[action] || action
 }
 
 const getList = async () => {
   try {
-    await refetchPermissions()
+    await refetchResolvers()
   } catch (error) {
     console.error('Erro ao carregar permissões:', error)
   }
 }
 
-const deletePermission = async (id: string) => {
-  if (confirm('Tem certeza que deseja deletar esta permissão?')) {
-    try {
-      await deletePermissionMutation({ id })
-      await getList()
-    } catch (error) {
-      console.error('Erro ao deletar permissão:', error)
-    }
-  }
+const deletePermission = async (_id: string) => {
+  alert('Operação de deleção de permissão não disponível.')
 }
 
 // Watch for filter changes

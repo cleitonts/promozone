@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-visible">
     <the-card-title
-      text="Brands"
+      :text="t('brand.listTitle')"
       icon="fa6-solid:tag"
       bg-color="bg-secondary-gradient"
       text-color="white"
@@ -30,7 +30,7 @@
       >
         <template #prepend>
           <v-col cols="6">
-            <v-text-field v-model="searchName" label="Brand Name" />
+            <v-text-field v-model="searchName" :label="t('brand.filters.name')" />
           </v-col>
           <v-col cols="6">
             <v-select
@@ -38,7 +38,7 @@
               :items="statusOptions"
               item-title="text"
               item-value="value"
-              label="Status"
+              :label="t('common.status')"
               clearable
             />
           </v-col>
@@ -68,9 +68,12 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, watch } from 'vue'
-import { useBrandStore } from '@/stores/brandStore'
+import { useBrands } from '@/composables/brands'
+import { useI18n } from 'vue-i18n'
 
-const brandStore = useBrandStore()
+const { t } = useI18n()
+
+const { fetchAllBrands, brands: brandsSource, removeBrand } = useBrands()
 const searchName = ref('')
 const selectedStatus = ref(null)
 const brands = ref<any[]>([])
@@ -80,24 +83,24 @@ const limit = ref(10)
 
 const headers = {
   action: '#',
-  id: 'Id',
-  name: 'Name',
-  slug: 'Slug',
-  description: 'Description',
-  website: 'Website',
-  country: 'Country',
-  is_active: 'Status'
+  id: t('common.id'),
+  name: t('common.name'),
+  slug: t('common.slug'),
+  description: t('common.description'),
+  website: t('common.website'),
+  country: t('common.country'),
+  is_active: t('common.status')
 }
 
 const statusOptions = [
-  { text: 'Active', value: true },
-  { text: 'Inactive', value: false }
+  { text: t('common.active'), value: true },
+  { text: t('common.inactive'), value: false }
 ]
 
 const getList = async function () {
-  await brandStore.fetchAllBrands()
+  await fetchAllBrands()
   // Filter brands based on search criteria
-  let filteredBrands = brandStore.brands
+  let filteredBrands = (brandsSource.value as any[]) || []
   
   if (searchName.value) {
     filteredBrands = filteredBrands.filter((brand: any) => 
@@ -114,10 +117,9 @@ const getList = async function () {
   // Apply pagination
   const startIndex = (page.value - 1) * limit.value
   const endIndex = startIndex + limit.value
-  
   brands.value = filteredBrands.slice(startIndex, endIndex).map((brand: any) => ({
     ...brand,
-    is_active: brand.is_active ? 'Active' : 'Inactive',
+    is_active: brand.active ? t('common.active') : t('common.inactive'),
     description: brand.description ? brand.description.substring(0, 50) + '...' : '-'
   }))
   
@@ -125,9 +127,9 @@ const getList = async function () {
 }
 
 const deleteBrand = async (id: string | number) => {
-  if (confirm('Are you sure you want to delete this brand?')) {
+  if (confirm(t('brand.confirmDelete'))) {
     try {
-      await brandStore.removeBrand(Number(id))
+      await removeBrand(String(id))
       await getList()
     } catch (error) {
       console.error('Error deleting brand:', error)

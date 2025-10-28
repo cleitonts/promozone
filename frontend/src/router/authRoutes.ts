@@ -1,5 +1,4 @@
 import { TheEmptyLayout } from '@/components'
-import { LoginView, RegisterView } from '@/views'
 import type { RouteRecordRaw } from 'vue-router'
 
 export const AuthRoutes: RouteRecordRaw = {
@@ -18,7 +17,7 @@ export const AuthRoutes: RouteRecordRaw = {
     {
       path: 'login',
       name: 'login',
-      component: LoginView,
+      component: () => import('@/views/auth/LoginView.vue'),
       meta: {
         pageTitle: 'Authentication',
       },
@@ -26,7 +25,7 @@ export const AuthRoutes: RouteRecordRaw = {
     {
       path: 'register',
       name: 'register',
-      component: RegisterView,
+      component: () => import('@/views/auth/RegisterView.vue'),
       meta: {
         pageTitle: 'User Registration',
       },

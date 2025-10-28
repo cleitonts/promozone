@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-visible">
     <the-card-title
-      text="Product"
+      :text="t('product.editTitle', { default: 'Product' })"
       icon="fa6-solid:box"
       bg-color="bg-success-gradient"
       text-color="white"
@@ -14,14 +14,14 @@
             <v-text-field 
               v-model="product.name" 
               :rules="nameRules" 
-              label="Product Name" 
+              :label="t('product.fields.name', { default: 'Product Name' })" 
               required 
             />
           </v-col>
           <v-col cols="12">
             <v-textarea 
               v-model="product.description" 
-              label="Description" 
+              :label="t('common.description')" 
               rows="3"
             />
           </v-col>
@@ -31,7 +31,7 @@
               :items="categories"
               item-title="name"
               item-value="id"
-              label="Category"
+              :label="t('category.fields.category')"
               required
             />
           </v-col>
@@ -41,7 +41,7 @@
               :items="brands"
               item-title="name"
               item-value="id"
-              label="Brand"
+              :label="t('brand.fields.brand')"
               required
             />
           </v-col>
@@ -50,7 +50,7 @@
     </v-card-text>
 
     <v-container fluid class="justify-end d-flex">
-      <v-btn class="success" type="submit" @click="validate"> Save </v-btn>
+      <v-btn class="success" type="submit" @click="validate"> {{ t('common.update') }} </v-btn>
     </v-container>
   </v-card>
 </template>
@@ -59,41 +59,48 @@
 import { useRoute } from 'vue-router'
 import { TheCardTitle } from '@/components'
 import { ref, onMounted } from 'vue'
-import { useProductStore } from '@/stores/productStore'
-import { useCategoryStore } from '@/stores/categoryStore'
-import { useBrandStore } from '@/stores/brandStore'
+import { useProducts } from '@/composables/useProducts'
+import { useCategories } from '@/composables/categories'
+// import { useBrandStore } from '@/stores/brandStore'
+import { useBrands } from '@/composables/brands'
 import { router } from '@/router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const route = useRoute()
-const productStore = useProductStore()
-const categoryStore = useCategoryStore()
-const brandStore = useBrandStore()
+const { fetchProduct, createOneProduct, updateOneProduct, currentProduct } = useProducts()
+const { fetchAllCategories, categories: categoriesSource } = useCategories()
+// const brandStore = useBrandStore()
+const { fetchAllBrands, brands: brandsSource } = useBrands()
 
 const product = ref({
-    name: '',
-    description: '',
-    categoryId: null as number | null,
-    brandId: null as number | null
-  })
+  name: '',
+  description: '',
+  categoryId: null as string | null,
+  brandId: null as string | null
+})
 
 const categories = ref<any[]>([])
 const brands = ref<any[]>([])
 
 const nameRules = [
-  (v: string) => !!v || 'Product name is required',
+  (v: string) => !!v || t('product.fields.name', { default: 'Product Name' }) + ' ' + 'is required',
   (v: string) => v.length >= 3 || 'Product name must be at least 3 characters'
 ]
 
 const validate = async function () {
   if (route.name === 'productsNew') {
     try {
-      await productStore.createProduct({
-        price: 0,
-        slug: '',
-        name: product.value.name,
-        description: product.value.description,
-        categoryId: product.value.categoryId || undefined,
-        brandId: product.value.brandId || undefined
+      await createOneProduct({
+        product: {
+          price: 0,
+          slug: '',
+          name: product.value.name,
+          description: product.value.description,
+          categoryId: product.value.categoryId || undefined,
+          brandId: product.value.brandId || undefined
+        }
       })
       router.push({ name: 'productsList' })
     } catch (error) {
@@ -101,11 +108,14 @@ const validate = async function () {
     }
   } else {
     try {
-      await productStore.updateProduct(parseInt(route.params.id as string), {
-        name: product.value.name,
-        description: product.value.description,
-        categoryId: product.value.categoryId || undefined,
-        brandId: product.value.brandId || undefined
+      await updateOneProduct({
+        id: route.params.id as string,
+        update: {
+          name: product.value.name,
+          description: product.value.description,
+          categoryId: product.value.categoryId || undefined,
+          brandId: product.value.brandId || undefined
+        }
       })
       router.push({ name: 'productsList' })
     } catch (error) {
@@ -115,16 +125,16 @@ const validate = async function () {
 }
 
 const loadCategories = async () => {
-  await categoryStore.fetchAllCategories()
-  if (categoryStore.categories) {
-    categories.value = categoryStore.categories
+  await fetchAllCategories()
+  if (categoriesSource.value) {
+    categories.value = (categoriesSource.value as any)?.edges?.map((e: any) => e.node) || []
   }
 }
 
 const loadBrands = async () => {
-  await brandStore.fetchAllBrands()
-  if (brandStore.brands) {
-    brands.value = brandStore.brands
+  await fetchAllBrands()
+  if (brandsSource.value) {
+    brands.value = (brandsSource.value as any)?.edges?.map((e: any) => e.node) || []
   }
 }
 
@@ -134,14 +144,14 @@ onMounted(async () => {
   await loadBrands()
   
   if (route.name !== 'productsNew' && route.params.id) {
-    const productId = parseInt(route.params.id as string)
-    await productStore.fetchProduct(productId)
-    if (productStore.currentProduct) {
+    const productId = String(route.params.id)
+    await fetchProduct(productId)
+    if (currentProduct.value) {
       product.value = {
-        name: productStore.currentProduct.name || '',
-        description: productStore.currentProduct.description || '',
-        categoryId: productStore.currentProduct.categoryId || null,
-        brandId: productStore.currentProduct.brandId || null
+        name: currentProduct.value.name || '',
+        description: currentProduct.value.description || '',
+        categoryId: currentProduct.value.categoryId || null,
+        brandId: currentProduct.value.brandId || null
       }
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-visible">
     <the-card-title
-      text="Products"
+      :text="t('menu.products')"
       icon="fa6-solid:box"
       bg-color="bg-secondary-gradient"
       text-color="white"
@@ -30,7 +30,7 @@
       >
         <template #prepend>
           <v-col cols="6">
-            <v-text-field v-model="searchName" label="Product Name" />
+            <v-text-field v-model="searchName" :label="t('product.fields.name', { default: 'Product Name' })" />
           </v-col>
           <v-col cols="6">
             <v-select
@@ -38,7 +38,7 @@
               :items="categories"
               item-title="name"
               item-value="id"
-              label="Category"
+              :label="t('category.fields.category')"
               clearable
             />
           </v-col>
@@ -68,11 +68,14 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, watch } from 'vue'
-import { useProductStore } from '@/stores/productStore'
-import { useCategoryStore } from '@/stores/categoryStore'
+import { useProducts } from '@/composables/useProducts'
+import { useCategories } from '@/composables/categories'
+import { useI18n } from 'vue-i18n'
 
-const productStore = useProductStore()
-const categoryStore = useCategoryStore()
+const { t } = useI18n()
+
+const { fetchAllProducts, deleteOneProduct, products: productsSource } = useProducts()
+const { fetchAllCategories, categories: categoriesSource } = useCategories()
 const searchName = ref('')
 const selectedCategory = ref(null)
 const products = ref<any[]>([])
@@ -83,19 +86,18 @@ const limit = ref(10)
 
 const headers = {
   action: '#',
-  id: 'Id',
-  name: 'Name',
-  description: 'Description',
-  category: 'Category',
-  brand: 'Brand',
-  price: 'Price',
-  stock: 'Stock'
+  id: t('common.id'),
+  name: t('common.name'),
+  description: t('common.description'),
+  category: t('category.fields.category'),
+  brand: t('brand.fields.brand'),
+  price: t('product.fields.price'),
+  stock: t('product.fields.stock')
 }
 
 const getList = async function () {
-  await productStore.fetchAllProducts()
-  // Filter products based on search criteria
-  let filteredProducts = productStore.products
+  await fetchAllProducts()
+  let filteredProducts = productsSource.value
   
   if (searchName.value) {
       filteredProducts = filteredProducts.filter((product: any) => 
@@ -124,16 +126,16 @@ const getList = async function () {
 }
 
 const getCategories = async function () {
-  await categoryStore.fetchAllCategories()
-  if (categoryStore.categories) {
-    categories.value = categoryStore.categories
+  await fetchAllCategories()
+  if (categoriesSource.value) {
+    categories.value = (categoriesSource.value as any)?.edges?.map((e: any) => e.node) || []
   }
 }
 
 const deleteProduct = async function (id: string) {
-  if (confirm('Are you sure you want to delete this product?')) {
+  if (confirm(t('product.confirmDelete'))) {
     try {
-      await productStore.removeProduct(parseInt(id))
+      await deleteOneProduct({ id })
       await getList()
     } catch (error) {
       console.error('Error deleting product:', error)

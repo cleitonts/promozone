@@ -51,9 +51,9 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref } from 'vue'
-import { useUserStore } from '@/stores/userStore'
+import { useUsers } from '@/composables/useUsers'
 
-const userStore = useUserStore()
+const { fetchAllUsers, users: usersSource } = useUsers()
 const email = ref('')
 const users = ref<any[]>([])
 const totalItems = ref(0)
@@ -73,9 +73,9 @@ const emailRules = [
 ]
 
 const getList = async function () {
-  await userStore.fetchAllUsers()
-  if (userStore.users) {
-    users.value = userStore.users.map((user: any) => ({
+  await fetchAllUsers()
+  if (usersSource.value) {
+    users.value = usersSource.value.map((user: any) => ({
       id: user.id || '',
       email: user.email || '',
     }))

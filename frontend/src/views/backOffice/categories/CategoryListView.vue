@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-visible">
     <the-card-title
-      text="Categories"
+      :text="t('category.listTitle')"
       icon="fa6-solid:tags"
       bg-color="bg-secondary-gradient"
       text-color="white"
@@ -30,7 +30,7 @@
       >
         <template #prepend>
           <v-col cols="6">
-            <v-text-field v-model="searchName" label="Category Name" />
+            <v-text-field v-model="searchName" :label="t('category.filters.name')" />
           </v-col>
         </template>
         <template #action="{ element }">
@@ -58,11 +58,12 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, watch } from 'vue'
-import { useCategoryStore } from '@/stores/categoryStore'
-import { useRemoveCategoryMutation } from '@/generated/graphql'
+// remove generated hooks; use composable actions instead
+import { useI18n } from 'vue-i18n'
+import { useCategories } from '@/composables/categories'
 
-const categoryStore = useCategoryStore()
-const { mutate: removeCategory } = useRemoveCategoryMutation()
+const { t } = useI18n()
+const { fetchAllCategories, categories: categoriesSource, deleteOneCategory } = useCategories()
 const searchName = ref('')
 const categories = ref<any[]>([])
 const totalItems = ref(0)
@@ -71,14 +72,14 @@ const limit = ref(10)
 
 const headers = {
   action: '#',
-  id: 'Id',
-  name: 'Name'
+  id: t('common.id'),
+  name: t('common.name')
 }
 
 const getList = async function () {
-  await categoryStore.fetchAllCategories()
+  await fetchAllCategories()
   // Filter categories based on search criteria
-  let filteredCategories = categoryStore.categories
+  let filteredCategories = (categoriesSource.value as any)?.edges?.map((e: any) => e.node) || []
   
   if (searchName.value) {
     filteredCategories = filteredCategories.filter((category: any) => 
@@ -96,9 +97,10 @@ const getList = async function () {
 }
 
 const deleteCategory = async function (id: string) {
-  if (confirm('Are you sure you want to delete this category?')) {
+  if (confirm(t('category.confirmDelete'))) {
     try {
-      await removeCategory({ id: parseInt(id) })
+      const ok = await deleteOneCategory({ id })
+      if (!ok) throw new Error('Delete failed')
       await getList()
     } catch (error) {
       console.error('Error deleting category:', error)

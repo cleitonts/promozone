@@ -1,17 +1,27 @@
 query GetAllCategories {
   categories {
-    id
-    name
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        active
+        created
+        updated
+      }
+    }
   }
 }
 
-query GetCategory($id: Int!) {
+query GetCategory($id: ID!) {
   category(id: $id) {
     id
     name
-    products {
-      id
-      name
-    }
+    slug
+    description
+    active
+    created
+    updated
   }
 }

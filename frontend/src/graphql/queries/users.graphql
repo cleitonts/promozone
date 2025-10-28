@@ -1,15 +1,19 @@
 query GetAllUsers {
   users {
-    id
-    email
-    createdAt
+    edges {
+      node {
+        id
+        email
+        created
+      }
+    }
   }
 }
 
-query GetUser($id: String!) {
+query GetUser($id: ID!) {
   user(id: $id) {
     id
     email
-    createdAt
+    created
   }
 }

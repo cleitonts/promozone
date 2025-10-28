@@ -1,29 +1,35 @@
-mutation CreateBrand($createBrandInput: CreateBrandDto!) {
-  createBrand(createBrandInput: $createBrandInput) {
+mutation CreateOneBrand($input: CreateOneBrandInput!) {
+  createOneBrand(input: $input) {
     id
     name
     slug
     description
-    logo_url
+    logoUrl
     website
     country
-    is_active
+    active
+    created
+    updated
   }
 }
 
-mutation UpdateBrand($id: Int!, $updateBrandInput: UpdateBrandDto!) {
-  updateBrand(id: $id, updateBrandInput: $updateBrandInput) {
+mutation DeleteOneBrand($input: DeleteOneBrandInput!) {
+  deleteOneBrand(input: $input) {
+    id
+  }
+}
+
+mutation UpdateOneBrand($input: UpdateOneBrandInput!) {
+  updateOneBrand(input: $input) {
     id
     name
     slug
     description
-    logo_url
+    logoUrl
     website
     country
-    is_active
+    active
+    created
+    updated
   }
-}
-
-mutation RemoveBrand($id: Int!) {
-  removeBrand(id: $id)
 }

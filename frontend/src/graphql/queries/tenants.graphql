@@ -1,23 +1,23 @@
 query GetTenants {
   tenants {
-    id
-    name
-    description
-    domain
-    settings
-    createdAt
-    updatedAt
+    edges {
+      node {
+        id
+        name
+        domain
+        created
+        updated
+      }
+    }
   }
 }
 
-query GetTenant($id: String!) {
+query GetTenant($id: ID!) {
   tenant(id: $id) {
     id
     name
-    description
     domain
-    settings
-    createdAt
-    updatedAt
+    created
+    updated
   }
 }

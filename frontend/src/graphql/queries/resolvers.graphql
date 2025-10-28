@@ -1,0 +1,11 @@
+query ListResolvers {
+  listResolvers {
+    moduleName
+    resolverClass
+    resolverName
+    methodName
+    schemaName
+    type
+    requiresAuth
+  }
+}

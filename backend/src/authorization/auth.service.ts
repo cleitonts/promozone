@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 import { UserEntity } from '../user/user.entity';
 import { InjectQueryService, QueryService } from '@ptc-org/nestjs-query-core';
-import { AuthenticatedUser, ITokenPair, ITokenPayload, UserWithoutPassword } from './auth.interface';
+import { IUserPayloadResponse, ITokenPair, ITokenPayload, UserWithoutPassword } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -122,12 +122,16 @@ export class AuthService {
     }
   }
 
-  async currentUser(authUser: AuthenticatedUser): Promise<UserWithoutPassword> {
+  async currentUser(authUser: IUserPayloadResponse): Promise<UserWithoutPassword> {
     try {
-      const { password, ...user } = await this.usersService.getById(authUser.id);
-      return user
+      const user = await this.usersService.findById(authUser.userId);
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+      const { password, ...rest } = user as UserEntity & { password?: string };
+      return rest;
     } catch (e) {
-      throw new UnauthorizedException()
+      throw new UnauthorizedException();
     }
   }
 }

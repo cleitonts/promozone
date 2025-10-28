@@ -1,58 +1,33 @@
 query GetAllProducts {
   products {
-    id
-    name
-    description
-    categoryId
-    brandId
-    createdAt
-    category {
-      id
-      name
-    }
-    brand {
-      id
-      name
-    }
-    variants {
-      id
-      sku
-      price
-      stock
-      imageUrl
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        price
+        categoryId
+        brandId
+        active
+        created
+        updated
+      }
     }
   }
 }
 
-query GetProduct($id: Int!) {
+query GetProduct($id: ID!) {
   product(id: $id) {
     id
     name
+    slug
     description
+    price
     categoryId
     brandId
-    createdAt
-    category {
-      id
-      name
-    }
-    brand {
-      id
-      name
-    }
-    variants {
-      id
-      sku
-      price
-      stock
-      imageUrl
-    }
-  }
-}
-
-query GetAllCategories {
-  categories {
-    id
-    name
+    active
+    created
+    updated
   }
 }

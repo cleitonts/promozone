@@ -1,35 +1,27 @@
-mutation CreateTenant($input: CreateTenantInput!) {
-  createTenant(input: $input) {
+mutation CreateTenant($input: CreateOneTenantInput!) {
+  createOneTenant(input: $input) {
     id
     name
-    description
     domain
-    settings
-    createdAt
-    updatedAt
+    active
+    created
+    updated
   }
 }
 
-mutation UpdateTenant($input: UpdateTenantInput!) {
-  updateTenant(input: $input) {
+mutation UpdateTenant($input: UpdateOneTenantInput!) {
+  updateOneTenant(input: $input) {
     id
     name
-    description
     domain
-    settings
-    createdAt
-    updatedAt
+    active
+    created
+    updated
   }
 }
 
-mutation DeleteTenant($id: String!) {
-  deleteTenant(id: $id)
-}
-
-mutation AddUserToTenant($input: AddUserToTenantInput!) {
-  addUserToTenant(input: $input)
-}
-
-mutation RemoveUserFromTenant($input: RemoveUserFromTenantInput!) {
-  removeUserFromTenant(input: $input)
+mutation DeleteTenant($input: DeleteOneTenantInput!) {
+  deleteOneTenant(input: $input) {
+    id
+  }
 }

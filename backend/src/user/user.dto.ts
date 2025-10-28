@@ -18,6 +18,9 @@ export class UserDTO {
   @FilterableField()
   tenantId!: string;
 
+  @Field(() => [String])
+  roles!: string[];
+
   @Field(() => GraphQLISODateTime)
   created!: Date;
 }

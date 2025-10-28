@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, watch } from 'vue'
-import { useGetTenantsQuery, useDeleteTenantMutation } from '@/generated/graphql'
+import { useTenants } from '@/composables/tenants'
 
 const searchName = ref('')
 const searchDomain = ref('')
@@ -70,8 +70,7 @@ const totalItems = ref(0)
 const page = ref(1)
 const limit = ref(10)
 
-const { result: tenantsResult, refetch: refetchTenants } = useGetTenantsQuery()
-const { mutate: deleteTenantMutation } = useDeleteTenantMutation()
+const { fetchAllTenants, tenants: tenantsSource, deleteOneTenant } = useTenants()
 
 const headers = {
   action: '#',
@@ -84,32 +83,26 @@ const headers = {
 
 const getList = async function () {
   try {
-    await refetchTenants()
-    
-    if (tenantsResult.value?.tenants) {
-      let filteredTenants = tenantsResult.value.tenants
-      
-      if (searchName.value) {
-        filteredTenants = filteredTenants.filter((tenant: any) => 
-          tenant.name.toLowerCase().includes(searchName.value.toLowerCase())
-        )
-      }
-      
-      if (searchDomain.value) {
-        filteredTenants = filteredTenants.filter((tenant: any) => 
-          tenant.domain?.toLowerCase().includes(searchDomain.value.toLowerCase())
-        )
-      }
-      
-      tenants.value = filteredTenants.map((tenant: any) => ({
-        id: tenant.id || '',
-        name: tenant.name || '',
-        description: tenant.description || '',
-        domain: tenant.domain || '',
-        createdAt: tenant.createdAt ? new Date(tenant.createdAt).toLocaleDateString() : ''
-      }))
-      totalItems.value = tenants.value.length
+    await fetchAllTenants()
+    let filteredTenants = (tenantsSource.value as any[]) || []
+    if (searchName.value) {
+      filteredTenants = filteredTenants.filter((tenant: any) =>
+        tenant.name.toLowerCase().includes(searchName.value.toLowerCase())
+      )
     }
+    if (searchDomain.value) {
+      filteredTenants = filteredTenants.filter((tenant: any) =>
+        tenant.domain?.toLowerCase().includes(searchDomain.value.toLowerCase())
+      )
+    }
+    tenants.value = filteredTenants.map((tenant: any) => ({
+      id: tenant.id || '',
+      name: tenant.name || '',
+      description: '-',
+      domain: tenant.domain || '',
+      createdAt: tenant.created ? new Date(tenant.created).toLocaleDateString() : ''
+    }))
+    totalItems.value = tenants.value.length
   } catch (error) {
     console.error('Error fetching tenants:', error)
   }
@@ -118,8 +111,8 @@ const getList = async function () {
 const deleteTenant = async function (id: string) {
   if (confirm('Are you sure you want to delete this tenant?')) {
     try {
-      await deleteTenantMutation({ id })
-      await getList()
+      const ok = await deleteOneTenant({ id })
+      if (ok) await getList()
     } catch (error) {
       console.error('Error deleting tenant:', error)
     }

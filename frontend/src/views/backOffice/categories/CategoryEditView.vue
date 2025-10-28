@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-visible">
     <the-card-title
-      text="Category"
+      :text="t('category.editTitle')"
       icon="fa6-solid:tags"
       bg-color="bg-success-gradient"
       text-color="white"
@@ -14,7 +14,7 @@
             <v-text-field 
               v-model="category.name" 
               :rules="nameRules" 
-              label="Category Name" 
+              :label="t('category.fields.name')" 
               required 
             />
           </v-col>
@@ -28,14 +28,14 @@
         variant="outlined" 
         @click="$router.go(-1)"
       >
-        Cancel
+        {{ t('common.cancel') }}
       </v-btn>
       <v-btn 
         color="primary" 
         @click="validate"
-        :loading="categoryStore.loading"
+        :loading="loading"
       >
-        {{ isEdit ? 'Update' : 'Create' }}
+        {{ isEdit ? t('common.update') : t('common.create') }}
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -45,27 +45,22 @@
 import { TheCardTitle } from '@/components'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useCategoryStore } from '@/stores/categoryStore'
-import { 
-  useCreateCategoryMutation, 
-  useUpdateCategoryMutation,
-  type CreateCategoryDto 
-} from '@/generated/graphql'
+import { useCategories } from '@/composables/categories'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+const { fetchCategory, currentCategory, loading, createOneCategory, updateOneCategory } = useCategories()
 
 const route = useRoute()
 const router = useRouter()
-const categoryStore = useCategoryStore()
-const { mutate: createCategoryMutation } = useCreateCategoryMutation()
-const { mutate: updateCategoryMutation } = useUpdateCategoryMutation()
-
-const category = ref<CreateCategoryDto>({
+const category = ref<{ name: string; description?: string; slug?: string; active?: boolean}>({
   name: ''
 })
 
 const isEdit = computed(() => !!route.params.id)
 
 const nameRules = [
-  (v: string) => !!v || 'Category name is required',
+  (v: string) => !!v || t('category.fields.name') + ' ' + 'is required',
   (v: string) => v.length >= 2 || 'Category name must be at least 2 characters'
 ]
 
@@ -77,20 +72,26 @@ const validate = async () => {
 
   try {
     if (isEdit.value) {
-      const result = await updateCategoryMutation({
-        id: Number(route.params.id),
-        updateCategoryInput: category.value
+      const updated = await updateOneCategory({
+        id: String(route.params.id),
+        update: {
+          name: category.value.name,
+          description: category.value.description,
+          slug: category.value.slug,
+          active: category.value.active
+        }
       })
-      if (result?.data?.updateCategory) {
-        router.push({ name: 'categoriesList' })
-      }
+      if (updated) router.push({ name: 'categoriesList' })
     } else {
-      const result = await createCategoryMutation({
-        createCategoryInput: category.value
+      const created = await createOneCategory({
+        category: {
+          name: category.value.name,
+          description: category.value.description,
+          slug: category.value.slug,
+          active: category.value.active
+        }
       })
-      if (result?.data?.createCategory) {
-        router.push({ name: 'categoriesList' })
-      }
+      if (created) router.push({ name: 'categoriesList' })
     }
   } catch (error) {
     console.error('Error saving category:', error)
@@ -100,10 +101,10 @@ const validate = async () => {
 const loadCategory = async () => {
   if (isEdit.value && route.params.id) {
     try {
-      await categoryStore.fetchCategory(Number(route.params.id))
-      if (categoryStore.currentCategory) {
+      await fetchCategory(String(route.params.id))
+      if (currentCategory.value) {
         category.value = {
-          name: categoryStore.currentCategory.name
+          name: currentCategory.value.name
         }
       }
     } catch (error) {

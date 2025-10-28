@@ -8,7 +8,7 @@ import apolloClient from '@/plugins/apollo'
 import App from './App.vue'
 import { router } from './router'
 import { TheSpinner } from './components'
-import { AccessTokenServiceManager } from '@/services/accessTokenService'
+import i18n from '@/plugins/i18n'
 
 const app = createApp(App)
 
@@ -17,7 +17,6 @@ app.provide(DefaultApolloClient, apolloClient)
 app.use(createPinia())
 app.use(router)
 app.use(vuetify)
+app.use(i18n)
 
 app.mount('#app')
-
-AccessTokenServiceManager.initialize()

@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module'
 import { AuthModule } from './authorization/auth.module'
 import { SeedComposite } from '@/seed/seed.composite'
 import typeorm, { envFiles } from './data-source';
+import { ProfileModule } from './profile/profile.module'
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import typeorm, { envFiles } from './data-source';
     UserModule,
     ProductsModule,
     AuthModule,
+    ProfileModule,
   ],
   providers: [SeedComposite],
   exports: [SeedComposite],

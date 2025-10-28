@@ -19,20 +19,7 @@
             density="compact"
           />
         </v-col>
-        <v-col cols="12" md="6">
-          <v-select
-            v-model="filterGlobal"
-            label="Filtrar por tipo"
-            :items="[
-              { title: 'Todos', value: null },
-              { title: 'Globais', value: true },
-              { title: 'Específicos do Tenant', value: false }
-            ]"
-            variant="outlined"
-            density="compact"
-            clearable
-          />
-        </v-col>
+        
       </v-row>
       
       <base-grid
@@ -44,18 +31,17 @@
         @update:page="page = $event"
         @update:limit="limit = $event"
       >
-        <template #item.isGlobal="{ item }">
+        <template #item.resolvers="{ item }">
           <v-chip
-            :color="item.isGlobal ? 'primary' : 'secondary'"
+            color="primary"
             size="small"
           >
-            {{ item.isGlobal ? 'Global' : 'Tenant' }}
+            {{ Array.isArray(item.resolvers) ? item.resolvers.length + ' resolvers' : '0' }}
           </v-chip>
         </template>
         
-        <template #item.tenant="{ item }">
-          <span v-if="item.tenant && typeof item.tenant === 'object'">{{ (item.tenant as any).name }}</span>
-          <span v-else class="text-grey">-</span>
+        <template #item.tenantId="{ item }">
+          <span>{{ item.tenantId || '-' }}</span>
         </template>
         
         <template #item.actions="{ item }">
@@ -81,41 +67,35 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { computed, onMounted, ref, watch } from 'vue'
-import { useGetRolesQuery, useDeleteRoleMutation, type Role } from '@/generated/graphql'
+import { useGetProfilesQuery, useDeleteOneProfileMutation } from '@/generated/graphql'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const searchName = ref('')
-const filterGlobal = ref<boolean | null>(null)
 const page = ref(1)
 const limit = ref(10)
 
-const { result: rolesResult, loading, refetch: refetchRoles } = useGetRolesQuery()
-const { mutate: deleteRoleMutation } = useDeleteRoleMutation()
+const { result: profilesResult, loading, refetch: refetchProfiles } = useGetProfilesQuery()
+const { mutate: deleteProfile } = useDeleteOneProfileMutation()
 
-const roles = computed(() => rolesResult.value?.roles || [])
+const roles = computed(() => (profilesResult.value?.profiles?.edges || []).map((e: any) => e.node))
 
 const filteredRoles = computed(() => {
   let filtered = roles.value
   
   if (searchName.value) {
-    filtered = filtered.filter((role) => 
+    filtered = filtered.filter((role: any) =>
       role.name.toLowerCase().includes(searchName.value.toLowerCase())
     )
-  }
-  
-  if (filterGlobal.value !== null) {
-    filtered = filtered.filter((role) => role.isGlobal === filterGlobal.value)
   }
   
   return filtered
 })
 
 const headers = [
-  { title: 'Nome', key: 'name', sortable: true },
-  { title: 'Descrição', key: 'description', sortable: false },
-  { title: 'Tipo', key: 'isGlobal', sortable: true },
-  { title: 'Tenant', key: 'tenant', sortable: false },
+  { title: 'ID', key: 'id', sortable: true },
+  { title: 'Resolvers', key: 'resolvers', sortable: false },
+  { title: 'Tenant', key: 'tenantId', sortable: false },
   { title: 'Ações', key: 'actions', sortable: false, width: '120px' }
 ]
 
@@ -126,19 +106,19 @@ const editRole = (id: string) => {
 const deleteRole = async (id: string) => {
   if (confirm('Tem certeza que deseja excluir esta role?')) {
     try {
-      await deleteRoleMutation({ id })
-      await refetchRoles()
+      await deleteProfile({ input: { id } })
+      await refetchProfiles()
     } catch (error) {
       console.error('Erro ao excluir role:', error)
     }
   }
 }
 
-watch([searchName, filterGlobal], () => {
+watch([searchName], () => {
   page.value = 1
 })
 
 onMounted(() => {
-  refetchRoles()
+  refetchProfiles()
 })
 </script>

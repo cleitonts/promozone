@@ -33,75 +33,12 @@
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="tenant.slug"
-                    label="Slug (Identificador único)"
-                    :rules="slugRules"
-                    required
-                    prepend-inner-icon="mdi-link"
-                    hint="Usado para URLs e identificação"
-                    persistent-hint
-                  />
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col cols="12">
-                  <v-textarea
-                    v-model="tenant.description"
-                    label="Descrição"
-                    rows="3"
-                    prepend-inner-icon="mdi-text"
-                    hint="Descrição opcional do tenant"
-                    persistent-hint
-                  />
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-text-field
                     v-model="tenant.domain"
-                    label="Domínio (Opcional)"
-                    prepend-inner-icon="mdi-web"
-                    hint="Domínio personalizado para o tenant"
-                    persistent-hint
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="tenant.ownerId"
-                    :items="userOptions"
-                    item-title="email"
-                    item-value="id"
-                    label="Proprietário"
-                    prepend-inner-icon="mdi-account-crown"
-                    :rules="ownerRules"
+                    label="Domínio"
+                    :rules="domainRules"
                     required
-                    hint="Usuário que será o proprietário do tenant"
-                    persistent-hint
+                    prepend-inner-icon="mdi-web"
                   />
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col cols="12">
-                  <v-card variant="outlined">
-                    <v-card-title class="text-subtitle-1">
-                      <v-icon left>mdi-cog</v-icon>
-                      Configurações Avançadas
-                    </v-card-title>
-                    <v-card-text>
-                      <v-textarea
-                        v-model="tenant.settings"
-                        label="Configurações JSON (Opcional)"
-                        rows="4"
-                        prepend-inner-icon="mdi-code-json"
-                        hint="Configurações específicas do tenant em formato JSON"
-                        persistent-hint
-                        placeholder='{"theme": "default", "features": ["feature1", "feature2"]}'
-                      />
-                    </v-card-text>
-                  </v-card>
                 </v-col>
               </v-row>
 
@@ -141,10 +78,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
-import { useGetAllUsersQuery, useCreateTenantMutation } from '@/generated/graphql'
+import { useMutation } from '@vue/apollo-composable'
+import gql from 'graphql-tag'
+import createTenantRaw from '@/graphql/mutations/tenants.graphql?raw'
 
 const router = useRouter()
 const interfaceStore = useInterfaceStore()
@@ -156,11 +95,7 @@ const error = ref('')
 
 const tenant = ref({
   name: '',
-  slug: '',
-  description: '',
-  domain: '',
-  ownerId: '',
-  settings: ''
+  domain: ''
 })
 
 // Validation rules
@@ -169,23 +104,12 @@ const nameRules = [
   (v: string) => v.length >= 2 || 'Nome deve ter pelo menos 2 caracteres'
 ]
 
-const slugRules = [
-  (v: string) => !!v || 'Slug é obrigatório',
-  (v: string) => /^[a-z0-9-]+$/.test(v) || 'Slug deve conter apenas letras minúsculas, números e hífens',
-  (v: string) => v.length >= 2 || 'Slug deve ter pelo menos 2 caracteres'
+const domainRules = [
+  (v: string) => !!v || 'Domínio é obrigatório',
+  (v: string) => /^(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(v) || 'Domínio deve ser válido'
 ]
 
-const ownerRules = [
-  (v: string) => !!v || 'Proprietário é obrigatório'
-]
-
-// GraphQL queries and mutations
-const { result: usersResult } = useGetAllUsersQuery()
-const { mutate: createTenant } = useCreateTenantMutation()
-
-const userOptions = computed(() => {
-  return usersResult.value?.users || []
-})
+const { mutate: createTenant } = useMutation(gql(createTenantRaw))
 
 const submit = async () => {
   if (!form.value?.validate()) return
@@ -194,29 +118,16 @@ const submit = async () => {
   error.value = ''
 
   try {
-    // Validar JSON se fornecido
-    if (tenant.value.settings) {
-      try {
-        JSON.parse(tenant.value.settings)
-      } catch {
-        error.value = 'Configurações devem estar em formato JSON válido'
-        loading.value = false
-        return
-      }
-    }
-
     const result = await createTenant({
       input: {
-        name: tenant.value.name,
-        slug: tenant.value.slug,
-        description: tenant.value.description || undefined,
-        domain: tenant.value.domain || undefined,
-        ownerId: tenant.value.ownerId,
-        settings: tenant.value.settings ? JSON.parse(tenant.value.settings) : undefined
+        tenant: {
+          name: tenant.value.name,
+          domain: tenant.value.domain
+        }
       }
     })
 
-    if (result?.data?.createTenant) {
+    if (result?.data?.createOneTenant) {
       interfaceStore.addMessage('Tenant criado com sucesso!', EMessageType.Success)
       router.push({ name: 'adminDashboard' })
     }

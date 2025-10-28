@@ -1,14 +1,11 @@
 import TheMainLayout from '@/components/layout/backOffice/TheMainLayout.vue'
 import type { RouteRecordRaw } from 'vue-router'
-import AdminUserCreateView from '@/views/admin/users/AdminUserCreateView.vue'
-import AdminTenantCreateView from '@/views/admin/tenants/AdminTenantCreateView.vue'
-import AdminDashboardView from '@/views/admin/AdminDashboardView.vue'
 
 export const adminRoutes: RouteRecordRaw = {
   path: '/admin',
   meta: {
     requiresAuth: true,
-    requiresPermission: 'tenant.manage',
+    requiresAdmin: true,
   },
   children: [
     {
@@ -18,10 +15,10 @@ export const adminRoutes: RouteRecordRaw = {
         {
           path: '',
           name: 'adminDashboard',
-          component: AdminDashboardView,
+          component: () => import('@/views/admin/AdminDashboardView.vue'),
           meta: {
             pageTitle: 'Administração',
-            requiresPermission: 'tenant.manage',
+            requiresAdmin: true,
           },
         },
       ],
@@ -33,10 +30,10 @@ export const adminRoutes: RouteRecordRaw = {
         {
           path: 'create',
           name: 'adminUserCreate',
-          component: AdminUserCreateView,
+          component: () => import('@/views/admin/users/AdminUserCreateView.vue'),
           meta: {
             pageTitle: 'Criar Usuário',
-            requiresPermission: 'users.create',
+            requiresAdmin: true,
           },
         },
       ],
@@ -48,10 +45,10 @@ export const adminRoutes: RouteRecordRaw = {
         {
           path: 'create',
           name: 'adminTenantCreate',
-          component: AdminTenantCreateView,
+          component: () => import('@/views/admin/tenants/AdminTenantCreateView.vue'),
           meta: {
             pageTitle: 'Criar Tenant',
-            requiresPermission: 'tenant.create',
+            requiresAdmin: true,
           },
         },
       ],

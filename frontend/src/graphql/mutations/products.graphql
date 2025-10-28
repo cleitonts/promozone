@@ -1,41 +1,35 @@
-mutation CreateProduct($createProductInput: CreateProductDto!) {
-  createProduct(createProductInput: $createProductInput) {
+mutation CreateOneProduct($input: CreateOneProductInput!) {
+  createOneProduct(input: $input) {
     id
     name
+    slug
     description
+    price
     categoryId
     brandId
-    createdAt
-    category {
-      id
-      name
-    }
-    brand {
-      id
-      name
-    }
+    active
+    created
+    updated
   }
 }
 
-mutation UpdateProduct($id: Int!, $updateProductInput: UpdateProductDto!) {
-  updateProduct(id: $id, updateProductInput: $updateProductInput) {
+mutation DeleteOneProduct($input: DeleteOneProductInput!) {
+  deleteOneProduct(input: $input) {
     id
-    name
-    description
-    categoryId
-    brandId
-    createdAt
-    category {
-      id
-      name
-    }
-    brand {
-      id
-      name
-    }
   }
 }
 
-mutation RemoveProduct($id: Int!) {
-  removeProduct(id: $id)
+mutation UpdateOneProduct($input: UpdateOneProductInput!) {
+  updateOneProduct(input: $input) {
+    id
+    name
+    slug
+    description
+    price
+    categoryId
+    brandId
+    active
+    created
+    updated
+  }
 }

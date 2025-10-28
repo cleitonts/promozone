@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-visible">
     <the-card-title
-      text="Perfil"
+      :text="t('perfil.listTitle')"
       icon="fluent-mdl2:permissions"
       bg-color="bg-secondary-gradient"
       text-color="white"
@@ -26,12 +26,7 @@
         class="collaborators-table"
         :matrix="perfils"
         :total-items="totalItems"
-        :header="{
-          action: '#',
-          id: 'Id',
-          name: 'Name',
-          permissions: 'Permissions',
-        }"
+        :header="headers"
         @update="getList()"
       >
         <template #action="{ element }">
@@ -47,12 +42,7 @@
               color="error"
               size="x-small"
               icon="fa6-solid:xmark"
-              @click="
-                () => {
-                  deletePerfilItem = element as unknown as PerfilListItem
-                  showConfirmDialog = true
-                }
-              "
+              @click="() => { deletePerfilItem = element as unknown as PerfilListItem; showConfirmDialog = true }"
             />
           </td>
         </template>
@@ -60,8 +50,8 @@
     </v-card-text>
     <TheConfirmationDialog
       v-model="showConfirmDialog"
-      :title="'Delete perfil: ' + deletePerfilItem.name"
-      description="do you want to delete this perfil?"
+      :title="t('perfil.confirmDeleteTitle', { name: deletePerfilItem.name || deletePerfilItem.id })"
+      :description="t('perfil.confirmDeleteDescription')"
       @accept="deletePerfil"
       @reject="showConfirmDialog = false"
     />
@@ -71,11 +61,14 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle, TheConfirmationDialog } from '@/components'
 import { onMounted, ref } from 'vue'
-import { useRemovePerfilMutation } from '@/generated/graphql'
+import { useI18n } from 'vue-i18n'
+import { useGetProfilesQuery, useDeleteOneProfileMutation } from '@/generated/graphql'
+
+const { t } = useI18n()
 
 type PerfilListItem = {
   id: string
-  name: string
+  name?: string
   permissions: number
 }
 
@@ -86,24 +79,34 @@ const deletePerfilItem = ref({} as PerfilListItem)
 const page = ref(1)
 const limit = ref(10)
 
-// GraphQL mutation for removing perfil
-const { mutate: removePerfil } = useRemovePerfilMutation()
+const headers = {
+  action: '#',
+  id: t('common.id'),
+  name: t('common.name'),
+  permissions: t('menu.permissions'),
+}
+
+const { result: profilesResult, refetch: refetchProfiles } = useGetProfilesQuery()
+const { mutate: deleteOneProfile } = useDeleteOneProfileMutation()
 
 const getList = async function () {
-  // Note: Since we don't have a getAllPerfils query in the schema,
-  // we'll use placeholder data for now
-  perfils.value = [
-    { id: '1', name: 'Admin', permissions: 5 },
-    { id: '2', name: 'User', permissions: 2 },
-  ]
+  const data = profilesResult.value
+  const edges = data?.profiles?.edges ?? []
+  const list = edges.map((e: any) => e.node)
+  perfils.value = list.map((p: any) => ({
+    id: p.id,
+    name: p.displayName ?? p.id ?? '-',
+    permissions: Array.isArray(p.resolvers) ? p.resolvers.length : 0,
+  }))
   totalItems.value = perfils.value.length
 }
 
 const deletePerfil = async function () {
   try {
-    await removePerfil({ id: deletePerfilItem.value.id })
+    await deleteOneProfile({ input: { id: deletePerfilItem.value.id } })
     showConfirmDialog.value = false
-    getList() // Refresh the list
+    await refetchProfiles()
+    await getList()
   } catch (error) {
     console.error('Error deleting perfil:', error)
     showConfirmDialog.value = false

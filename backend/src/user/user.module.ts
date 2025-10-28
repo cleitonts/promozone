@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { UserCreateDTO } from './user.create.dto';
 import { UserDTO } from './user.dto';
 import { UserEntity } from './user.entity';
+import { UserUpdateDTO } from './user.update.dto';
 
 const nestjsQueryTypeOrmModule = NestjsQueryTypeOrmModule.forFeature([UserEntity])
 
@@ -16,6 +17,7 @@ const nestjsQueryTypeOrmModule = NestjsQueryTypeOrmModule.forFeature([UserEntity
           EntityClass: UserEntity,
           DTOClass: UserDTO,
           CreateDTOClass: UserCreateDTO,
+          UpdateDTOClass: UserUpdateDTO,
         },
       ],
     }),

@@ -2,13 +2,13 @@ import { UserEntity } from "src/user/user.entity"
 
 export type AuthenticatedUser = Pick<UserEntity, 'id' | 'email'>
 export type JwtPayload = {
-  sub: number
+  sub: string
   username: string
 }
 
 export type UserContext = {
   req: {
-    user: AuthenticatedUser
+    user: IUserPayloadResponse
   }
 }
 

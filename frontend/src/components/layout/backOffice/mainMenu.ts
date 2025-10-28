@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import { useI18n } from 'vue-i18n'
 
 export interface IMenuItem {
   title: string
@@ -7,58 +8,66 @@ export interface IMenuItem {
   to?: string
   children?: IMenuItem[]
   permission?: string
+  requiresAdmin?: boolean
 }
 
-const menuItemsConfig: IMenuItem[] = [
+const menuItemsConfig = (t: (key: string) => string): IMenuItem[] => [
   {
-    title: 'Home',
+    title: t('menu.home'),
     icon: 'mdi-home',
     to: '/bo/home'
   },
   {
-    title: 'Users',
+    title: t('menu.users'),
     icon: 'mdi-account-group',
     to: '/bo/users',
     permission: 'users.read'
   },
   {
-    title: 'Perfil',
+    title: t('menu.perfil'),
     icon: 'mdi-account-circle',
     to: '/bo/perfil'
   },
   {
-    title: 'Products',
+    title: t('menu.products'),
     icon: 'mdi-package-variant',
     to: '/bo/products'
   },
   {
-    title: 'Brands',
+    title: t('menu.brands'),
     icon: 'mdi-tag',
     to: '/bo/brands'
   },
   {
-    title: 'Categories',
+    title: t('menu.categories'),
     icon: 'mdi-shape',
     to: '/bo/categories'
   },
   {
-    title: 'Administration',
+    title: t('menu.administration'),
     icon: 'mdi-cog',
+    requiresAdmin: true,
     children: [
       {
-        title: 'Roles',
+        title: t('menu.userRoles'),
+        icon: 'mdi-account-cog',
+        to: '/bo/users',
+        requiresAdmin: true
+      },
+      {
+        title: t('menu.roles'),
         icon: 'mdi-account-key',
         to: '/bo/admin/roles',
         permission: 'roles.read'
       },
       {
-        title: 'Tenants',
+        title: t('menu.tenants'),
         icon: 'mdi-domain',
         to: '/bo/admin/tenants',
         permission: 'tenant.list'
       },
       {
-        title: 'Permissions',
+        title: t('menu.permissions'),
         icon: 'mdi-shield-account',
         to: '/bo/admin/permissions',
         permission: 'permissions.read'
@@ -75,6 +84,10 @@ function hasPermission(permission: string | undefined): boolean {
 
 function filterMenuItems(items: IMenuItem[]): IMenuItem[] {
   return items.filter(item => {
+    const authStore = useAuthStore()
+    if (item.requiresAdmin && !authStore.isAdmin()) {
+      return false
+    }
     if (item.permission && !hasPermission(item.permission)) {
       return false
     }
@@ -92,8 +105,9 @@ function filterMenuItems(items: IMenuItem[]): IMenuItem[] {
 }
 
 export const useMenuItems = () => {
+  const { t } = useI18n()
   const filteredMenuItems = computed(() => {
-    return filterMenuItems([...menuItemsConfig])
+    return filterMenuItems(menuItemsConfig(t))
   })
   
   return {

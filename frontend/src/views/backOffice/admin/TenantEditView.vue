@@ -101,7 +101,7 @@
             <v-btn
               type="submit"
               color="primary"
-              :loading="loading"
+              :loading="saving"
               :disabled="!valid"
             >
               {{ isEditing ? 'Atualizar' : 'Criar' }}
@@ -122,11 +122,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { 
-  useGetTenantQuery, 
-  useCreateTenantMutation, 
-  useUpdateTenantMutation
-} from '@/generated/graphql'
+import { useTenants } from '@/composables/tenants'
 import { TheCardTitle } from '@/components'
 
 const route = useRoute()
@@ -134,7 +130,7 @@ const router = useRouter()
 
 const form = ref()
 const valid = ref(false)
-const loading = ref(false)
+const saving = ref(false)
 
 const tenant = ref({
   name: '',
@@ -152,14 +148,7 @@ const settings = ref({
 const isEditing = computed(() => route.name === 'tenantsEdit')
 const tenantId = computed(() => route.params.id as string)
 
-// GraphQL queries and mutations
-const { result: tenantResult } = useGetTenantQuery(
-  () => ({ id: tenantId.value }),
-  { enabled: isEditing }
-)
-
-const { mutate: createTenant } = useCreateTenantMutation()
-const { mutate: updateTenant } = useUpdateTenantMutation()
+const { fetchTenant, currentTenant, createOneTenant, updateOneTenant, loading: tenantsLoading } = useTenants()
 
 // Validation rules
 const nameRules = [
@@ -173,44 +162,33 @@ const nameRules = [
 const submit = async () => {
   if (!valid.value) return
   
-  loading.value = true
+  saving.value = true
   
   try {
-    const tenantSettings = {
-      theme: settings.value.theme,
-      features: settings.value.features,
-      customization: settings.value.customization,
-      integrations: settings.value.integrations
-    }
-    
-    const input = {
+    const inputBase = {
       name: tenant.value.name,
-      description: tenant.value.description || undefined,
       domain: tenant.value.domain || undefined,
-      settings: tenantSettings
     }
-    
     if (isEditing.value) {
-      await updateTenant({
-        input: {
-          id: tenantId.value,
-          ...input
+      await updateOneTenant({
+        id: tenantId.value,
+        update: {
+          ...inputBase
         }
       })
     } else {
-      // Para criar tenant, precisamos do slug obrigatório
       const createInput = {
-        ...input,
+        ...inputBase,
         slug: tenant.value.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
       }
-      await createTenant({ input: createInput })
+      await createOneTenant({ tenant: createInput })
     }
     
     router.push({ name: 'tenantsList' })
   } catch (error) {
     console.error('Erro ao salvar tenant:', error)
   } finally {
-    loading.value = false
+    saving.value = false
   }
 }
 
@@ -219,30 +197,14 @@ const cancel = () => {
 }
 
 // Load tenant data if editing
-onMounted(() => {
-  if (isEditing.value && tenantResult.value?.tenant) {
-    const tenantData = tenantResult.value.tenant
-    tenant.value = {
-      name: tenantData.name,
-      description: tenantData.description || '',
-      domain: tenantData.domain || ''
-    }
-    
-    // Load settings if available
-    if (tenantData.settings) {
-      try {
-        const parsedSettings = typeof tenantData.settings === 'string' 
-          ? JSON.parse(tenantData.settings) 
-          : tenantData.settings
-        
-        settings.value = {
-          theme: parsedSettings.theme || '',
-          features: parsedSettings.features || '',
-          customization: parsedSettings.customization || '',
-          integrations: parsedSettings.integrations || ''
-        }
-      } catch (error) {
-        console.error('Erro ao carregar configurações:', error)
+onMounted(async () => {
+  if (isEditing.value && tenantId.value) {
+    await fetchTenant(tenantId.value)
+    if (currentTenant.value) {
+      tenant.value = {
+        name: currentTenant.value.name,
+        description: '',
+        domain: currentTenant.value.domain || ''
       }
     }
   }

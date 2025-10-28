@@ -94,9 +94,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { 
-  useGetRoleQuery, 
-  useCreateRoleMutation, 
-  useUpdateRoleMutation,
+  useGetProfileQuery, 
+  useCreateOneProfileMutation, 
+  useUpdateOneProfileMutation,
   useGetTenantsQuery
 } from '@/generated/graphql'
 import { TheCardTitle } from '@/components'
@@ -122,22 +122,20 @@ const roleId = computed(() => route.params.id as string)
 
 // GraphQL queries and mutations
 const { result: tenantsResult } = useGetTenantsQuery()
-const { result: roleResult, loading: roleLoading } = useGetRoleQuery(
+const { result: roleResult, loading: roleLoading } = useGetProfileQuery(
   () => ({ id: roleId.value }),
   { enabled: isEditing }
 )
 
-const { mutate: createRole } = useCreateRoleMutation()
-const { mutate: updateRole } = useUpdateRoleMutation()
+const { mutate: createRole } = useCreateOneProfileMutation()
+const { mutate: updateRole } = useUpdateOneProfileMutation()
 
 // Computed properties
 // const permissions = ref([])
-const tenantOptions = computed(() => 
-  (tenantsResult.value?.tenants || []).map(tenant => ({
-    title: tenant.name,
-    value: tenant.id
-  }))
-)
+const tenantOptions = computed(() => {
+  const edges = tenantsResult.value?.tenants?.edges || []
+  return edges.map(e => ({ title: e.node.name, value: e.node.id }))
+})
 
 // Validation rules
 const nameRules = [
@@ -157,18 +155,17 @@ const submit = async () => {
   
   try {
     const input = {
-      name: role.value.name,
-      description: role.value.description,
-      isGlobal: role.value.isGlobal,
-      tenantId: role.value.isGlobal ? undefined : role.value.tenantId,
-      // permissionIds: selectedPermissions.value
+      profile: {
+        tenantId: role.value.tenantId || '',
+        resolvers: []
+      }
     }
     
     if (isEditing.value) {
       await updateRole({
         input: {
           id: roleId.value,
-          ...input
+          update: input.profile
         }
       })
     } else {
@@ -189,13 +186,13 @@ const cancel = () => {
 
 // Load role data if editing
 onMounted(() => {
-  if (isEditing.value && roleResult.value?.role) {
-    const roleData = roleResult.value.role
+  if (isEditing.value && roleResult.value?.profile) {
+    const roleData = roleResult.value.profile
     role.value = {
-      name: roleData.name,
-      description: roleData.description || '',
-      isGlobal: roleData.isGlobal,
-      tenantId: roleData.tenant?.id || ''
+      name: '',
+      description: '',
+      isGlobal: false,
+      tenantId: roleData.tenantId || ''
     }
     
     // Load role permissions if available

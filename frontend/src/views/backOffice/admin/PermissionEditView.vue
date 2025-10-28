@@ -87,11 +87,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { 
-  useGetPermissionQuery, 
-  useCreatePermissionMutation, 
-  useUpdatePermissionMutation
-} from '@/generated/graphql'
+import { useListResolversQuery } from '@/generated/graphql'
 import { TheCardTitle } from '@/components'
 
 const route = useRoute()
@@ -111,14 +107,8 @@ const permission = ref({
 const isEditing = computed(() => route.name === 'permissionsEdit')
 const permissionId = computed(() => route.params.id as string)
 
-// GraphQL queries and mutations
-const { result: permissionResult } = useGetPermissionQuery(
-  () => ({ id: permissionId.value }),
-  { enabled: isEditing }
-)
-
-const { mutate: createPermission } = useCreatePermissionMutation()
-const { mutate: updatePermission } = useUpdatePermissionMutation()
+// GraphQL queries
+const { result: resolversResult } = useListResolversQuery()
 
 // Options
 const actionOptions = [
@@ -156,16 +146,7 @@ const submit = async () => {
       isGlobal: permission.value.isGlobal
     }
     
-    if (isEditing.value) {
-      await updatePermission({
-        input: {
-          id: permissionId.value,
-          ...input
-        }
-      })
-    } else {
-      await createPermission({ input })
-    }
+    
     
     router.push({ name: 'permissionsList' })
   } catch (error) {
@@ -181,15 +162,11 @@ const cancel = () => {
 }
 
 // Load permission data if editing
-watch(permissionResult, (result) => {
-  if (result?.permission) {
-    const permissionData = result.permission
-    permission.value = {
-      resource: permissionData.resource,
-      action: permissionData.action,
-      description: permissionData.description || '',
-      isGlobal: false // Este campo não existe no backend, sempre false
-    }
+watch(resolversResult, (result) => {
+  const first = result?.listResolvers?.[0]
+  if (first) {
+    permission.value.resource = first.schemaName ?? first.moduleName ?? ''
+    permission.value.action = first.type ?? 'query'
   }
 })
 </script>

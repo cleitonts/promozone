@@ -2,10 +2,7 @@ query Me {
   me {
     id
     email
-    createdAt
-    perfil {
-      id
-      name
-    }
+    active
+    roles
   }
 }

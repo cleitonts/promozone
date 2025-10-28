@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useLocalStorage } from '@/plugins/localStorage'
 import { useAuthStore } from '@/stores/authStore'
+import { storeToRefs } from 'pinia'
 import { router } from '@/router'
 
 export enum EMessageType {
@@ -28,6 +29,7 @@ export const useInterfaceStore = defineStore('interface', () => {
     token: useLocalStorage<string | null>('token', null),
     refreshToken: useLocalStorage<string | null>('refreshToken', null),
   }
+
   const ACTIONS = {
     switchMenu(): void {
       STATE.menuOpen.value = !STATE.menuOpen.value
@@ -69,11 +71,12 @@ export const useInterfaceStore = defineStore('interface', () => {
       try {
         const authStore = useAuthStore()
         const result = await authStore.login(email, password)
-        
+
         if (result.success) {
-          STATE.token.value = authStore.accessToken
-          STATE.refreshToken.value = authStore.refreshToken
-          await router.push('/dashboard')
+          const { accessToken, refreshToken } = storeToRefs(authStore)
+          STATE.token.value = accessToken.value ?? null
+          STATE.refreshToken.value = refreshToken.value ?? null
+          await router.push('/bo/home')
           return
         }
 

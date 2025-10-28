@@ -137,7 +137,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
-import { useGetTenantsQuery, useGetRolesQuery } from '@/generated/graphql'
+import { useGetTenantsQuery } from '@/generated/graphql'
 
 const router = useRouter()
 const interfaceStore = useInterfaceStore()
@@ -176,17 +176,18 @@ const roleRules = [
   (v: string[]) => v.length > 0 || 'Pelo menos uma role deve ser selecionada'
 ]
 
-// GraphQL queries
 const { result: tenantsResult } = useGetTenantsQuery()
-const { result: rolesResult } = useGetRolesQuery()
 
 const tenantOptions = computed(() => {
-  return tenantsResult.value?.tenants || []
+  const edges = tenantsResult.value?.tenants?.edges ?? []
+  return edges.map(e => e.node)
 })
 
-const roleOptions = computed(() => {
-  return rolesResult.value?.roles || []
-})
+const availableRoles = [
+  { id: 'admin', name: 'Admin' }
+]
+
+const roleOptions = computed(() => availableRoles)
 
 const submit = async () => {
   if (!form.value?.validate()) return

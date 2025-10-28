@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsBoolean, IsString, IsEmail, IsOptional } from 'class-validator';
+import { IsBoolean, IsString, IsEmail, IsOptional, IsArray } from 'class-validator';
 
 @InputType('CreateUser')
 export class UserCreateDTO {
@@ -23,4 +23,9 @@ export class UserCreateDTO {
   @IsOptional()
   @Field({ defaultValue: true })
   active!: boolean;
+
+  @IsArray()
+  @IsOptional()
+  @Field(() => [String], { nullable: true })
+  roles?: string[];
 }
