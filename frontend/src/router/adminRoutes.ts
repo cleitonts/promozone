@@ -28,6 +28,15 @@ export const adminRoutes: RouteRecordRaw = {
       component: TheMainLayout,
       children: [
         {
+          path: '',
+          name: 'adminUsersList',
+          component: () => import('@/views/admin/users/AdminUserListView.vue'),
+          meta: {
+            pageTitle: 'Admin Users',
+            requiresAdmin: true,
+          },
+        },
+        {
           path: 'create',
           name: 'adminUserCreate',
           component: () => import('@/views/admin/users/AdminUserCreateView.vue'),

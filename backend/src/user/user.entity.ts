@@ -1,8 +1,8 @@
-import { Column, Entity, ManyToMany, JoinTable } from 'typeorm';
+import { Column, Entity, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Name } from '@/common/entity/name.entity';
-import { CreatedAt } from '@/common/entity/createdAt.entity';
 import { BaseEntity } from '@/common/base.entity';
 import { ProfileEntity } from '@/profile/profile.entity';
+import { TenantEntity } from '@/tenant/tenant.entity';
 
 @Entity({ name: 'users', schema: 'users' })
 export class UserEntity extends BaseEntity {
@@ -18,12 +18,22 @@ export class UserEntity extends BaseEntity {
   @Column({ default: true })
   active!: boolean
 
-  @Column(() => CreatedAt)
-  createdAt!: CreatedAt
+  @CreateDateColumn()
+  created!: Date
+
+  @UpdateDateColumn()
+  updated!: Date
 
   // Roles as JSON array, decoupled from current permissions system
   @Column({ type: 'jsonb', default: [] })
   roles!: string[]
+
+  @Column({ type: 'char', length: 26, nullable: true })
+  activeTenantId!: string | null
+
+  @ManyToOne(() => TenantEntity, { nullable: true })
+  @JoinColumn({ name: 'activeTenantId' })
+  activeTenant!: TenantEntity | null
 
   @ManyToMany(() => ProfileEntity, (profile) => profile.users)
   @JoinTable({

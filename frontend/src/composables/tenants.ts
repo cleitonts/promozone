@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import tenantsQueriesRaw from '@/graphql/queries/tenants.graphql?raw'
 import tenantsMutationsRaw from '@/graphql/mutations/tenants.graphql?raw'
 import type { DocumentNode } from 'graphql'
-import { type GetTenantsQuery, type GetTenantQuery } from '@/generated/graphql'
+import { type GetTenantsQuery, type GetTenantQuery, type GetTenantUsersQuery } from '@/generated/graphql'
 
 function pickOperation(doc: DocumentNode, operationName: string): DocumentNode {
   return {
@@ -20,6 +20,7 @@ const tenantsMutationsDoc = gql(tenantsMutationsRaw)
 
 const GET_TENANTS = pickOperation(tenantsQueriesDoc, 'GetTenants')
 const GET_TENANT = pickOperation(tenantsQueriesDoc, 'GetTenant')
+const GET_TENANT_USERS = pickOperation(tenantsQueriesDoc, 'GetTenantUsers')
 const CREATE_TENANT = pickOperation(tenantsMutationsDoc, 'CreateTenant')
 const UPDATE_TENANT = pickOperation(tenantsMutationsDoc, 'UpdateTenant')
 const DELETE_TENANT = pickOperation(tenantsMutationsDoc, 'DeleteTenant')
@@ -27,6 +28,7 @@ const DELETE_TENANT = pickOperation(tenantsMutationsDoc, 'DeleteTenant')
 export function useTenants() {
   const tenants = ref<Array<GetTenantsQuery['tenants']['edges'][number]['node']>>([])
   const currentTenant = ref<GetTenantQuery['tenant'] | null>(null)
+  const tenantUsers = ref<Array<GetTenantUsersQuery['users']['edges'][number]['node']>>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -60,8 +62,25 @@ export function useTenants() {
     }
   }
 
-  type CreateTenantInput = { tenant: { name?: string; domain?: string; slug?: string; active?: boolean } }
-  type UpdateTenantInput = { id: string; update: { name?: string; domain?: string; slug?: string; active?: boolean } }
+  const fetchTenantUsers = async (tenantId: string) => {
+    loading.value = true
+    error.value = null
+    try {
+      const result = await apolloClient.query({ query: GET_TENANT_USERS, variables: { tenantId } })
+      if (result.data?.users?.edges) {
+        tenantUsers.value = result.data.users.edges.map((e: any) => e.node)
+      } else {
+        tenantUsers.value = []
+      }
+    } catch (err: any) {
+      error.value = err?.message || 'Error fetching tenant users'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  type CreateTenantInput = { tenant: { name?: string; domain?: string; active?: boolean } }
+  type UpdateTenantInput = { id: string; update: { name?: string; domain?: string; active?: boolean } }
   type DeleteTenantInput = { id: string }
 
   const createOneTenant = async (input: CreateTenantInput) => {
@@ -121,10 +140,12 @@ export function useTenants() {
   return {
     tenants,
     currentTenant,
+    tenantUsers,
     loading,
     error,
     fetchAllTenants,
     fetchTenant,
+    fetchTenantUsers,
     createOneTenant,
     updateOneTenant,
     deleteOneTenant,

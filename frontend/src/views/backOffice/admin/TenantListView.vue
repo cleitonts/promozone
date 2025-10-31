@@ -33,7 +33,7 @@
             <v-text-field v-model="searchName" label="Tenant Name" />
           </v-col>
           <v-col cols="6">
-            <v-text-field v-model="searchDomain" label="Domain" />
+            <v-text-field v-model="searchOwner" label="Owner" />
           </v-col>
         </template>
         <template #action="{ element }">
@@ -64,7 +64,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useTenants } from '@/composables/tenants'
 
 const searchName = ref('')
-const searchDomain = ref('')
+const searchOwner = ref('')
 const tenants = ref<any[]>([])
 const totalItems = ref(0)
 const page = ref(1)
@@ -76,8 +76,7 @@ const headers = {
   action: '#',
   id: 'Id',
   name: 'Name',
-  description: 'Description',
-  domain: 'Domain',
+  owner: 'Owner',
   createdAt: 'Created At'
 }
 
@@ -90,16 +89,16 @@ const getList = async function () {
         tenant.name.toLowerCase().includes(searchName.value.toLowerCase())
       )
     }
-    if (searchDomain.value) {
-      filteredTenants = filteredTenants.filter((tenant: any) =>
-        tenant.domain?.toLowerCase().includes(searchDomain.value.toLowerCase())
-      )
+    if (searchOwner.value) {
+      filteredTenants = filteredTenants.filter((tenant: any) => {
+        const ownerName = `${tenant.owner?.name?.first || ''} ${tenant.owner?.name?.last || ''}`.toLowerCase()
+        return ownerName.includes(searchOwner.value.toLowerCase())
+      })
     }
     tenants.value = filteredTenants.map((tenant: any) => ({
       id: tenant.id || '',
       name: tenant.name || '',
-      description: '-',
-      domain: tenant.domain || '',
+      owner: tenant.owner ? `${tenant.owner.name?.first || ''} ${tenant.owner.name?.last || ''}` : '-',
       createdAt: tenant.created ? new Date(tenant.created).toLocaleDateString() : ''
     }))
     totalItems.value = tenants.value.length
@@ -120,7 +119,7 @@ const deleteTenant = async function (id: string) {
 }
 
 // Watch for search changes
-watch([searchName, searchDomain], () => {
+watch([searchName, searchOwner], () => {
   getList()
 })
 

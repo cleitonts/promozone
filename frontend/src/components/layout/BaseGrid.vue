@@ -2,29 +2,55 @@
   <div>
     <v-form class="d-flex" @submit.prevent="$emit('update')">
       <v-row>
-        <v-col v-if="$slots.prepend">
-          <v-btn color="secondary" prepend-icon="fa6-solid:magnifying-glass" type="submit">
-            search
-          </v-btn>
-        </v-col>
         <slot name="prepend"></slot>
-        <v-col cols="3" md="2" class="ml-auto">
-          <v-select
-            :model-value="limit"
-            label="Page limit"
-            item-text="text"
-            item-value="value"
-            required
-            :items="itemsPerPage"
-            :rules="[(v) => !!v || 'Select a valid limit']"
-            @update:modelValue="
-              (e) => {
-                $emit('update:limit', e)
-                $emit('update')
-              }
-            "
-          />
-        </v-col>
+        <template class="d-flex d-sm-none v-col">
+          <v-col cols="6" v-if="$slots.prepend">
+            <v-btn class="ml-auto" color="secondary" prepend-icon="fa6-solid:magnifying-glass" type="submit">
+              search
+            </v-btn>
+          </v-col>
+          <v-col cols="6" class="ml-auto">
+            <v-select
+              :model-value="limit"
+              label="Page limit"
+              item-text="text"
+              item-value="value"
+              required
+              :items="itemsPerPage"
+              :rules="[(v) => !!v || 'Select a valid limit']"
+              @update:modelValue="
+                (e) => {
+                  $emit('update:limit', e)
+                  $emit('update')
+                }
+              "
+            />
+          </v-col>
+        </template>
+        <template class="d-none d-sm-flex v-col">
+          <v-col v-if="$slots.prepend">
+            <v-btn class="ml-auto" color="secondary" prepend-icon="fa6-solid:magnifying-glass" type="submit">
+              search
+            </v-btn>
+          </v-col>
+          <v-col cols="6" md="2" class="ml-auto">
+            <v-select
+              :model-value="limit"
+              label="Page limit"
+              item-text="text"
+              item-value="value"
+              required
+              :items="itemsPerPage"
+              :rules="[(v) => !!v || 'Select a valid limit']"
+              @update:modelValue="
+                (e) => {
+                  $emit('update:limit', e)
+                  $emit('update')
+                }
+              "
+            />
+          </v-col>
+        </template>
       </v-row>
     </v-form>
     <v-table v-if="getCleanedMatrix.length">
@@ -43,10 +69,7 @@
             <template v-for="(r, i) in item">
               <slot :item="item" :index="index" :element="item" :text="r" :name="i">
                 <td :key="i" :title="r">
-                  <span v-if="i === 'id'">
-                    {{ r ? r.substring(0, 4) + ' ..' : '-' }}
-                  </span>
-                  <span v-else>
+                  <span>
                     {{ r ? r : '-' }}
                   </span>
                 </td>

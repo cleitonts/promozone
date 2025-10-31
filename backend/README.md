@@ -40,6 +40,9 @@ $ npm run start
 # watch mode
 $ npm run start:dev
 
+# safe watch (prevents duplicate starts on port 3000)
+$ npm run dev:safe
+
 # production mode
 $ npm run start:prod
 ```

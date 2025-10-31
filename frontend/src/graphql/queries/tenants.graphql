@@ -4,7 +4,20 @@ query GetTenants {
       node {
         id
         name
-        domain
+        ownerId
+        owner {
+          id
+          email
+          name { first last }
+        }
+        profiles {
+          id
+          users {
+            id
+            email
+            name { first last }
+          }
+        }
         created
         updated
       }
@@ -16,8 +29,28 @@ query GetTenant($id: ID!) {
   tenant(id: $id) {
     id
     name
-    domain
+    ownerId
+    owner { id email name { first last } }
+    profiles {
+      id
+      resolvers
+      users { id email name { first last } }
+      created
+      updated
+    }
     created
     updated
+  }
+}
+
+query GetTenantUsers($tenantId: String!) {
+  users(filter: { activeTenantId: { eq: $tenantId } }) {
+    edges {
+      node {
+        id
+        email
+        name { first last }
+      }
+    }
   }
 }

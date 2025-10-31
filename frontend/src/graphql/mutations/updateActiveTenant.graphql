@@ -1,0 +1,5 @@
+mutation UpdateActiveTenant($input: UpdateActiveTenantInput!) {
+  updateActiveTenant(input: $input) {
+    activeTenantId
+  }
+}

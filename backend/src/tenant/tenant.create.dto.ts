@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsBoolean, IsString, IsOptional } from 'class-validator';
+import { IsString } from 'class-validator';
 
 @InputType('CreateTenant')
 export class TenantCreateDTO {
@@ -9,10 +9,5 @@ export class TenantCreateDTO {
 
   @IsString()
   @Field()
-  domain!: string;
-
-  @IsBoolean()
-  @IsOptional()
-  @Field({ defaultValue: true })
-  active!: boolean;
+  ownerId!: string;
 }

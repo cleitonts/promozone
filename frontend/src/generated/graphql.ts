@@ -513,9 +513,8 @@ export type CreateProfile = {
 };
 
 export type CreateTenant = {
-  active?: Scalars['Boolean']['input'];
-  domain: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  ownerId: Scalars['String']['input'];
 };
 
 export type CreateTodoItem = {
@@ -526,7 +525,7 @@ export type CreateTodoItem = {
 export type CreateUser = {
   active?: Scalars['Boolean']['input'];
   email: Scalars['String']['input'];
-  name: Scalars['String']['input'];
+  name: NameInput;
   password: Scalars['String']['input'];
   roles?: InputMaybe<Array<Scalars['String']['input']>>;
   tenantId: Scalars['String']['input'];
@@ -760,6 +759,7 @@ export type Mutation = {
   deleteTodoItem: TodoItemDeleteResponse;
   deleteTodoItems: DeleteManyResponse;
   login: LoginResponse;
+  updateActiveTenant: User;
   updateManyAttributeValues: UpdateManyResponse;
   updateManyAttributes: UpdateManyResponse;
   updateManyBrands: UpdateManyResponse;
@@ -988,6 +988,11 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationUpdateActiveTenantArgs = {
+  input: UpdateActiveTenantInput;
+};
+
+
 export type MutationUpdateManyAttributeValuesArgs = {
   input: UpdateManyAttributeValuesInput;
 };
@@ -1085,6 +1090,17 @@ export type MutationUpdateTodoItemArgs = {
 
 export type MutationUpdateTodoItemsArgs = {
   input: UpdateManyTodoItemsInput;
+};
+
+export type Name = {
+  __typename?: 'Name';
+  first: Scalars['String']['output'];
+  last: Scalars['String']['output'];
+};
+
+export type NameInput = {
+  first: Scalars['String']['input'];
+  last: Scalars['String']['input'];
 };
 
 export type PageInfo = {
@@ -1300,6 +1316,13 @@ export type Profile = {
   resolvers: Array<Scalars['String']['output']>;
   tenantId: Scalars['String']['output'];
   updated: Scalars['DateTime']['output'];
+  users: Array<User>;
+};
+
+
+export type ProfileUsersArgs = {
+  filter?: UserFilter;
+  sorting?: Array<UserSort>;
 };
 
 export type ProfileConnection = {
@@ -1547,12 +1570,19 @@ export type StringFieldComparison = {
 
 export type Tenant = {
   __typename?: 'Tenant';
-  active: Scalars['Boolean']['output'];
   created: Scalars['DateTime']['output'];
-  domain: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  owner: User;
+  ownerId: Scalars['String']['output'];
+  profiles: Array<Profile>;
   updated: Scalars['DateTime']['output'];
+};
+
+
+export type TenantProfilesArgs = {
+  filter?: ProfileFilter;
+  sorting?: Array<ProfileSort>;
 };
 
 export type TenantConnection = {
@@ -1564,21 +1594,19 @@ export type TenantConnection = {
 };
 
 export type TenantDeleteFilter = {
-  active?: InputMaybe<BooleanFieldComparison>;
   and?: InputMaybe<Array<TenantDeleteFilter>>;
-  domain?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<TenantDeleteFilter>>;
+  ownerId?: InputMaybe<StringFieldComparison>;
 };
 
 export type TenantDeleteResponse = {
   __typename?: 'TenantDeleteResponse';
-  active?: Maybe<Scalars['Boolean']['output']>;
   created?: Maybe<Scalars['DateTime']['output']>;
-  domain?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   name?: Maybe<Scalars['String']['output']>;
+  ownerId?: Maybe<Scalars['String']['output']>;
   updated?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -1591,12 +1619,11 @@ export type TenantEdge = {
 };
 
 export type TenantFilter = {
-  active?: InputMaybe<BooleanFieldComparison>;
   and?: InputMaybe<Array<TenantFilter>>;
-  domain?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<TenantFilter>>;
+  ownerId?: InputMaybe<StringFieldComparison>;
 };
 
 export type TenantSort = {
@@ -1606,19 +1633,17 @@ export type TenantSort = {
 };
 
 export enum TenantSortFields {
-  Active = 'active',
-  Domain = 'domain',
   Id = 'id',
-  Name = 'name'
+  Name = 'name',
+  OwnerId = 'ownerId'
 }
 
 export type TenantUpdateFilter = {
-  active?: InputMaybe<BooleanFieldComparison>;
   and?: InputMaybe<Array<TenantUpdateFilter>>;
-  domain?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
   name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<TenantUpdateFilter>>;
+  ownerId?: InputMaybe<StringFieldComparison>;
 };
 
 export type TodoItem = {
@@ -1689,6 +1714,10 @@ export type TodoItemUpdateFilter = {
   id?: InputMaybe<IdFilterComparison>;
   or?: InputMaybe<Array<TodoItemUpdateFilter>>;
   title?: InputMaybe<StringFieldComparison>;
+};
+
+export type UpdateActiveTenantInput = {
+  tenantId: Scalars['String']['input'];
 };
 
 export type UpdateAttribute = {
@@ -1912,12 +1941,8 @@ export type UpdateProfile = {
 };
 
 export type UpdateTenant = {
-  active?: InputMaybe<Scalars['Boolean']['input']>;
-  created?: InputMaybe<Scalars['DateTime']['input']>;
-  domain?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  updated?: InputMaybe<Scalars['DateTime']['input']>;
+  ownerId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateTodoItem = {
@@ -1931,19 +1956,19 @@ export type UpdateTodoItem = {
 export type UpdateUser = {
   active?: InputMaybe<Scalars['Boolean']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<NameInput>;
   roles?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type User = {
   __typename?: 'User';
   active: Scalars['Boolean']['output'];
-  created: Scalars['DateTime']['output'];
+  activeTenantId?: Maybe<Scalars['String']['output']>;
+  created?: Maybe<Scalars['DateTime']['output']>;
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
+  name: Name;
   roles: Array<Scalars['String']['output']>;
-  tenantId: Scalars['String']['output'];
 };
 
 export type UserConnection = {
@@ -1956,23 +1981,22 @@ export type UserConnection = {
 
 export type UserDeleteFilter = {
   active?: InputMaybe<BooleanFieldComparison>;
+  activeTenantId?: InputMaybe<StringFieldComparison>;
   and?: InputMaybe<Array<UserDeleteFilter>>;
   email?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
-  name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<UserDeleteFilter>>;
-  tenantId?: InputMaybe<StringFieldComparison>;
 };
 
 export type UserDeleteResponse = {
   __typename?: 'UserDeleteResponse';
   active?: Maybe<Scalars['Boolean']['output']>;
+  activeTenantId?: Maybe<Scalars['String']['output']>;
   created?: Maybe<Scalars['DateTime']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Name>;
   roles?: Maybe<Array<Scalars['String']['output']>>;
-  tenantId?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserEdge = {
@@ -1985,12 +2009,11 @@ export type UserEdge = {
 
 export type UserFilter = {
   active?: InputMaybe<BooleanFieldComparison>;
+  activeTenantId?: InputMaybe<StringFieldComparison>;
   and?: InputMaybe<Array<UserFilter>>;
   email?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
-  name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<UserFilter>>;
-  tenantId?: InputMaybe<StringFieldComparison>;
 };
 
 export type UserSort = {
@@ -2001,20 +2024,18 @@ export type UserSort = {
 
 export enum UserSortFields {
   Active = 'active',
+  ActiveTenantId = 'activeTenantId',
   Email = 'email',
-  Id = 'id',
-  Name = 'name',
-  TenantId = 'tenantId'
+  Id = 'id'
 }
 
 export type UserUpdateFilter = {
   active?: InputMaybe<BooleanFieldComparison>;
+  activeTenantId?: InputMaybe<StringFieldComparison>;
   and?: InputMaybe<Array<UserUpdateFilter>>;
   email?: InputMaybe<StringFieldComparison>;
   id?: InputMaybe<IdFilterComparison>;
-  name?: InputMaybe<StringFieldComparison>;
   or?: InputMaybe<Array<UserUpdateFilter>>;
-  tenantId?: InputMaybe<StringFieldComparison>;
 };
 
 export type LoginMutationVariables = Exact<{
@@ -2087,40 +2108,19 @@ export type UpdateOneProductMutationVariables = Exact<{
 
 export type UpdateOneProductMutation = { __typename?: 'Mutation', updateOneProduct: { __typename?: 'Product', id: string, name: string, slug: string, description?: string | null, price: number, categoryId?: string | null, brandId?: string | null, active: boolean, created: any, updated: any } };
 
-export type CreateOneProfileMutationVariables = Exact<{
-  input: CreateOneProfileInput;
-}>;
-
-
-export type CreateOneProfileMutation = { __typename?: 'Mutation', createOneProfile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
-
-export type UpdateOneProfileMutationVariables = Exact<{
-  input: UpdateOneProfileInput;
-}>;
-
-
-export type UpdateOneProfileMutation = { __typename?: 'Mutation', updateOneProfile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
-
-export type DeleteOneProfileMutationVariables = Exact<{
-  input: DeleteOneProfileInput;
-}>;
-
-
-export type DeleteOneProfileMutation = { __typename?: 'Mutation', deleteOneProfile: { __typename?: 'ProfileDeleteResponse', id?: string | null } };
-
 export type CreateTenantMutationVariables = Exact<{
   input: CreateOneTenantInput;
 }>;
 
 
-export type CreateTenantMutation = { __typename?: 'Mutation', createOneTenant: { __typename?: 'Tenant', id: string, name: string, domain: string, active: boolean, created: any, updated: any } };
+export type CreateTenantMutation = { __typename?: 'Mutation', createOneTenant: { __typename?: 'Tenant', id: string, name: string, ownerId: string, created: any, updated: any } };
 
 export type UpdateTenantMutationVariables = Exact<{
   input: UpdateOneTenantInput;
 }>;
 
 
-export type UpdateTenantMutation = { __typename?: 'Mutation', updateOneTenant: { __typename?: 'Tenant', id: string, name: string, domain: string, active: boolean, created: any, updated: any } };
+export type UpdateTenantMutation = { __typename?: 'Mutation', updateOneTenant: { __typename?: 'Tenant', id: string, name: string, ownerId: string, created: any, updated: any } };
 
 export type DeleteTenantMutationVariables = Exact<{
   input: DeleteOneTenantInput;
@@ -2129,12 +2129,19 @@ export type DeleteTenantMutationVariables = Exact<{
 
 export type DeleteTenantMutation = { __typename?: 'Mutation', deleteOneTenant: { __typename?: 'TenantDeleteResponse', id?: string | null } };
 
+export type UpdateActiveTenantMutationVariables = Exact<{
+  input: UpdateActiveTenantInput;
+}>;
+
+
+export type UpdateActiveTenantMutation = { __typename?: 'Mutation', updateActiveTenant: { __typename?: 'User', activeTenantId?: string | null } };
+
 export type CreateUserMutationVariables = Exact<{
   input: CreateOneUserInput;
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createOneUser: { __typename?: 'User', id: string, email: string, created: any } };
+export type CreateUserMutation = { __typename?: 'Mutation', createOneUser: { __typename?: 'User', id: string, email: string, created?: any | null } };
 
 export type GetAllBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2197,26 +2204,40 @@ export type ListResolversQuery = { __typename?: 'Query', listResolvers: Array<{ 
 export type GetTenantsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTenantsQuery = { __typename?: 'Query', tenants: { __typename?: 'TenantConnection', edges: Array<{ __typename?: 'TenantEdge', node: { __typename?: 'Tenant', id: string, name: string, domain: string, created: any, updated: any } }> } };
+export type GetTenantsQuery = { __typename?: 'Query', tenants: { __typename?: 'TenantConnection', edges: Array<{ __typename?: 'TenantEdge', node: { __typename?: 'Tenant', id: string, name: string, ownerId: string, created: any, updated: any, owner: { __typename?: 'User', id: string, email: string, name: { __typename?: 'Name', first: string, last: string } }, profiles: Array<{ __typename?: 'Profile', id: string, users: Array<{ __typename?: 'User', id: string, email: string, name: { __typename?: 'Name', first: string, last: string } }> }> } }> } };
 
 export type GetTenantQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetTenantQuery = { __typename?: 'Query', tenant: { __typename?: 'Tenant', id: string, name: string, domain: string, created: any, updated: any } };
+export type GetTenantQuery = { __typename?: 'Query', tenant: { __typename?: 'Tenant', id: string, name: string, ownerId: string, created: any, updated: any, owner: { __typename?: 'User', id: string, email: string, name: { __typename?: 'Name', first: string, last: string } }, profiles: Array<{ __typename?: 'Profile', id: string, resolvers: Array<string>, created: any, updated: any, users: Array<{ __typename?: 'User', id: string, email: string, name: { __typename?: 'Name', first: string, last: string } }> }> } };
+
+export type GetTenantUsersQueryVariables = Exact<{
+  tenantId: Scalars['String']['input'];
+}>;
+
+
+export type GetTenantUsersQuery = { __typename?: 'Query', users: { __typename?: 'UserConnection', edges: Array<{ __typename?: 'UserEdge', node: { __typename?: 'User', id: string, email: string, name: { __typename?: 'Name', first: string, last: string } } }> } };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUsersQuery = { __typename?: 'Query', users: { __typename?: 'UserConnection', edges: Array<{ __typename?: 'UserEdge', node: { __typename?: 'User', id: string, email: string, created: any } }> } };
+export type GetAllUsersQuery = { __typename?: 'Query', users: { __typename?: 'UserConnection', edges: Array<{ __typename?: 'UserEdge', node: { __typename?: 'User', id: string, email: string, created?: any | null, name: { __typename?: 'Name', first: string, last: string } } }> } };
 
 export type GetUserQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, created: any } };
+export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, created?: any | null } };
+
+export type SearchUsersQueryVariables = Exact<{
+  emailLike?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type SearchUsersQuery = { __typename?: 'Query', users: { __typename?: 'UserConnection', edges: Array<{ __typename?: 'UserEdge', node: { __typename?: 'User', id: string, email: string, name: { __typename?: 'Name', first: string, last: string } } }> } };
 
 
 export const LoginDocument = gql`
@@ -2557,108 +2578,12 @@ export function useUpdateOneProductMutation(options: VueApolloComposable.UseMuta
   return VueApolloComposable.useMutation<UpdateOneProductMutation, UpdateOneProductMutationVariables>(UpdateOneProductDocument, options);
 }
 export type UpdateOneProductMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateOneProductMutation, UpdateOneProductMutationVariables>;
-export const CreateOneProfileDocument = gql`
-    mutation CreateOneProfile($input: CreateOneProfileInput!) {
-  createOneProfile(input: $input) {
-    id
-    tenantId
-    resolvers
-    created
-    updated
-  }
-}
-    `;
-
-/**
- * __useCreateOneProfileMutation__
- *
- * To run a mutation, you first call `useCreateOneProfileMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreateOneProfileMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useCreateOneProfileMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useCreateOneProfileMutation(options: VueApolloComposable.UseMutationOptions<CreateOneProfileMutation, CreateOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateOneProfileMutation, CreateOneProfileMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreateOneProfileMutation, CreateOneProfileMutationVariables>(CreateOneProfileDocument, options);
-}
-export type CreateOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateOneProfileMutation, CreateOneProfileMutationVariables>;
-export const UpdateOneProfileDocument = gql`
-    mutation UpdateOneProfile($input: UpdateOneProfileInput!) {
-  updateOneProfile(input: $input) {
-    id
-    tenantId
-    resolvers
-    created
-    updated
-  }
-}
-    `;
-
-/**
- * __useUpdateOneProfileMutation__
- *
- * To run a mutation, you first call `useUpdateOneProfileMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdateOneProfileMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useUpdateOneProfileMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateOneProfileMutation(options: VueApolloComposable.UseMutationOptions<UpdateOneProfileMutation, UpdateOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>(UpdateOneProfileDocument, options);
-}
-export type UpdateOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>;
-export const DeleteOneProfileDocument = gql`
-    mutation DeleteOneProfile($input: DeleteOneProfileInput!) {
-  deleteOneProfile(input: $input) {
-    id
-  }
-}
-    `;
-
-/**
- * __useDeleteOneProfileMutation__
- *
- * To run a mutation, you first call `useDeleteOneProfileMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDeleteOneProfileMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useDeleteOneProfileMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteOneProfileMutation(options: VueApolloComposable.UseMutationOptions<DeleteOneProfileMutation, DeleteOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>(DeleteOneProfileDocument, options);
-}
-export type DeleteOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>;
 export const CreateTenantDocument = gql`
     mutation CreateTenant($input: CreateOneTenantInput!) {
   createOneTenant(input: $input) {
     id
     name
-    domain
-    active
+    ownerId
     created
     updated
   }
@@ -2691,8 +2616,7 @@ export const UpdateTenantDocument = gql`
   updateOneTenant(input: $input) {
     id
     name
-    domain
-    active
+    ownerId
     created
     updated
   }
@@ -2749,6 +2673,35 @@ export function useDeleteTenantMutation(options: VueApolloComposable.UseMutation
   return VueApolloComposable.useMutation<DeleteTenantMutation, DeleteTenantMutationVariables>(DeleteTenantDocument, options);
 }
 export type DeleteTenantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteTenantMutation, DeleteTenantMutationVariables>;
+export const UpdateActiveTenantDocument = gql`
+    mutation UpdateActiveTenant($input: UpdateActiveTenantInput!) {
+  updateActiveTenant(input: $input) {
+    activeTenantId
+  }
+}
+    `;
+
+/**
+ * __useUpdateActiveTenantMutation__
+ *
+ * To run a mutation, you first call `useUpdateActiveTenantMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateActiveTenantMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateActiveTenantMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateActiveTenantMutation(options: VueApolloComposable.UseMutationOptions<UpdateActiveTenantMutation, UpdateActiveTenantMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateActiveTenantMutation, UpdateActiveTenantMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateActiveTenantMutation, UpdateActiveTenantMutationVariables>(UpdateActiveTenantDocument, options);
+}
+export type UpdateActiveTenantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateActiveTenantMutation, UpdateActiveTenantMutationVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($input: CreateOneUserInput!) {
   createOneUser(input: $input) {
@@ -3150,7 +3103,26 @@ export const GetTenantsDocument = gql`
       node {
         id
         name
-        domain
+        ownerId
+        owner {
+          id
+          email
+          name {
+            first
+            last
+          }
+        }
+        profiles {
+          id
+          users {
+            id
+            email
+            name {
+              first
+              last
+            }
+          }
+        }
         created
         updated
       }
@@ -3183,7 +3155,29 @@ export const GetTenantDocument = gql`
   tenant(id: $id) {
     id
     name
-    domain
+    ownerId
+    owner {
+      id
+      email
+      name {
+        first
+        last
+      }
+    }
+    profiles {
+      id
+      resolvers
+      users {
+        id
+        email
+        name {
+          first
+          last
+        }
+      }
+      created
+      updated
+    }
     created
     updated
   }
@@ -3212,6 +3206,45 @@ export function useGetTenantLazyQuery(variables?: GetTenantQueryVariables | VueC
   return VueApolloComposable.useLazyQuery<GetTenantQuery, GetTenantQueryVariables>(GetTenantDocument, variables, options);
 }
 export type GetTenantQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTenantQuery, GetTenantQueryVariables>;
+export const GetTenantUsersDocument = gql`
+    query GetTenantUsers($tenantId: String!) {
+  users(filter: {activeTenantId: {eq: $tenantId}}) {
+    edges {
+      node {
+        id
+        email
+        name {
+          first
+          last
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTenantUsersQuery__
+ *
+ * To run a query within a Vue component, call `useGetTenantUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTenantUsersQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTenantUsersQuery({
+ *   tenantId: // value for 'tenantId'
+ * });
+ */
+export function useGetTenantUsersQuery(variables: GetTenantUsersQueryVariables | VueCompositionApi.Ref<GetTenantUsersQueryVariables> | ReactiveFunction<GetTenantUsersQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTenantUsersQuery, GetTenantUsersQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTenantUsersQuery, GetTenantUsersQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTenantUsersQuery, GetTenantUsersQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTenantUsersQuery, GetTenantUsersQueryVariables>(GetTenantUsersDocument, variables, options);
+}
+export function useGetTenantUsersLazyQuery(variables?: GetTenantUsersQueryVariables | VueCompositionApi.Ref<GetTenantUsersQueryVariables> | ReactiveFunction<GetTenantUsersQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTenantUsersQuery, GetTenantUsersQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTenantUsersQuery, GetTenantUsersQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTenantUsersQuery, GetTenantUsersQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTenantUsersQuery, GetTenantUsersQueryVariables>(GetTenantUsersDocument, variables, options);
+}
+export type GetTenantUsersQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTenantUsersQuery, GetTenantUsersQueryVariables>;
 export const GetAllUsersDocument = gql`
     query GetAllUsers {
   users {
@@ -3219,6 +3252,10 @@ export const GetAllUsersDocument = gql`
       node {
         id
         email
+        name {
+          first
+          last
+        }
         created
       }
     }
@@ -3277,3 +3314,42 @@ export function useGetUserLazyQuery(variables?: GetUserQueryVariables | VueCompo
   return VueApolloComposable.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, variables, options);
 }
 export type GetUserQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetUserQuery, GetUserQueryVariables>;
+export const SearchUsersDocument = gql`
+    query SearchUsers($emailLike: String) {
+  users(filter: {email: {iLike: $emailLike}}) {
+    edges {
+      node {
+        id
+        email
+        name {
+          first
+          last
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchUsersQuery__
+ *
+ * To run a query within a Vue component, call `useSearchUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchUsersQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useSearchUsersQuery({
+ *   emailLike: // value for 'emailLike'
+ * });
+ */
+export function useSearchUsersQuery(variables: SearchUsersQueryVariables | VueCompositionApi.Ref<SearchUsersQueryVariables> | ReactiveFunction<SearchUsersQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<SearchUsersQuery, SearchUsersQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<SearchUsersQuery, SearchUsersQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<SearchUsersQuery, SearchUsersQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<SearchUsersQuery, SearchUsersQueryVariables>(SearchUsersDocument, variables, options);
+}
+export function useSearchUsersLazyQuery(variables: SearchUsersQueryVariables | VueCompositionApi.Ref<SearchUsersQueryVariables> | ReactiveFunction<SearchUsersQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<SearchUsersQuery, SearchUsersQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<SearchUsersQuery, SearchUsersQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<SearchUsersQuery, SearchUsersQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<SearchUsersQuery, SearchUsersQueryVariables>(SearchUsersDocument, variables, options);
+}
+export type SearchUsersQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<SearchUsersQuery, SearchUsersQueryVariables>;

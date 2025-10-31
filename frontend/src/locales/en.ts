@@ -1,4 +1,10 @@
 export default {
+  errors: {
+    sessionExpired: 'Your session expired. Please login again.',
+    unauthorizedRequest: 'Unauthorized request. Please login and try again.',
+    accessDenied: 'Access denied. You do not have permission.',
+    invalidInput: 'Invalid input',
+  },
   menu: {
     home: 'Home',
     users: 'Users',
@@ -15,6 +21,10 @@ export default {
   app: {
     switchMenu: 'Switch menu',
     logout: 'Logout',
+    tenantsDropdownLabel: 'Tenant',
+    tenantsSelect: 'Select tenant',
+    tenantsFavoritesEmpty: 'No favorites',
+    tenantsAvailable: 'Available tenants',
   },
   language: {
     english: 'English',
@@ -35,6 +45,47 @@ export default {
     create: 'Create',
     update: 'Update',
     actions: 'Actions',
+  },
+  user: {
+    listTitle: 'Users',
+    editTitle: 'User',
+    fields: {
+      email: 'Email',
+      password: 'Password',
+      perfilId: 'Profile ID',
+      firstName: 'First Name',
+      lastName: 'Last Name',
+      roles: 'Roles',
+    },
+    actions: {
+      send: 'Send',
+    },
+    validation: {
+      emailRequired: 'Email is required',
+      emailInvalid: 'Email must be valid',
+      passwordRequired: 'Password is required',
+      passwordMin: 'Password must be at least 6 characters',
+      nameRequired: 'Field is required',
+      nameMin: 'Must be at least 2 characters',
+      roleRequired: 'At least one role must be selected',
+    },
+    admin: {
+      listTitle: 'Admin Users',
+      fields: {
+        name: 'Name',
+        ownerTenantsCount: 'Tenants owned',
+        visibleTenantsCount: 'Tenants visible',
+      },
+      createTitle: 'Create New User',
+      createSubtitle: 'Create a user with administrative access to the system',
+      tenantOptional: 'Tenant (Optional)',
+      globalUserHint: 'Leave empty to create a global user',
+      infoTitle: 'Information:',
+      infoBody: 'This user will be created with administrative privileges. Make sure to assign appropriate roles.',
+      createButton: 'Create User',
+      createSuccess: 'User created successfully!',
+      createError: 'Error creating user',
+    },
   },
   brand: {
     listTitle: 'Brands',
@@ -92,4 +143,27 @@ export default {
     confirmDeleteTitle: 'Delete profile: {name}',
     confirmDeleteDescription: 'Do you want to delete this profile?',
   },
+  adminDashboard: {
+    title: 'Administration Panel',
+    subtitle: 'Exclusive area for super administrators',
+    users: {
+      title: 'User Management',
+      description: 'Create new users in the system with different access levels.',
+      createButton: 'Create User'
+    },
+    tenants: {
+      title: 'Tenant Management',
+      description: 'Create and configure new tenants for organizations.',
+      createButton: 'Create Tenant',
+      listTitle: 'Tenants',
+      headers: {
+        name: 'Name',
+        owner: 'Owner',
+        created: 'Created',
+        actions: 'Actions'
+      },
+      favorite: 'Favorite',
+      unfavorite: 'Unfavorite'
+    }
+  }
 }

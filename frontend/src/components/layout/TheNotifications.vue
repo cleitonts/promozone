@@ -1,19 +1,18 @@
 <template>
   <div v-if="messages.length" class="notification-wrapper">
-    <the-notification
+    <TheNotification
       v-for="notification in messages"
       :key="notification.id"
       :last-id="notification.id"
       :text="notification.text"
       :timeout="notification.time"
       :type="notification.type"
-    >
-    </the-notification>
+    />
   </div>
 </template>
 <script setup lang="ts">
 import { useInterfaceStore } from '@/stores/interfaceStore'
-import theNotification from '@/components/layout/TheNotification.vue'
+import TheNotification from '@/components/layout/TheNotification.vue'
 const messages = useInterfaceStore().messages
 </script>
 

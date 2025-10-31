@@ -1,19 +1,20 @@
-import { FilterableField, IDField } from '@ptc-org/nestjs-query-graphql';
+import { FilterableField, IDField, Relation, UnPagedRelation } from '@ptc-org/nestjs-query-graphql';
 import { ObjectType, GraphQLISODateTime, Field, ID } from '@nestjs/graphql';
+import { UserDTO } from '@/user/user.dto'
+import { ProfileDTO } from '@/profile/profile.dto'
 
 @ObjectType('Tenant')
+@Relation('owner', () => UserDTO)
+@UnPagedRelation('profiles', () => ProfileDTO)
 export class TenantDTO {
   @IDField(() => ID)
-  id!: number;
+  id!: string;
 
   @FilterableField()
   name!: string;
 
   @FilterableField()
-  domain!: string;
-
-  @FilterableField()
-  active!: boolean;
+  ownerId!: string;
 
   @Field(() => GraphQLISODateTime)
   created!: Date;

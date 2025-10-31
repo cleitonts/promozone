@@ -1,12 +1,15 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsBoolean, IsString, IsEmail, IsOptional, IsArray } from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsArray, ValidateNested } from 'class-validator';
+import { NameInput } from '../common/entity/name.input'
+import { Type } from 'class-transformer';
 
 @InputType('UpdateUser')
 export class UserUpdateDTO {
-  @IsString()
+  @ValidateNested()
   @IsOptional()
-  @Field({ nullable: true })
-  name?: string;
+  @Type(() => NameInput)
+  @Field(() => NameInput, { nullable: true })
+  name?: NameInput;
 
   @IsEmail()
   @IsOptional()

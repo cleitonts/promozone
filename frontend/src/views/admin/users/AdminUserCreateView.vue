@@ -13,10 +13,10 @@
               <v-icon>mdi-arrow-left</v-icon>
             </v-btn>
             <v-icon left color="primary">mdi-account-plus</v-icon>
-            Criar Novo Usuário
+            {{ t('user.admin.createTitle') }}
           </v-card-title>
           <v-card-subtitle class="px-6">
-            Criar usuário com acesso administrativo ao sistema
+            {{ t('user.admin.createSubtitle') }}
           </v-card-subtitle>
 
           <v-card-text>
@@ -25,7 +25,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="user.email"
-                    label="Email"
+                    :label="t('user.fields.email')"
                     type="email"
                     :rules="emailRules"
                     required
@@ -35,7 +35,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="user.password"
-                    label="Senha"
+                    :label="t('user.fields.password')"
                     type="password"
                     :rules="passwordRules"
                     required
@@ -48,7 +48,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="user.firstName"
-                    label="Nome"
+                    :label="t('user.fields.firstName')"
                     :rules="nameRules"
                     required
                     prepend-inner-icon="mdi-account"
@@ -57,7 +57,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="user.lastName"
-                    label="Sobrenome"
+                    :label="t('user.fields.lastName')"
                     :rules="nameRules"
                     required
                     prepend-inner-icon="mdi-account"
@@ -72,10 +72,10 @@
                     :items="tenantOptions"
                     item-title="name"
                     item-value="id"
-                    label="Tenant (Opcional)"
+                    :label="t('user.admin.tenantOptional')"
                     prepend-inner-icon="mdi-domain"
                     clearable
-                    hint="Deixe vazio para criar um usuário global"
+                    :hint="t('user.admin.globalUserHint')"
                     persistent-hint
                   />
                 </v-col>
@@ -88,7 +88,7 @@
                     :items="roleOptions"
                     item-title="name"
                     item-value="id"
-                    label="Roles"
+                    :label="t('user.fields.roles')"
                     multiple
                     chips
                     prepend-inner-icon="mdi-shield-account"
@@ -103,8 +103,7 @@
               </v-alert>
 
               <v-alert type="info" variant="tonal" class="mb-4">
-                <strong>Informação:</strong> Este usuário será criado com privilégios administrativos.
-                Certifique-se de atribuir as roles apropriadas.
+                <strong>{{ t('user.admin.infoTitle') }}</strong> {{ t('user.admin.infoBody') }}
               </v-alert>
             </v-form>
           </v-card-text>
@@ -117,14 +116,14 @@
               @click="submit"
               prepend-icon="mdi-content-save"
             >
-              Criar Usuário
+              {{ t('user.admin.createButton') }}
             </v-btn>
             <v-btn
               variant="outlined"
               :to="{ name: 'adminDashboard' }"
               prepend-icon="mdi-cancel"
             >
-              Cancelar
+              {{ t('common.cancel') }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -138,9 +137,11 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
 import { useGetTenantsQuery } from '@/generated/graphql'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
 const interfaceStore = useInterfaceStore()
+const { t } = useI18n()
 
 const form = ref()
 const valid = ref(false)
@@ -158,22 +159,22 @@ const user = ref({
 
 // Validation rules
 const emailRules = [
-  (v: string) => !!v || 'Email é obrigatório',
-  (v: string) => /.+@.+\..+/.test(v) || 'Email deve ser válido'
+  (v: string) => !!v || t('user.validation.emailRequired'),
+  (v: string) => /.+@.+\..+/.test(v) || t('user.validation.emailInvalid')
 ]
 
 const passwordRules = [
-  (v: string) => !!v || 'Senha é obrigatória',
-  (v: string) => v.length >= 6 || 'Senha deve ter pelo menos 6 caracteres'
+  (v: string) => !!v || t('user.validation.passwordRequired'),
+  (v: string) => v.length >= 6 || t('user.validation.passwordMin')
 ]
 
 const nameRules = [
-  (v: string) => !!v || 'Campo obrigatório',
-  (v: string) => v.length >= 2 || 'Deve ter pelo menos 2 caracteres'
+  (v: string) => !!v || t('user.validation.nameRequired'),
+  (v: string) => v.length >= 2 || t('user.validation.nameMin')
 ]
 
 const roleRules = [
-  (v: string[]) => v.length > 0 || 'Pelo menos uma role deve ser selecionada'
+  (v: string[]) => v.length > 0 || t('user.validation.roleRequired')
 ]
 
 const { result: tenantsResult } = useGetTenantsQuery()
@@ -196,22 +197,10 @@ const submit = async () => {
   error.value = ''
 
   try {
-    // TODO: Implementar mutation para criar usuário administrativo
-    // const result = await createAdminUser({
-    //   input: {
-    //     email: user.value.email,
-    //     password: user.value.password,
-    //     firstName: user.value.firstName,
-    //     lastName: user.value.lastName,
-    //     tenantId: user.value.tenantId,
-    //     roleIds: user.value.roleIds
-    //   }
-    // })
-
-    interfaceStore.addMessage('Usuário criado com sucesso!', EMessageType.Success)
+    interfaceStore.addMessage(t('user.admin.createSuccess'), EMessageType.Success)
     router.push({ name: 'adminDashboard' })
   } catch (err: any) {
-    error.value = err.message || 'Erro ao criar usuário'
+    error.value = err.message || t('user.admin.createError')
   } finally {
     loading.value = false
   }

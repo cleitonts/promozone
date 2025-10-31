@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 import { UserEntity } from '../user/user.entity';
+import { ProfileEntity } from '../profile/profile.entity';
 import { InjectQueryService, QueryService } from '@ptc-org/nestjs-query-core';
 import { IUserPayloadResponse, ITokenPair, ITokenPayload, UserWithoutPassword } from './auth.interface';
 
@@ -30,6 +31,18 @@ export class AuthService {
       return result;
     }
     throw new UnauthorizedException('Invalid credentials');
+  }
+
+  hasUserProfileForTenant(user: UserEntity, tenantId: string): boolean {
+    if (!user) {
+      return false;
+    }
+
+    if (user.roles.includes('admin')) {
+      return true;
+    }
+
+    return user.profiles.some((profile: ProfileEntity) => profile.tenantId === tenantId);
   }
 
   async login(email: string, password: string): Promise<ITokenPair> {
@@ -124,7 +137,10 @@ export class AuthService {
 
   async currentUser(authUser: IUserPayloadResponse): Promise<UserWithoutPassword> {
     try {
-      const user = await this.usersService.findById(authUser.userId);
+      const [user] = await this.usersService.query({ 
+        filter: { id: { eq: authUser.userId } }, 
+        paging: { limit: 1 }
+      });
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
@@ -133,5 +149,28 @@ export class AuthService {
     } catch (e) {
       throw new UnauthorizedException();
     }
+  }
+
+  async updateActiveTenant(userId: string, tenantId: string): Promise<UserWithoutPassword> {
+    const [user] = await this.usersService.query({
+      filter: { id: { eq: userId } },
+      paging: { limit: 1 }
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const allowed = this.hasUserProfileForTenant(user, tenantId);
+    if (!allowed) {
+      throw new UnauthorizedException('User does not have profile for this tenant');
+    }
+
+    const updatedUser = await this.usersService.updateOne(userId, {
+      activeTenantId: tenantId
+    });
+
+    const { password, ...userWithoutPassword } = updatedUser as UserEntity;
+    return userWithoutPassword as UserWithoutPassword;
   }
 }

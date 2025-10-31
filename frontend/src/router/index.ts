@@ -5,8 +5,10 @@ import { AuthRoutes } from '@/router/authRoutes'
 import TheMainLayout from '@/components/layout/backOffice/TheMainLayout.vue'
 import TheIndex from '@/views/TheIndex.vue'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
+import { i18n } from '@/plugins/i18n'
 import { useAuthStore } from '@/stores/authStore'
 
+const tt = (key: string): string => ((i18n as any).global.t(key) as string)
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,11 +49,16 @@ router.beforeEach(async (to) => {
     return { path: '/' }
   }
 
+  // if user is admin and navigating to app home, redirect to admin dashboard
+  if (to.name === 'index' && authStore.isAuthenticated && authStore.isAdmin()) {
+    return { name: 'adminDashboard' }
+  }
+
   if (to.meta.requiresPermission && authStore.isAuthenticated) {
     try {
       const hasRequiredPermission = authStore.hasPermission(to.meta.requiresPermission as string)
       if (!hasRequiredPermission) {
-        interfaceStore.addMessage('Access denied. You do not have the required permissions.', EMessageType.Danger)
+        interfaceStore.addMessage(tt('errors.accessDenied'), EMessageType.Danger)
         return { path: '/bo/home' }
       }
     } catch (error) {
@@ -62,7 +69,7 @@ router.beforeEach(async (to) => {
 
   if (to.meta.requiresAdmin) {
     if (!authStore.isAuthenticated || !authStore.isAdmin()) {
-      interfaceStore.addMessage('Access denied. Administrator role required.', EMessageType.Danger)
+      interfaceStore.addMessage(tt('errors.accessDenied'), EMessageType.Danger)
       return { path: '/bo/home' }
     }
   }

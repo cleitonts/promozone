@@ -5,11 +5,12 @@ import { ProfileEntity } from './profile.entity';
 import { ProfileDTO } from './profile.dto';
 import { ProfileCreateDTO } from './profile.create.dto';
 import { JwtAuthGuard } from '@/authorization/guards/jwt-auth.guard'
+import { UserEntity } from '@/user/user.entity'
 
 @Module({
   imports: [
     NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([ProfileEntity])],
+      imports: [NestjsQueryTypeOrmModule.forFeature([ProfileEntity, UserEntity])],
       resolvers: [
         {
           EntityClass: ProfileEntity,

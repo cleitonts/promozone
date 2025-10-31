@@ -2,8 +2,7 @@ mutation CreateTenant($input: CreateOneTenantInput!) {
   createOneTenant(input: $input) {
     id
     name
-    domain
-    active
+    ownerId
     created
     updated
   }
@@ -13,8 +12,7 @@ mutation UpdateTenant($input: UpdateOneTenantInput!) {
   updateOneTenant(input: $input) {
     id
     name
-    domain
-    active
+    ownerId
     created
     updated
   }

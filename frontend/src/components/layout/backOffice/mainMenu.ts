@@ -51,14 +51,8 @@ const menuItemsConfig = (t: (key: string) => string): IMenuItem[] => [
       {
         title: t('menu.userRoles'),
         icon: 'mdi-account-cog',
-        to: '/bo/users',
+        to: '/admin/users',
         requiresAdmin: true
-      },
-      {
-        title: t('menu.roles'),
-        icon: 'mdi-account-key',
-        to: '/bo/admin/roles',
-        permission: 'roles.read'
       },
       {
         title: t('menu.tenants'),
@@ -66,12 +60,7 @@ const menuItemsConfig = (t: (key: string) => string): IMenuItem[] => [
         to: '/bo/admin/tenants',
         permission: 'tenant.list'
       },
-      {
-        title: t('menu.permissions'),
-        icon: 'mdi-shield-account',
-        to: '/bo/admin/permissions',
-        permission: 'permissions.read'
-      }
+      
     ]
   }
 ]
@@ -107,7 +96,13 @@ function filterMenuItems(items: IMenuItem[]): IMenuItem[] {
 export const useMenuItems = () => {
   const { t } = useI18n()
   const filteredMenuItems = computed(() => {
-    return filterMenuItems(menuItemsConfig(t))
+    const items = filterMenuItems(menuItemsConfig(t))
+    const authStore = useAuthStore()
+    const home = items.find(i => i.icon === 'mdi-home')
+    if (home) {
+      home.to = authStore.isAdmin() ? '/admin' : '/bo/home'
+    }
+    return items
   })
   
   return {

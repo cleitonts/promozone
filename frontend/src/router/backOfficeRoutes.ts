@@ -174,39 +174,7 @@ export const backOfficeRoutes: RouteRecordRaw = {
         },
       ],
     },
-    {
-      path: 'admin/roles',
-      component: TheMainLayout,
-      children: [
-        {
-          path: '',
-          name: 'rolesList',
-          component: () => import('@/views/backOffice/admin/RoleListView.vue'),
-          meta: {
-            pageTitle: 'Roles list',
-            requiresPermission: 'roles.read',
-          },
-        },
-        {
-          path: 'new',
-          name: 'rolesNew',
-          component: () => import('@/views/backOffice/admin/RoleEditView.vue'),
-          meta: {
-            pageTitle: 'Create role',
-            requiresPermission: 'roles.write',
-          },
-        },
-        {
-          path: ':id/edit',
-          name: 'rolesEdit',
-          component: () => import('@/views/backOffice/admin/RoleEditView.vue'),
-          meta: {
-            pageTitle: 'Edit role',
-            requiresPermission: 'roles.write',
-          },
-        },
-      ],
-    },
+    
     {
       path: 'admin/tenants',
       component: TheMainLayout,

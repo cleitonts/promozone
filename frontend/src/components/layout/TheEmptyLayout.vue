@@ -1,5 +1,6 @@
 <template>
-  <v-main ref="mainView">
+  <v-main ref="mainView" style="position: relative;">
+    <TheRequestOverlay target="main-content" />
     <v-container ref="mainContainer" fluid>
       <router-view v-slot="{ Component, route }" name="default">
         <transition
@@ -28,6 +29,7 @@
 <script lang="ts" setup>
 import type { VContainer } from 'vuetify/components'
 import TheNotifications from './TheNotifications.vue'
+import { TheRequestOverlay } from '@/components'
 import { ref, onMounted } from 'vue'
 
 const mainContainer = ref<VContainer | null>(null)

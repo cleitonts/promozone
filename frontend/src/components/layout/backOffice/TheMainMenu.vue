@@ -1,5 +1,12 @@
 <template>
-  <v-navigation-drawer v-model="mini" permanent :rail="!interfaceStore.menuOpen" expand-on-hover>
+  <v-navigation-drawer
+    :model-value="drawer"
+    @update:model-value="updateDrawer"
+    :permanent="!isMobile"
+    :temporary="isMobile"
+    :rail="!isMobile && !interfaceStore.menuOpen"
+    expand-on-hover
+  >
     <v-list dense class="main-menu">
       <template v-for="item in menuItems" :key="item.title">
         <template v-if="item.children">
@@ -32,15 +39,23 @@
 
 <script lang="ts" setup>
 import { useInterfaceStore } from '@/stores/interfaceStore'
-import { ref } from 'vue'
+import { computed, unref } from 'vue'
 import TheMenuItem from '@/components/layout/TheMenuItem.vue'
 import { useMenuItems } from './mainMenu'
 import { useI18n } from 'vue-i18n'
+import { useDisplay } from 'vuetify'
 
 const interfaceStore = useInterfaceStore()
-const mini = ref(true)
 const { menuItems } = useMenuItems()
 const { locale } = useI18n()
+const display = useDisplay()
+const isMobile = computed(() => display.smAndDown.value)
+
+const drawer = computed(() => (unref(isMobile) ? interfaceStore.menuOpen : true))
+
+const updateDrawer = (val: boolean) => {
+  if (unref(isMobile)) interfaceStore.menuOpen = val
+}
 
 const setLocale = (lang: 'pt' | 'en' | 'dev') => {
   locale.value = lang

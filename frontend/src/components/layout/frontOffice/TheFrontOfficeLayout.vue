@@ -1,7 +1,8 @@
 <template>
   <TheFrontOfficeAppBar />
 
-  <v-main ref="mainView">
+  <v-main ref="mainView" style="position: relative;">
+    <TheRequestOverlay target="main-content" />
     <v-container ref="mainContainer">
       <router-view v-slot="{ Component, route }" name="default">
         <transition
@@ -28,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { TheNotifications } from '@/components'
+import { TheNotifications, TheRequestOverlay } from '@/components'
 import { ref } from 'vue'
 import TheFrontOfficeAppBar from '@/components/layout/frontOffice/TheFrontOfficeAppBar.vue'
 import type { VContainer } from 'vuetify/components'

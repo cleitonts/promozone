@@ -4,6 +4,7 @@ query GetAllUsers {
       node {
         id
         email
+        name { first last }
         created
       }
     }
@@ -15,5 +16,17 @@ query GetUser($id: ID!) {
     id
     email
     created
+  }
+}
+
+query SearchUsers($emailLike: String) {
+  users(filter: { email: { iLike: $emailLike } }) {
+    edges {
+      node {
+        id
+        email
+        name { first last }
+      }
+    }
   }
 }

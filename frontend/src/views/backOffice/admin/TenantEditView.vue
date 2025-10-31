@@ -1,94 +1,52 @@
 <template>
-  <v-card>
-    <the-card-title 
-      icon="mdi-domain" 
-      :text="isEditing ? 'Editar Tenant' : 'Criar Tenant'"
-      bg-color="primary"
+  <v-card class="overflow-visible">
+    <the-card-title
+      :text="isEditing ? 'Edit Tenant' : 'Create Tenant'"
+      icon="fa6-solid:building"
+      bg-color="bg-secondary-gradient"
       text-color="white"
-    />
-    
+    >
+    </the-card-title>
+
     <v-card-text>
       <v-form ref="form" v-model="valid" @submit.prevent="submit">
         <v-row>
           <v-col cols="12" md="6">
             <v-text-field
               v-model="tenant.name"
-              label="Nome do Tenant"
+              label="Tenant Name"
               :rules="nameRules"
-              variant="outlined"
-              density="compact"
               required
             />
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field
-              v-model="tenant.domain"
-              label="Domínio"
-              variant="outlined"
-              density="compact"
-              hint="Domínio personalizado (opcional)"
-            />
+            <UserFinder v-model="tenant.ownerId" label="Owner" />
           </v-col>
         </v-row>
-        
-        <v-row>
-          <v-col cols="12">
-            <v-textarea
-              v-model="tenant.description"
-              label="Descrição"
-              variant="outlined"
-              density="compact"
-              rows="3"
-            />
-          </v-col>
-        </v-row>
-        
-
         
         <v-row>
           <v-col cols="12">
             <v-card>
-              <v-card-title class="text-h6">Configurações</v-card-title>
+              <v-card-title class="text-h6">Owner and Users</v-card-title>
               <v-card-text>
                 <v-row>
                   <v-col cols="12" md="6">
-                    <v-text-field
-                      v-model="settings.theme"
-                      label="Tema"
-                      variant="outlined"
-                      density="compact"
-                      hint="Configurações de tema"
-                    />
+                    <v-alert type="info" variant="tonal" density="compact">
+                      {{ currentTenant?.owner?.name?.first }} {{ currentTenant?.owner?.name?.last }} ({{ currentTenant?.owner?.email }})
+                    </v-alert>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field
-                      v-model="settings.features"
-                      label="Funcionalidades"
-                      variant="outlined"
-                      density="compact"
-                      hint="Funcionalidades habilitadas"
-                    />
-                  </v-col>
-                </v-row>
-                
-                <v-row>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      v-model="settings.customization"
-                      label="Personalização"
-                      variant="outlined"
-                      density="compact"
-                      hint="Configurações de personalização"
-                    />
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      v-model="settings.integrations"
-                      label="Integrações"
-                      variant="outlined"
-                      density="compact"
-                      hint="Configurações de integrações"
-                    />
+                    <v-chip-group class="d-flex flex-wrap" column>
+                      <v-chip
+                        v-for="u in tenantUsers"
+                        :key="u.id"
+                        class="ma-1"
+                        color="secondary"
+                        label
+                      >
+                        {{ u.name?.first }} {{ u.name?.last }} — {{ u.email }}
+                      </v-chip>
+                    </v-chip-group>
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -97,20 +55,14 @@
         </v-row>
         
         <v-row>
-          <v-col cols="12" class="d-flex gap-2">
+          <v-col cols="12" class="d-flex justify-end">
             <v-btn
               type="submit"
-              color="primary"
+              :color="isEditing ? 'primary' : 'success'"
               :loading="saving"
               :disabled="!valid"
             >
-              {{ isEditing ? 'Atualizar' : 'Criar' }}
-            </v-btn>
-            <v-btn
-              variant="outlined"
-              @click="cancel"
-            >
-              Cancelar
+              {{ isEditing ? 'Update' : 'Create' }}
             </v-btn>
           </v-col>
         </v-row>
@@ -124,6 +76,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTenants } from '@/composables/tenants'
 import { TheCardTitle } from '@/components'
+import UserFinder from '@/components/UserFinder.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -134,29 +87,23 @@ const saving = ref(false)
 
 const tenant = ref({
   name: '',
-  description: '',
-  domain: ''
-})
-
-const settings = ref({
-  theme: '',
-  features: '',
-  customization: '',
-  integrations: ''
+  ownerId: ''
 })
 
 const isEditing = computed(() => route.name === 'tenantsEdit')
 const tenantId = computed(() => route.params.id as string)
 
-const { fetchTenant, currentTenant, createOneTenant, updateOneTenant, loading: tenantsLoading } = useTenants()
+const { fetchTenant, currentTenant, createOneTenant, updateOneTenant, loading: tenantsLoading, fetchTenantUsers, tenantUsers } = useTenants()
 
 // Validation rules
 const nameRules = [
-  (v: string) => !!v || 'Nome é obrigatório',
-  (v: string) => v.length >= 2 || 'Nome deve ter pelo menos 2 caracteres'
+  (v: string) => !!v || 'Name is required',
+  (v: string) => v.length >= 2 || 'Name must have at least 2 characters'
 ]
 
-
+const ownerRules = [
+  (v: string) => !!v || 'Owner is required'
+]
 
 // Methods
 const submit = async () => {
@@ -167,7 +114,7 @@ const submit = async () => {
   try {
     const inputBase = {
       name: tenant.value.name,
-      domain: tenant.value.domain || undefined,
+      ownerId: tenant.value.ownerId,
     }
     if (isEditing.value) {
       await updateOneTenant({
@@ -177,11 +124,7 @@ const submit = async () => {
         }
       })
     } else {
-      const createInput = {
-        ...inputBase,
-        slug: tenant.value.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-      }
-      await createOneTenant({ tenant: createInput })
+      await createOneTenant({ tenant: inputBase })
     }
     
     router.push({ name: 'tenantsList' })
@@ -192,10 +135,6 @@ const submit = async () => {
   }
 }
 
-const cancel = () => {
-  router.push({ name: 'tenantsList' })
-}
-
 // Load tenant data if editing
 onMounted(async () => {
   if (isEditing.value && tenantId.value) {
@@ -203,10 +142,10 @@ onMounted(async () => {
     if (currentTenant.value) {
       tenant.value = {
         name: currentTenant.value.name,
-        description: '',
-        domain: currentTenant.value.domain || ''
+        ownerId: currentTenant.value.ownerId || ''
       }
     }
+    await fetchTenantUsers(tenantId.value)
   }
 })
 </script>

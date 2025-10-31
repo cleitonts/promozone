@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-visible">
     <the-card-title
-      text="Users"
+      :text="t('user.listTitle')"
       icon="fa6-solid:person"
       bg-color="bg-secondary-gradient"
       text-color="white"
@@ -29,8 +29,8 @@
         @update="getList()"
       >
         <template #prepend>
-          <v-col cols="6">
-            <v-text-field v-model="email" :rules="emailRules" label="E-mail" required />
+          <v-col cols="12" sm="6">
+            <v-text-field v-model="email" :rules="emailRules" :label="t('user.fields.email')" required />
           </v-col>
         </template>
         <template #action="{ element }">
@@ -50,8 +50,9 @@
 
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useUsers } from '@/composables/useUsers'
+import { useI18n } from 'vue-i18n'
 
 const { fetchAllUsers, users: usersSource } = useUsers()
 const email = ref('')
@@ -59,17 +60,18 @@ const users = ref<any[]>([])
 const totalItems = ref(0)
 const page = ref(1)
 const limit = ref(10)
+const { t } = useI18n()
 
-const headers = {
+const headers = computed(() => ({
   action: '#',
-  id: 'Id',
-  email: 'Email',
-}
+  id: t('common.id'),
+  email: t('user.fields.email'),
+}))
 
 const emailRules = [
-  (v: string) => !!v || 'E-mail is required',
+  (v: string) => !!v || t('user.validation.emailRequired'),
   (v: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'E-mail must be valid',
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || t('user.validation.emailInvalid'),
 ]
 
 const getList = async function () {

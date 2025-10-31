@@ -29,4 +29,6 @@ export interface ITokenPair {
 export interface IUserPayloadResponse {
   userId: string;
   username: string;
+  activeTenantId?: string | null;
+  tenantPermissions?: string[];
 }

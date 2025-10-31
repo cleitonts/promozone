@@ -1,7 +1,9 @@
-import { FilterableField, IDField } from '@ptc-org/nestjs-query-graphql';
+import { FilterableField, IDField, UnPagedRelation } from '@ptc-org/nestjs-query-graphql';
 import { ObjectType, GraphQLISODateTime, Field, ID } from '@nestjs/graphql';
+import { UserDTO } from '@/user/user.dto'
 
 @ObjectType('Profile')
+@UnPagedRelation('users', () => UserDTO)
 export class ProfileDTO {
   @IDField(() => ID)
   id!: string;

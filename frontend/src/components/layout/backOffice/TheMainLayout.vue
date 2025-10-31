@@ -3,7 +3,8 @@
 
   <TheMainMenu />
 
-  <v-main ref="mainView">
+  <v-main ref="mainView" style="position: relative;">
+    <TheRequestOverlay target="main-content" />
     <v-container ref="mainContainer" fluid>
       <router-view v-slot="{ Component, route }" name="default">
         <transition
@@ -33,6 +34,7 @@
 import TheMainAppBar from '@/components/layout/backOffice/TheMainAppBar.vue'
 import TheMainMenu from '@/components/layout/backOffice/TheMainMenu.vue'
 import TheNotifications from '@/components/layout/TheNotifications.vue'
+import { TheRequestOverlay } from '@/components'
 import { ref, onMounted } from 'vue'
 import type { VContainer } from 'vuetify/components'
 

@@ -5,10 +5,10 @@
         <v-card>
           <v-card-title class="text-h4 pa-6">
             <v-icon left color="primary" size="large">mdi-shield-crown</v-icon>
-            Painel de Administração
+            {{ t('adminDashboard.title') }}
           </v-card-title>
           <v-card-subtitle class="px-6 pb-4">
-            Área exclusiva para super administradores
+            {{ t('adminDashboard.subtitle') }}
           </v-card-subtitle>
         </v-card>
       </v-col>
@@ -19,10 +19,10 @@
         <v-card class="h-100" hover>
           <v-card-title class="d-flex align-center">
             <v-icon left color="primary">mdi-account-plus</v-icon>
-            Gestão de Usuários
+            {{ t('adminDashboard.users.title') }}
           </v-card-title>
           <v-card-text>
-            Criar novos usuários no sistema com diferentes níveis de acesso.
+            {{ t('adminDashboard.users.description') }}
           </v-card-text>
           <v-card-actions>
             <v-btn
@@ -31,7 +31,15 @@
               :to="{ name: 'adminUserCreate' }"
               prepend-icon="mdi-plus"
             >
-              Criar Usuário
+              {{ t('adminDashboard.users.createButton') }}
+            </v-btn>
+            <v-btn
+              color="error"
+              variant="text"
+              prepend-icon="mdi-alert"
+              @click="triggerError()"
+            >
+              Trigger Error
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -41,10 +49,10 @@
         <v-card class="h-100" hover>
           <v-card-title class="d-flex align-center">
             <v-icon left color="secondary">mdi-domain</v-icon>
-            Gestão de Tenants
+            {{ t('adminDashboard.tenants.title') }}
           </v-card-title>
           <v-card-text>
-            Criar e configurar novos tenants para organizações.
+            {{ t('adminDashboard.tenants.description') }}
           </v-card-text>
           <v-card-actions>
             <v-btn
@@ -53,7 +61,7 @@
               :to="{ name: 'adminTenantCreate' }"
               prepend-icon="mdi-plus"
             >
-              Criar Tenant
+              {{ t('adminDashboard.tenants.createButton') }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -64,28 +72,39 @@
       <v-col cols="12">
         <v-card>
           <v-card-title class="d-flex align-center">
-            <v-icon left color="warning">mdi-information</v-icon>
-            Informações Importantes
+            <v-icon left color="secondary">mdi-domain</v-icon>
+            {{ t('adminDashboard.tenants.listTitle') }}
           </v-card-title>
           <v-card-text>
-            <v-alert type="warning" variant="tonal">
-              <strong>Atenção:</strong> Esta área é restrita a super administradores.
-              Todas as ações realizadas aqui afetam o sistema globalmente.
-            </v-alert>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title>Criação de Usuários</v-list-item-title>
-                <v-list-item-subtitle>
-                  Permite criar usuários com acesso a qualquer tenant do sistema
-                </v-list-item-subtitle>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title>Criação de Tenants</v-list-item-title>
-                <v-list-item-subtitle>
-                  Permite criar novos tenants e definir seus proprietários
-                </v-list-item-subtitle>
-              </v-list-item>
-            </v-list>
+            <v-table density="comfortable">
+              <thead>
+                <tr>
+                  <th class="text-left">{{ t('adminDashboard.tenants.headers.name') }}</th>
+                  <th class="text-left">{{ t('adminDashboard.tenants.headers.owner') }}</th>
+                  <th class="text-left">{{ t('adminDashboard.tenants.headers.created') }}</th>
+                  <th class="text-left">{{ t('adminDashboard.tenants.headers.actions') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="t in tenants" :key="t.id">
+                  <td>{{ t.name }}</td>
+                  <td>{{ t.owner?.email || '-' }}</td>
+                  <td>{{ formatDate(t.created) }}</td>
+                  <td>
+                    <v-btn
+                      v-if="isAdmin"
+                      size="small"
+                      variant="text"
+                      :color="isFavorite(t.id) ? 'warning' : 'primary'"
+                      :prepend-icon="isFavorite(t.id) ? 'mdi-star' : 'mdi-star-outline'"
+                      @click="toggleFavorite(t.id)"
+                    >
+                      {{ isFavorite(t.id) ? tKey('adminDashboard.tenants.unfavorite') : tKey('adminDashboard.tenants.favorite') }}
+                    </v-btn>
+                  </td>
+                </tr>
+              </tbody>
+            </v-table>
           </v-card-text>
         </v-card>
       </v-col>
@@ -94,5 +113,35 @@
 </template>
 
 <script setup lang="ts">
-// Dashboard administrativo - sem lógica complexa necessária por enquanto
+import { computed } from 'vue'
+import { useGetTenantsQuery } from '@/generated/graphql'
+import { useI18n } from 'vue-i18n'
+import { useAuthStore } from '@/stores/authStore'
+import { useTenantStore } from '../../stores/tenantStore'
+import apolloClient from '@/plugins/apollo'
+import gql from 'graphql-tag'
+import invalidQueryRaw from '@/graphql/queries/error.graphql?raw'
+
+const { result } = useGetTenantsQuery()
+const { t } = useI18n()
+const authStore = useAuthStore()
+const tenantStore = useTenantStore()
+
+const tenants = computed(() => (result.value?.tenants?.edges || []).map(e => e.node))
+const isAdmin = computed(() => authStore.isAdmin())
+
+const tKey = (key: string) => t(key)
+
+const isFavorite = (id: string) => tenantStore.isFavorite(id)
+const toggleFavorite = (id: string) => tenantStore.toggleFavorite(id)
+
+function triggerError() {
+  apolloClient.query({ query: gql(invalidQueryRaw), context: { uiTarget: 'main-content' } })
+}
+
+function formatDate(date?: string | Date) {
+  if (!date) return ''
+  const d = typeof date === 'string' ? new Date(date) : date
+  return d.toLocaleDateString()
+}
 </script>
