@@ -60,7 +60,7 @@ import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, watch } from 'vue'
 // remove generated hooks; use composable actions instead
 import { useI18n } from 'vue-i18n'
-import { useCategories } from '@/composables/categories'
+import { useCategories } from '@/composables/useCategories'
 
 const { t } = useI18n()
 const { fetchAllCategories, categories: categoriesSource, deleteOneCategory } = useCategories()
@@ -98,13 +98,9 @@ const getList = async function () {
 
 const deleteCategory = async function (id: string) {
   if (confirm(t('category.confirmDelete'))) {
-    try {
-      const ok = await deleteOneCategory({ id })
-      if (!ok) throw new Error('Delete failed')
-      await getList()
-    } catch (error) {
-      console.error('Error deleting category:', error)
-    }
+    const ok = await deleteOneCategory({ id })
+    if (!ok) return
+    await getList()
   }
 }
 

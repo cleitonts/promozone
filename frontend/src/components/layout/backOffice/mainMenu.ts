@@ -24,9 +24,9 @@ const menuItemsConfig = (t: (key: string) => string): IMenuItem[] => [
     permission: 'users.read'
   },
   {
-    title: t('menu.perfil'),
+    title: t('menu.profile'),
     icon: 'mdi-account-circle',
-    to: '/bo/perfil'
+    to: '/bo/profile'
   },
   {
     title: t('menu.products'),

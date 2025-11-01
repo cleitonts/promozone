@@ -8,7 +8,7 @@ export default {
   menu: {
     home: 'Home',
     users: 'Users',
-    perfil: 'Profile',
+    profile: 'Profile',
     products: 'Products',
     brands: 'Brands',
     categories: 'Categories',
@@ -52,7 +52,7 @@ export default {
     fields: {
       email: 'Email',
       password: 'Password',
-      perfilId: 'Profile ID',
+      profileId: 'Profile ID',
       firstName: 'First Name',
       lastName: 'Last Name',
       roles: 'Roles',
@@ -127,7 +127,7 @@ export default {
     },
     confirmDelete: 'Are you sure you want to delete this product?',
   },
-  perfil: {
+  profile: {
     listTitle: 'Profiles',
     editTitle: 'Profile',
     fields: {

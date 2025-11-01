@@ -55,31 +55,31 @@ export const backOfficeRoutes: RouteRecordRaw = {
       ],
     },
     {
-      path: 'perfil',
+      path: 'profile',
       component: TheMainLayout,
       children: [
         {
           path: '',
-          name: 'perfilList',
-          component: () => import('@/views/backOffice/perfil/PerfilListView.vue'),
+          name: 'profileList',
+          component: () => import('@/views/backOffice/profile/ProfileListView.vue'),
           meta: {
-            pageTitle: 'Perfil list',
+            pageTitle: 'Profile list',
           },
         },
         {
           path: 'new',
-          name: 'perfilNew',
-          component: () => import('@/views/backOffice/perfil/PerfilEditView.vue'),
+          name: 'profileNew',
+          component: () => import('@/views/backOffice/profile/ProfileEditView.vue'),
           meta: {
-            pageTitle: 'Create perfil',
+            pageTitle: 'Create profile',
           },
         },
         {
           path: 'edit/:id',
-          name: 'perfilEdit',
-          component: () => import('@/views/backOffice/perfil/PerfilEditView.vue'),
+          name: 'profileEdit',
+          component: () => import('@/views/backOffice/profile/ProfileEditView.vue'),
           meta: {
-            pageTitle: 'Edit perfil',
+            pageTitle: 'Edit profile',
           },
         },
       ],

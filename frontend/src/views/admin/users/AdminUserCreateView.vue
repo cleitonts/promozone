@@ -98,10 +98,6 @@
                 </v-col>
               </v-row>
 
-              <v-alert v-if="error" type="error" class="mb-4">
-                {{ error }}
-              </v-alert>
-
               <v-alert type="info" variant="tonal" class="mb-4">
                 <strong>{{ t('user.admin.infoTitle') }}</strong> {{ t('user.admin.infoBody') }}
               </v-alert>
@@ -111,7 +107,7 @@
           <v-card-actions class="px-6 pb-6">
             <v-btn
               color="primary"
-              :loading="loading"
+              :loading="saving"
               :disabled="!valid"
               @click="submit"
               prepend-icon="mdi-content-save"
@@ -135,7 +131,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
+import { useInterfaceStore } from '@/stores/interfaceStore'
+import { useUsers } from '@/composables/useUsers'
 import { useGetTenantsQuery } from '@/generated/graphql'
 import { useI18n } from 'vue-i18n'
 
@@ -145,8 +142,8 @@ const { t } = useI18n()
 
 const form = ref()
 const valid = ref(false)
-const loading = ref(false)
-const error = ref('')
+const { createUser } = useUsers()
+const saving = computed(() => interfaceStore.isLoading('user-create'))
 
 const user = ref({
   email: '',
@@ -177,7 +174,7 @@ const roleRules = [
   (v: string[]) => v.length > 0 || t('user.validation.roleRequired')
 ]
 
-const { result: tenantsResult } = useGetTenantsQuery()
+const { result: tenantsResult } = useGetTenantsQuery({ context: { uiTarget: 'admin-user-create-tenants' } })
 
 const tenantOptions = computed(() => {
   const edges = tenantsResult.value?.tenants?.edges ?? []
@@ -193,16 +190,15 @@ const roleOptions = computed(() => availableRoles)
 const submit = async () => {
   if (!form.value?.validate()) return
 
-  loading.value = true
-  error.value = ''
-
-  try {
-    interfaceStore.addMessage(t('user.admin.createSuccess'), EMessageType.Success)
+  const name = `${user.value.firstName} ${user.value.lastName}`.trim()
+  const result = await createUser({
+    email: user.value.email,
+    password: user.value.password,
+    tenantId: user.value.tenantId || undefined,
+    name: name || undefined,
+  })
+  if (result.success) {
     router.push({ name: 'adminDashboard' })
-  } catch (err: any) {
-    error.value = err.message || t('user.admin.createError')
-  } finally {
-    loading.value = false
   }
 }
 </script>

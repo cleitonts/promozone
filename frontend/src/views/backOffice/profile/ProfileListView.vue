@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-visible">
     <the-card-title
-      :text="t('perfil.listTitle')"
+      :text="t('profile.listTitle')"
       icon="fluent-mdl2:permissions"
       bg-color="bg-secondary-gradient"
       text-color="white"
@@ -13,7 +13,7 @@
         v-model:page="page"
         v-model:limit="limit"
         class="collaborators-table"
-        :matrix="perfils"
+        :matrix="profiles"
         :total-items="totalItems"
         :header="headers"
         @update="getList()"
@@ -31,16 +31,15 @@ import { useGetProfilesQuery } from '@/generated/graphql'
 
 const { t } = useI18n()
 
-type PerfilListItem = {
+type ProfileListItem = {
   id: string
   name?: string
   permissions: number
 }
-
-const perfils = ref<PerfilListItem[]>([])
+const profiles = ref<ProfileListItem[]>([])
 const totalItems = ref(0)
 const showConfirmDialog = ref(false)
-const deletePerfilItem = ref({} as PerfilListItem)
+const deleteProfileItem = ref({} as ProfileListItem)
 const page = ref(1)
 const limit = ref(10)
 
@@ -56,12 +55,12 @@ const getList = async function () {
   const data = profilesResult.value
   const edges = data?.profiles?.edges ?? []
   const list = edges.map((e: any) => e.node)
-  perfils.value = list.map((p: any) => ({
+  profiles.value = list.map((p: any) => ({
     id: p.id,
     name: p.displayName ?? p.id ?? '-',
     permissions: Array.isArray(p.resolvers) ? p.resolvers.length : 0,
   }))
-  totalItems.value = perfils.value.length
+  totalItems.value = profiles.value.length
 }
 
 // Delete operation removed

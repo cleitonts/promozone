@@ -17,7 +17,7 @@
             <v-text-field v-model="user.password" :label="t('user.fields.password')" type="password" required />
           </v-col>
           <v-col cols="6" v-if="route.name === 'usersNew'">
-            <v-text-field v-model="user.perfilId" :label="t('user.fields.perfilId')" required />
+            <v-text-field v-model="user.profileId" :label="t('user.fields.perfilId')" required />
           </v-col>
         </v-row>
       </v-form>
@@ -39,7 +39,7 @@ import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
 const { fetchUser, createUser, currentUser } = useUsers()
-const user = ref({ email: '', password: '', perfilId: '' })
+const user = ref({ email: '', password: '', profileId: '' })
 const { t } = useI18n()
 
 const emailRules = [
@@ -50,15 +50,13 @@ const emailRules = [
 
 const validate = async function () {
   if (route.name === 'usersNew') {
-    try {
-      await createUser({
-        email: user.value.email,
-        password: user.value.password,
-        perfilId: user.value.perfilId,
-      })
+    const result = await createUser({
+      email: user.value.email,
+      password: user.value.password,
+      profileId: user.value.profileId,
+    })
+    if (result?.success) {
       router.push({ name: 'usersList' })
-    } catch (error) {
-      console.error('Error creating user', error)
     }
   } else {
     console.log('Update user functionality not implemented yet')

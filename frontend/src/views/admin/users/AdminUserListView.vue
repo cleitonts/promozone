@@ -55,7 +55,7 @@
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, computed } from 'vue'
 import { useUsers } from '@/composables/useUsers'
-import { useTenants } from '@/composables/tenants'
+import { useTenants } from '@/composables/useTenants'
 import { useI18n } from 'vue-i18n'
 
 const { fetchAllUsers, users: usersSource } = useUsers()

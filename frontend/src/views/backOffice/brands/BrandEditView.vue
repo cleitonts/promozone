@@ -75,7 +75,7 @@
       <v-btn 
         color="primary" 
         @click="validate"
-        :loading="loading"
+        :loading="saving"
       >
         {{ isEdit ? t('common.update') : t('common.create') }}
       </v-btn>
@@ -88,7 +88,8 @@ import { TheCardTitle } from '@/components'
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 // import { useBrandStore } from '@/stores/brandStore'
-import { useBrands } from '@/composables/brands'
+import { useBrands } from '@/composables/useBrands'
+import { useInterfaceStore } from '@/stores/interfaceStore'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -96,7 +97,9 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 // const brandStore = useBrandStore()
-const { fetchBrand, currentBrand, loading, createBrand, updateBrand } = useBrands()
+const { fetchBrand, currentBrand, createBrand, updateBrand } = useBrands()
+const interfaceStore = useInterfaceStore()
+const saving = computed(() => interfaceStore.isLoading('brand-save'))
 
 const brand = ref<{ name: string; slug: string; description?: string; logoUrl?: string; website?: string; country?: string; active?: boolean}>({
   name: '',
@@ -126,57 +129,49 @@ const validate = async () => {
     return
   }
 
-  try {
-    if (isEdit.value) {
-      const updated = await updateBrand({
-        id: String(route.params.id),
-        update: {
-          name: brand.value.name,
-          slug: brand.value.slug,
-          description: brand.value.description,
-          logoUrl: brand.value.logoUrl,
-          website: brand.value.website,
-          country: brand.value.country,
-          active: brand.value.active,
-        }
-      })
-      if (updated) router.push({ name: 'brandsList' })
-    } else {
-      const created = await createBrand({
-        brand: {
-          name: brand.value.name,
-          slug: brand.value.slug,
-          description: brand.value.description,
-          logoUrl: brand.value.logoUrl,
-          website: brand.value.website,
-          country: brand.value.country,
-          active: brand.value.active,
-        }
-      })
-      if (created) router.push({ name: 'brandsList' })
-    }
-  } catch (error) {
-    console.error('Error saving brand:', error)
+  if (isEdit.value) {
+    const updated = await updateBrand({
+      id: String(route.params.id),
+      update: {
+        name: brand.value.name,
+        slug: brand.value.slug,
+        description: brand.value.description,
+        logoUrl: brand.value.logoUrl,
+        website: brand.value.website,
+        country: brand.value.country,
+        active: brand.value.active,
+      }
+    })
+    if (updated) router.push({ name: 'brandsList' })
+  } else {
+    const created = await createBrand({
+      brand: {
+        name: brand.value.name,
+        slug: brand.value.slug,
+        description: brand.value.description,
+        logoUrl: brand.value.logoUrl,
+        website: brand.value.website,
+        country: brand.value.country,
+        active: brand.value.active,
+      }
+    })
+    if (created) router.push({ name: 'brandsList' })
   }
 }
 
 const loadBrand = async () => {
   if (isEdit.value && route.params.id) {
-    try {
-      await fetchBrand(Number(route.params.id))
-      if (currentBrand.value) {
-        brand.value = {
-          name: currentBrand.value.name,
-          slug: currentBrand.value.slug,
-          description: currentBrand.value.description || '',
-          logoUrl: currentBrand.value.logoUrl || '',
-          website: currentBrand.value.website || '',
-          country: currentBrand.value.country || '',
-          active: currentBrand.value.active
-        }
+    await fetchBrand(Number(route.params.id))
+    if (currentBrand.value) {
+      brand.value = {
+        name: currentBrand.value.name,
+        slug: currentBrand.value.slug,
+        description: currentBrand.value.description || '',
+        logoUrl: currentBrand.value.logoUrl || '',
+        website: currentBrand.value.website || '',
+        country: currentBrand.value.country || '',
+        active: currentBrand.value.active
       }
-    } catch (error) {
-      console.error('Error loading brand:', error)
     }
   }
 }

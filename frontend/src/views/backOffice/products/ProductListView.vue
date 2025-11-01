@@ -69,7 +69,7 @@
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, watch } from 'vue'
 import { useProducts } from '@/composables/useProducts'
-import { useCategories } from '@/composables/categories'
+import { useCategories } from '@/composables/useCategories'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -134,12 +134,8 @@ const getCategories = async function () {
 
 const deleteProduct = async function (id: string) {
   if (confirm(t('product.confirmDelete'))) {
-    try {
-      await deleteOneProduct({ id })
-      await getList()
-    } catch (error) {
-      console.error('Error deleting product:', error)
-    }
+    await deleteOneProduct({ id })
+    await getList()
   }
 }
 

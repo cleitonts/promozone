@@ -60,9 +60,9 @@ import { useRoute } from 'vue-router'
 import { TheCardTitle } from '@/components'
 import { ref, onMounted } from 'vue'
 import { useProducts } from '@/composables/useProducts'
-import { useCategories } from '@/composables/categories'
+import { useCategories } from '@/composables/useCategories'
 // import { useBrandStore } from '@/stores/brandStore'
-import { useBrands } from '@/composables/brands'
+import { useBrands } from '@/composables/useBrands'
 import { router } from '@/router'
 import { useI18n } from 'vue-i18n'
 
@@ -91,36 +91,28 @@ const nameRules = [
 
 const validate = async function () {
   if (route.name === 'productsNew') {
-    try {
-      await createOneProduct({
-        product: {
-          price: 0,
-          slug: '',
-          name: product.value.name,
-          description: product.value.description,
-          categoryId: product.value.categoryId || undefined,
-          brandId: product.value.brandId || undefined
-        }
-      })
-      router.push({ name: 'productsList' })
-    } catch (error) {
-      console.error('Error creating product:', error)
-    }
+    await createOneProduct({
+      product: {
+        price: 0,
+        slug: '',
+        name: product.value.name,
+        description: product.value.description,
+        categoryId: product.value.categoryId || undefined,
+        brandId: product.value.brandId || undefined
+      }
+    })
+    router.push({ name: 'productsList' })
   } else {
-    try {
-      await updateOneProduct({
-        id: route.params.id as string,
-        update: {
-          name: product.value.name,
-          description: product.value.description,
-          categoryId: product.value.categoryId || undefined,
-          brandId: product.value.brandId || undefined
-        }
-      })
-      router.push({ name: 'productsList' })
-    } catch (error) {
-      console.error('Error updating product:', error)
-    }
+    await updateOneProduct({
+      id: route.params.id as string,
+      update: {
+        name: product.value.name,
+        description: product.value.description,
+        categoryId: product.value.categoryId || undefined,
+        brandId: product.value.brandId || undefined
+      }
+    })
+    router.push({ name: 'productsList' })
   }
 }
 

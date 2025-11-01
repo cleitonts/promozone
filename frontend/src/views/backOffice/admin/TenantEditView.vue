@@ -74,16 +74,18 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useTenants } from '@/composables/tenants'
+import { useTenants } from '@/composables/useTenants'
 import { TheCardTitle } from '@/components'
 import UserFinder from '@/components/UserFinder.vue'
+import { useInterfaceStore } from '@/stores/interfaceStore'
 
 const route = useRoute()
 const router = useRouter()
 
 const form = ref()
 const valid = ref(false)
-const saving = ref(false)
+const interfaceStore = useInterfaceStore()
+const saving = computed(() => interfaceStore.isLoading('tenant-save'))
 
 const tenant = ref({
   name: '',
@@ -93,7 +95,7 @@ const tenant = ref({
 const isEditing = computed(() => route.name === 'tenantsEdit')
 const tenantId = computed(() => route.params.id as string)
 
-const { fetchTenant, currentTenant, createOneTenant, updateOneTenant, loading: tenantsLoading, fetchTenantUsers, tenantUsers } = useTenants()
+const { fetchTenant, currentTenant, createOneTenant, updateOneTenant, fetchTenantUsers, tenantUsers } = useTenants()
 
 // Validation rules
 const nameRules = [
@@ -109,30 +111,21 @@ const ownerRules = [
 const submit = async () => {
   if (!valid.value) return
   
-  saving.value = true
-  
-  try {
-    const inputBase = {
-      name: tenant.value.name,
-      ownerId: tenant.value.ownerId,
-    }
-    if (isEditing.value) {
-      await updateOneTenant({
-        id: tenantId.value,
-        update: {
-          ...inputBase
-        }
-      })
-    } else {
-      await createOneTenant({ tenant: inputBase })
-    }
-    
-    router.push({ name: 'tenantsList' })
-  } catch (error) {
-    console.error('Erro ao salvar tenant:', error)
-  } finally {
-    saving.value = false
+  const inputBase = {
+    name: tenant.value.name,
+    ownerId: tenant.value.ownerId,
   }
+  if (isEditing.value) {
+    await updateOneTenant({
+      id: tenantId.value,
+      update: {
+        ...inputBase
+      }
+    })
+  } else {
+    await createOneTenant({ tenant: inputBase })
+  }
+  router.push({ name: 'tenantsList' })
 }
 
 // Load tenant data if editing

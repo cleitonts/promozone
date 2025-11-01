@@ -1,23 +1,23 @@
 <template>
   <div>
     <v-card class="overflow-visible">
-      <TheCardTitle :text="t('perfil.editTitle')" icon="fa6-solid:user-gear" bg-color="bg-secondary-gradient" text-color="white" />
+      <TheCardTitle :text="t('profile.editTitle')" icon="fa6-solid:user-gear" bg-color="bg-secondary-gradient" text-color="white" />
 
       <v-card-text>
         <v-form @submit.prevent="submit($event)" v-slot="{ isDisabled: isDisabledRef }">
           <v-row>
             <v-col cols="12" md="6">
               <v-text-field
-                v-model="perfil.name"
-                :label="t('perfil.fields.displayName')"
-                :placeholder="t('perfil.fields.displayNamePlaceholder')"
+                v-model="profile.name"
+                :label="t('profile.fields.displayName')"
+                :placeholder="t('profile.fields.displayNamePlaceholder')"
               />
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="12">
-              <div v-if="loading">{{ t('perfil.loadingResolvers') }}</div>
+              <div v-if="loading">{{ t('profile.loadingResolvers') }}</div>
               <div v-else>
                 <div v-for="(group, moduleName) in groupedResolvers" :key="moduleName" class="mb-2">
                   <h4 class="text-subtitle-2 mb-1">{{ moduleName }}</h4>
@@ -43,7 +43,7 @@
               <v-btn color="primary" type="submit" :disabled="isDisabledRef.value || submitting">
                 {{ t('common.create') }}
               </v-btn>
-              <v-btn class="ml-2" variant="text" :to="{ name: 'perfilList' }">{{ t('common.cancel') }}</v-btn>
+              <v-btn class="ml-2" variant="text" :to="{ name: 'profileList' }">{{ t('common.cancel') }}</v-btn>
             </v-col>
           </v-row>
         </v-form>
@@ -57,32 +57,19 @@ import { TheCardTitle } from '@/components'
 import { computed, ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import { router } from '@/router'
-import { useQuery, useMutation } from '@vue/apollo-composable'
 import { useI18n } from 'vue-i18n'
-import gql from 'graphql-tag'
+import { useListResolversQuery } from '@/generated/graphql'
+import { useTenantStore } from '@/stores/tenantStore'
+import { storeToRefs } from 'pinia'
 
 const { t } = useI18n()
 
 const route = useRoute()
-const perfil = ref({ name: '' })
+const profile = ref({ name: '' })
 const submitting = ref(false)
 
 // Query listResolvers (co-located in src/graphql/queries/resolvers.graphql, but keep as fallback)
-const LIST_RESOLVERS = gql`
-  query ListResolvers {
-    listResolvers {
-      moduleName
-      resolverClass
-      resolverName
-      methodName
-      schemaName
-      type
-      requiresAuth
-    }
-  }
-`
-
-const { result: resolversResult, loading } = useQuery(LIST_RESOLVERS)
+const { result: resolversResult, loading } = useListResolversQuery()
 
 const resolvers = ref<any[]>([])
 
@@ -106,43 +93,18 @@ const groupedResolvers = computed<Record<string, any[]>>(() => {
 
 const selectedPermissions = ref<string[]>([])
 
-// Load current tenantId using Me query
-const ME_QUERY = gql`
-  query Me {
-    me {
-      tenantId
-    }
-  }
-`
+// Load current tenantId from tenant store
+const tenantStore = useTenantStore()
+const { currentTenantId } = storeToRefs(tenantStore)
 
-const { result: meResult } = useQuery(ME_QUERY)
-const currentTenantId = ref<string | null>(null)
-watchEffect(() => {
-  const data = meResult.value
-  if (data?.me?.tenantId) {
-    currentTenantId.value = data.me.tenantId
-  }
-})
-
-// If editing existing perfil, load data (placeholder)
-if (route.name !== 'perfilNew' && route.params.id) {
-  perfil.value = { name: '' }
+// If editing existing profile, load data (placeholder)
+if (route.name !== 'profileNew' && route.params.id) {
+  profile.value = { name: '' }
   selectedPermissions.value = []
 }
 
-// Mutation: createOneProfile (from co-located src/graphql/mutations/profiles.graphql, still inline for now)
-const CREATE_ONE_PROFILE = gql`
-  mutation CreateOneProfile($input: CreateOneProfileInput!) {
-    createOneProfile(input: $input) {
-      id
-      tenantId
-      resolvers
-      created
-      updated
-    }
-  }
-`
-const { mutate: createOneProfile } = useMutation(CREATE_ONE_PROFILE)
+import { useCreateOneProfileMutation } from '@/generated/graphql'
+const { mutate: createOneProfile } = useCreateOneProfileMutation()
 
 async function submit(submitEventPromise: any) {
   const { valid } = await submitEventPromise
@@ -151,9 +113,9 @@ async function submit(submitEventPromise: any) {
   try {
     submitting.value = true
 
-    if (route.name === 'perfilNew') {
+    if (route.name === 'profileNew') {
       if (!currentTenantId.value) {
-        throw new Error(t('perfil.errors.noTenant'))
+        throw new Error(t('profile.errors.noTenant'))
       }
 
       const res = await createOneProfile({
@@ -166,17 +128,17 @@ async function submit(submitEventPromise: any) {
       })
 
       if (res?.data?.createOneProfile?.id) {
-        router.push({ name: 'perfilList' })
+        router.push({ name: 'profileList' })
         return
       }
 
-      throw new Error(t('perfil.errors.createFailed'))
+      throw new Error(t('profile.errors.createFailed'))
     } else {
-      router.push({ name: 'perfilList' })
+      router.push({ name: 'profileList' })
     }
   } catch (err: any) {
     console.error('Erro ao salvar perfil:', err)
-    alert(err?.message || t('perfil.errors.generic'))
+    alert(err?.message || t('profile.errors.generic'))
   } finally {
     submitting.value = false
   }

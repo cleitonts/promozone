@@ -33,14 +33,6 @@
             >
               {{ t('adminDashboard.users.createButton') }}
             </v-btn>
-            <v-btn
-              color="error"
-              variant="text"
-              prepend-icon="mdi-alert"
-              @click="triggerError()"
-            >
-              Trigger Error
-            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -118,9 +110,6 @@ import { useGetTenantsQuery } from '@/generated/graphql'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/authStore'
 import { useTenantStore } from '../../stores/tenantStore'
-import apolloClient from '@/plugins/apollo'
-import gql from 'graphql-tag'
-import invalidQueryRaw from '@/graphql/queries/error.graphql?raw'
 
 const { result } = useGetTenantsQuery()
 const { t } = useI18n()
@@ -134,10 +123,6 @@ const tKey = (key: string) => t(key)
 
 const isFavorite = (id: string) => tenantStore.isFavorite(id)
 const toggleFavorite = (id: string) => tenantStore.toggleFavorite(id)
-
-function triggerError() {
-  apolloClient.query({ query: gql(invalidQueryRaw), context: { uiTarget: 'main-content' } })
-}
 
 function formatDate(date?: string | Date) {
   if (!date) return ''

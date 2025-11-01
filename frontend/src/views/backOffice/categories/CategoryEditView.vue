@@ -33,7 +33,7 @@
       <v-btn 
         color="primary" 
         @click="validate"
-        :loading="loading"
+        :loading="saving"
       >
         {{ isEdit ? t('common.update') : t('common.create') }}
       </v-btn>
@@ -45,11 +45,14 @@
 import { TheCardTitle } from '@/components'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useCategories } from '@/composables/categories'
+import { useCategories } from '@/composables/useCategories'
+import { useInterfaceStore } from '@/stores/interfaceStore'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-const { fetchCategory, currentCategory, loading, createOneCategory, updateOneCategory } = useCategories()
+const { fetchCategory, currentCategory, createOneCategory, updateOneCategory } = useCategories()
+const interfaceStore = useInterfaceStore()
+const saving = computed(() => interfaceStore.isLoading('category-save'))
 
 const route = useRoute()
 const router = useRouter()
@@ -70,45 +73,37 @@ const validate = async () => {
     return
   }
 
-  try {
-    if (isEdit.value) {
-      const updated = await updateOneCategory({
-        id: String(route.params.id),
-        update: {
-          name: category.value.name,
-          description: category.value.description,
-          slug: category.value.slug,
-          active: category.value.active
-        }
-      })
-      if (updated) router.push({ name: 'categoriesList' })
-    } else {
-      const created = await createOneCategory({
-        category: {
-          name: category.value.name,
-          description: category.value.description,
-          slug: category.value.slug,
-          active: category.value.active
-        }
-      })
-      if (created) router.push({ name: 'categoriesList' })
-    }
-  } catch (error) {
-    console.error('Error saving category:', error)
+  if (isEdit.value) {
+    const updated = await updateOneCategory({
+      id: String(route.params.id),
+      update: {
+        name: category.value.name,
+        description: category.value.description,
+        slug: category.value.slug,
+        active: category.value.active
+      }
+    })
+    if (updated) router.push({ name: 'categoriesList' })
+  } else {
+    const created = await createOneCategory({
+      category: {
+        name: category.value.name,
+        description: category.value.description,
+        slug: category.value.slug,
+        active: category.value.active
+      }
+    })
+    if (created) router.push({ name: 'categoriesList' })
   }
 }
 
 const loadCategory = async () => {
   if (isEdit.value && route.params.id) {
-    try {
-      await fetchCategory(String(route.params.id))
-      if (currentCategory.value) {
-        category.value = {
-          name: currentCategory.value.name
-        }
+    await fetchCategory(String(route.params.id))
+    if (currentCategory.value) {
+      category.value = {
+        name: currentCategory.value.name
       }
-    } catch (error) {
-      console.error('Error loading category:', error)
     }
   }
 }

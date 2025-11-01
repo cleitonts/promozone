@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, watch } from 'vue'
-import { useTenants } from '@/composables/tenants'
+import { useTenants } from '@/composables/useTenants'
 
 const searchName = ref('')
 const searchOwner = ref('')
@@ -81,40 +81,32 @@ const headers = {
 }
 
 const getList = async function () {
-  try {
-    await fetchAllTenants()
-    let filteredTenants = (tenantsSource.value as any[]) || []
-    if (searchName.value) {
-      filteredTenants = filteredTenants.filter((tenant: any) =>
-        tenant.name.toLowerCase().includes(searchName.value.toLowerCase())
-      )
-    }
-    if (searchOwner.value) {
-      filteredTenants = filteredTenants.filter((tenant: any) => {
-        const ownerName = `${tenant.owner?.name?.first || ''} ${tenant.owner?.name?.last || ''}`.toLowerCase()
-        return ownerName.includes(searchOwner.value.toLowerCase())
-      })
-    }
-    tenants.value = filteredTenants.map((tenant: any) => ({
-      id: tenant.id || '',
-      name: tenant.name || '',
-      owner: tenant.owner ? `${tenant.owner.name?.first || ''} ${tenant.owner.name?.last || ''}` : '-',
-      createdAt: tenant.created ? new Date(tenant.created).toLocaleDateString() : ''
-    }))
-    totalItems.value = tenants.value.length
-  } catch (error) {
-    console.error('Error fetching tenants:', error)
+  await fetchAllTenants()
+  let filteredTenants = (tenantsSource.value as any[]) || []
+  if (searchName.value) {
+    filteredTenants = filteredTenants.filter((tenant: any) =>
+      tenant.name.toLowerCase().includes(searchName.value.toLowerCase())
+    )
   }
+  if (searchOwner.value) {
+    filteredTenants = filteredTenants.filter((tenant: any) => {
+      const ownerName = `${tenant.owner?.name?.first || ''} ${tenant.owner?.name?.last || ''}`.toLowerCase()
+      return ownerName.includes(searchOwner.value.toLowerCase())
+    })
+  }
+  tenants.value = filteredTenants.map((tenant: any) => ({
+    id: tenant.id || '',
+    name: tenant.name || '',
+    owner: tenant.owner ? `${tenant.owner.name?.first || ''} ${tenant.owner.name?.last || ''}` : '-',
+    createdAt: tenant.created ? new Date(tenant.created).toLocaleDateString() : ''
+  }))
+  totalItems.value = tenants.value.length
 }
 
 const deleteTenant = async function (id: string) {
   if (confirm('Are you sure you want to delete this tenant?')) {
-    try {
-      const ok = await deleteOneTenant({ id })
-      if (ok) await getList()
-    } catch (error) {
-      console.error('Error deleting tenant:', error)
-    }
+    const ok = await deleteOneTenant({ id })
+    if (ok) await getList()
   }
 }
 

@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import { BaseGrid, TheCardTitle } from '@/components'
 import { onMounted, ref, watch } from 'vue'
-import { useBrands } from '@/composables/brands'
+import { useBrands } from '@/composables/useBrands'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -128,12 +128,8 @@ const getList = async function () {
 
 const deleteBrand = async (id: string | number) => {
   if (confirm(t('brand.confirmDelete'))) {
-    try {
-      await removeBrand(String(id))
-      await getList()
-    } catch (error) {
-      console.error('Error deleting brand:', error)
-    }
+    await removeBrand(String(id))
+    await getList()
   }
 }
 

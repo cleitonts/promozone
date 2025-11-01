@@ -2108,6 +2108,27 @@ export type UpdateOneProductMutationVariables = Exact<{
 
 export type UpdateOneProductMutation = { __typename?: 'Mutation', updateOneProduct: { __typename?: 'Product', id: string, name: string, slug: string, description?: string | null, price: number, categoryId?: string | null, brandId?: string | null, active: boolean, created: any, updated: any } };
 
+export type CreateOneProfileMutationVariables = Exact<{
+  input: CreateOneProfileInput;
+}>;
+
+
+export type CreateOneProfileMutation = { __typename?: 'Mutation', createOneProfile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
+
+export type UpdateOneProfileMutationVariables = Exact<{
+  input: UpdateOneProfileInput;
+}>;
+
+
+export type UpdateOneProfileMutation = { __typename?: 'Mutation', updateOneProfile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
+
+export type DeleteOneProfileMutationVariables = Exact<{
+  input: DeleteOneProfileInput;
+}>;
+
+
+export type DeleteOneProfileMutation = { __typename?: 'Mutation', deleteOneProfile: { __typename?: 'ProfileDeleteResponse', id?: string | null } };
+
 export type CreateTenantMutationVariables = Exact<{
   input: CreateOneTenantInput;
 }>;
@@ -2172,18 +2193,6 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, email: string, active: boolean, roles: Array<string> } };
 
-export type GetProfilesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetProfilesQuery = { __typename?: 'Query', profiles: { __typename?: 'ProfileConnection', edges: Array<{ __typename?: 'ProfileEdge', node: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } }> } };
-
-export type GetProfileQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
-
 export type GetAllProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2195,6 +2204,18 @@ export type GetProductQueryVariables = Exact<{
 
 
 export type GetProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: string, name: string, slug: string, description?: string | null, price: number, categoryId?: string | null, brandId?: string | null, active: boolean, created: any, updated: any } };
+
+export type GetProfilesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProfilesQuery = { __typename?: 'Query', profiles: { __typename?: 'ProfileConnection', edges: Array<{ __typename?: 'ProfileEdge', node: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } }> } };
+
+export type GetProfileQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'Profile', id: string, tenantId: string, resolvers: Array<string>, created: any, updated: any } };
 
 export type ListResolversQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2578,6 +2599,101 @@ export function useUpdateOneProductMutation(options: VueApolloComposable.UseMuta
   return VueApolloComposable.useMutation<UpdateOneProductMutation, UpdateOneProductMutationVariables>(UpdateOneProductDocument, options);
 }
 export type UpdateOneProductMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateOneProductMutation, UpdateOneProductMutationVariables>;
+export const CreateOneProfileDocument = gql`
+    mutation CreateOneProfile($input: CreateOneProfileInput!) {
+  createOneProfile(input: $input) {
+    id
+    tenantId
+    resolvers
+    created
+    updated
+  }
+}
+    `;
+
+/**
+ * __useCreateOneProfileMutation__
+ *
+ * To run a mutation, you first call `useCreateOneProfileMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOneProfileMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useCreateOneProfileMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateOneProfileMutation(options: VueApolloComposable.UseMutationOptions<CreateOneProfileMutation, CreateOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateOneProfileMutation, CreateOneProfileMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateOneProfileMutation, CreateOneProfileMutationVariables>(CreateOneProfileDocument, options);
+}
+export type CreateOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateOneProfileMutation, CreateOneProfileMutationVariables>;
+export const UpdateOneProfileDocument = gql`
+    mutation UpdateOneProfile($input: UpdateOneProfileInput!) {
+  updateOneProfile(input: $input) {
+    id
+    tenantId
+    resolvers
+    created
+    updated
+  }
+}
+    `;
+
+/**
+ * __useUpdateOneProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateOneProfileMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOneProfileMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateOneProfileMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateOneProfileMutation(options: VueApolloComposable.UseMutationOptions<UpdateOneProfileMutation, UpdateOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>(UpdateOneProfileDocument, options);
+}
+export type UpdateOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateOneProfileMutation, UpdateOneProfileMutationVariables>;
+export const DeleteOneProfileDocument = gql`
+    mutation DeleteOneProfile($input: DeleteOneProfileInput!) {
+  deleteOneProfile(input: $input) {
+    id
+  }
+}
+    `;
+
+/**
+ * __useDeleteOneProfileMutation__
+ *
+ * To run a mutation, you first call `useDeleteOneProfileMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOneProfileMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDeleteOneProfileMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteOneProfileMutation(options: VueApolloComposable.UseMutationOptions<DeleteOneProfileMutation, DeleteOneProfileMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>(DeleteOneProfileDocument, options);
+}
+export type DeleteOneProfileMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteOneProfileMutation, DeleteOneProfileMutationVariables>;
 export const CreateTenantDocument = gql`
     mutation CreateTenant($input: CreateOneTenantInput!) {
   createOneTenant(input: $input) {
@@ -2915,75 +3031,6 @@ export function useMeLazyQuery(options: VueApolloComposable.UseQueryOptions<MeQu
   return VueApolloComposable.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, {}, options);
 }
 export type MeQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<MeQuery, MeQueryVariables>;
-export const GetProfilesDocument = gql`
-    query GetProfiles {
-  profiles {
-    edges {
-      node {
-        id
-        tenantId
-        resolvers
-        created
-        updated
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetProfilesQuery__
- *
- * To run a query within a Vue component, call `useGetProfilesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProfilesQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetProfilesQuery();
- */
-export function useGetProfilesQuery(options: VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetProfilesQuery, GetProfilesQueryVariables>(GetProfilesDocument, {}, options);
-}
-export function useGetProfilesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetProfilesQuery, GetProfilesQueryVariables>(GetProfilesDocument, {}, options);
-}
-export type GetProfilesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProfilesQuery, GetProfilesQueryVariables>;
-export const GetProfileDocument = gql`
-    query GetProfile($id: ID!) {
-  profile(id: $id) {
-    id
-    tenantId
-    resolvers
-    created
-    updated
-  }
-}
-    `;
-
-/**
- * __useGetProfileQuery__
- *
- * To run a query within a Vue component, call `useGetProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProfileQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetProfileQuery({
- *   id: // value for 'id'
- * });
- */
-export function useGetProfileQuery(variables: GetProfileQueryVariables | VueCompositionApi.Ref<GetProfileQueryVariables> | ReactiveFunction<GetProfileQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, variables, options);
-}
-export function useGetProfileLazyQuery(variables?: GetProfileQueryVariables | VueCompositionApi.Ref<GetProfileQueryVariables> | ReactiveFunction<GetProfileQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, variables, options);
-}
-export type GetProfileQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProfileQuery, GetProfileQueryVariables>;
 export const GetAllProductsDocument = gql`
     query GetAllProducts {
   products {
@@ -3063,6 +3110,75 @@ export function useGetProductLazyQuery(variables?: GetProductQueryVariables | Vu
   return VueApolloComposable.useLazyQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, variables, options);
 }
 export type GetProductQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProductQuery, GetProductQueryVariables>;
+export const GetProfilesDocument = gql`
+    query GetProfiles {
+  profiles {
+    edges {
+      node {
+        id
+        tenantId
+        resolvers
+        created
+        updated
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProfilesQuery__
+ *
+ * To run a query within a Vue component, call `useGetProfilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfilesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetProfilesQuery();
+ */
+export function useGetProfilesQuery(options: VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProfilesQuery, GetProfilesQueryVariables>(GetProfilesDocument, {}, options);
+}
+export function useGetProfilesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfilesQuery, GetProfilesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProfilesQuery, GetProfilesQueryVariables>(GetProfilesDocument, {}, options);
+}
+export type GetProfilesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProfilesQuery, GetProfilesQueryVariables>;
+export const GetProfileDocument = gql`
+    query GetProfile($id: ID!) {
+  profile(id: $id) {
+    id
+    tenantId
+    resolvers
+    created
+    updated
+  }
+}
+    `;
+
+/**
+ * __useGetProfileQuery__
+ *
+ * To run a query within a Vue component, call `useGetProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfileQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetProfileQuery({
+ *   id: // value for 'id'
+ * });
+ */
+export function useGetProfileQuery(variables: GetProfileQueryVariables | VueCompositionApi.Ref<GetProfileQueryVariables> | ReactiveFunction<GetProfileQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, variables, options);
+}
+export function useGetProfileLazyQuery(variables?: GetProfileQueryVariables | VueCompositionApi.Ref<GetProfileQueryVariables> | ReactiveFunction<GetProfileQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProfileQuery, GetProfileQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, variables, options);
+}
+export type GetProfileQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProfileQuery, GetProfileQueryVariables>;
 export const ListResolversDocument = gql`
     query ListResolvers {
   listResolvers {
