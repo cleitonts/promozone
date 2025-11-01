@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import apolloClient from '@/plugins/apollo'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
+import { i18n } from '@/plugins/i18n'
 import {
   GetAllUsersDocument,
   GetUserDocument,
@@ -34,11 +35,12 @@ export function useUsers() {
   const createUser = async (userData: { email: string; password: string; profileId?: string; name?: string; tenantId?: string }) => {
     const result = await apolloClient.mutate({ mutation: CreateUserDocument, variables: { input: { user: userData } }, context: { uiTarget: 'user-create' } })
     if (result?.data?.createOneUser) {
-      ui.addMessage('User created successfully', EMessageType.Success)
+      const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+      ui.addMessage(tt('user.admin.createSuccess'), EMessageType.Success)
       await fetchAllUsers()
       return { success: true, user: result.data.createOneUser }
     }
-    return { success: false, error: 'Failed to create user' }
+    return { success: false, error: 'user.admin.createError' }
   }
 
   return {

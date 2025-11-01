@@ -5,6 +5,7 @@ import { onError } from '@apollo/client/link/error'
 import { useAuthStore } from '@/stores/authStore'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
 import { useTenantStore } from '@/stores/tenantStore'
+import { i18n } from '@/plugins/i18n'
 
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_GRAPHQL_URL || 'http://localhost:3000/graphql',
@@ -55,16 +56,17 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   const ui = useInterfaceStore()
   const auth = useAuthStore()
 
+  const tt = (key: string): string => ((i18n as any).global.t(key) as string)
   const handleStatus = (status?: number) => {
     if (!status) return false
     if (status === 401) {
       ui.prepareLoginRecovery()
-      ui.addMessage('Authentication required. Please login again.', EMessageType.Warning)
+      ui.addMessage(tt('errors.sessionExpired'), EMessageType.Warning)
       ui.forceLogin()
       return true
     }
     if (status === 403) {
-      ui.addMessage('Access denied. Redirecting to home.', EMessageType.Danger)
+      ui.addMessage(tt('errors.accessDenied'), EMessageType.Danger)
       ui.redirectHome()
       return true
     }
@@ -77,14 +79,16 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     const status = first?.extensions?.code === 'UNAUTHENTICATED' ? 401 : first?.extensions?.status
     handled = handleStatus(status)
     if (!handled) {
-      ui.addMessage(String(first?.message || 'GraphQL error'), EMessageType.Danger)
+      const fallback = tt('errors.invalidInput')
+      ui.addMessage(String(first?.message || fallback), EMessageType.Danger)
     }
   } else if (networkError) {
     const anyErr = networkError as any
     const status = anyErr?.statusCode || anyErr?.status
     handled = handleStatus(status)
     if (!handled) {
-      ui.addMessage(String(networkError), EMessageType.Danger)
+      const fallback = tt('errors.invalidInput')
+      ui.addMessage(String(anyErr?.message || networkError || fallback), EMessageType.Danger)
     }
   }
 })

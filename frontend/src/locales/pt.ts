@@ -90,6 +90,9 @@ export default {
   brand: {
     listTitle: 'Marcas',
     editTitle: 'Marca',
+    createSuccess: 'Marca criada com sucesso!',
+    updateSuccess: 'Marca atualizada com sucesso!',
+    deleteSuccess: 'Marca removida com sucesso!',
     filters: {
       name: 'Nome da marca',
       status: 'Status',
@@ -120,6 +123,9 @@ export default {
   },
   product: {
     editTitle: 'Produto',
+    createSuccess: 'Produto criado com sucesso!',
+    updateSuccess: 'Produto atualizado com sucesso!',
+    deleteSuccess: 'Produto removido com sucesso!',
     fields: {
       name: 'Nome do produto',
       price: 'Preço',
@@ -155,6 +161,9 @@ export default {
       title: 'Gestão de Tenants',
       description: 'Criar e configurar novos tenants para organizações.',
       createButton: 'Criar Tenant',
+      createSuccess: 'Tenant criado com sucesso!',
+      updateSuccess: 'Tenant atualizado com sucesso!',
+      deleteSuccess: 'Tenant removido com sucesso!',
       listTitle: 'Tenants',
       headers: {
         name: 'Nome',

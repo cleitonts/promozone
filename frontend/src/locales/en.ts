@@ -90,6 +90,9 @@ export default {
   brand: {
     listTitle: 'Brands',
     editTitle: 'Brand',
+    createSuccess: 'Brand created successfully!',
+    updateSuccess: 'Brand updated successfully!',
+    deleteSuccess: 'Brand removed successfully!',
     filters: {
       name: 'Brand Name',
       status: 'Status',
@@ -120,6 +123,9 @@ export default {
   },
   product: {
     editTitle: 'Product',
+    createSuccess: 'Product created successfully!',
+    updateSuccess: 'Product updated successfully!',
+    deleteSuccess: 'Product removed successfully!',
     fields: {
       name: 'Product Name',
       price: 'Price',
@@ -155,6 +161,9 @@ export default {
       title: 'Tenant Management',
       description: 'Create and configure new tenants for organizations.',
       createButton: 'Create Tenant',
+      createSuccess: 'Tenant created successfully!',
+      updateSuccess: 'Tenant updated successfully!',
+      deleteSuccess: 'Tenant removed successfully!',
       listTitle: 'Tenants',
       headers: {
         name: 'Name',

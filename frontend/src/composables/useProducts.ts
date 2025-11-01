@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import apolloClient from '@/plugins/apollo'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
+import { i18n } from '@/plugins/i18n'
 import {
   type GetAllProductsQuery,
   type GetProductQuery,
@@ -69,7 +70,8 @@ export function useProducts() {
         loading.value = false
       })
     if (result.data?.createOneProduct) {
-      ui.addMessage('Product created successfully', EMessageType.Success)
+      const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+      ui.addMessage(tt('product.createSuccess'), EMessageType.Success)
       await fetchAllProducts()
       return result.data.createOneProduct
     }
@@ -79,7 +81,8 @@ export function useProducts() {
   const deleteOneProduct = async (input: DeleteProductInput) => {
     const result = await apolloClient.mutate({ mutation: DeleteOneProductDocument, variables: { input }, context: { uiTarget: 'product-delete' } })
     if (result.data?.deleteOneProduct?.id) {
-      ui.addMessage('Product removed successfully', EMessageType.Success)
+      const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+      ui.addMessage(tt('product.deleteSuccess'), EMessageType.Success)
       await fetchAllProducts()
       return true
     }
@@ -89,7 +92,8 @@ export function useProducts() {
   const updateOneProduct = async (input: UpdateProductInput) => {
     const result = await apolloClient.mutate({ mutation: UpdateOneProductDocument, variables: { input }, context: { uiTarget: 'product-save' } })
     if (result.data?.updateOneProduct) {
-      ui.addMessage('Product updated successfully', EMessageType.Success)
+      const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+      ui.addMessage(tt('product.updateSuccess'), EMessageType.Success)
       await fetchAllProducts()
       return result.data.updateOneProduct
     }

@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import apolloClient from '@/plugins/apollo'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
+import { i18n } from '@/plugins/i18n'
 import {
   type GetTenantsQuery,
   type GetTenantQuery,
@@ -51,7 +52,8 @@ export function useTenants() {
   const createOneTenant = async (input: CreateTenantInput) => {
     const result = await apolloClient.mutate({ mutation: CreateTenantDocument, variables: { input }, context: { uiTarget: 'tenant-save' } })
     if (result.data?.createOneTenant) {
-      ui.addMessage('Tenant created successfully', EMessageType.Success)
+      const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+      ui.addMessage(tt('tenant.createSuccess'), EMessageType.Success)
       await fetchAllTenants()
       return result.data.createOneTenant
     }
@@ -61,7 +63,8 @@ export function useTenants() {
   const updateOneTenant = async (input: UpdateTenantInput) => {
     const result = await apolloClient.mutate({ mutation: UpdateTenantDocument, variables: { input }, context: { uiTarget: 'tenant-save' } })
     if (result.data?.updateOneTenant) {
-      ui.addMessage('Tenant updated successfully', EMessageType.Success)
+      const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+      ui.addMessage(tt('tenant.updateSuccess'), EMessageType.Success)
       await fetchAllTenants()
       return result.data.updateOneTenant
     }
@@ -71,7 +74,8 @@ export function useTenants() {
   const deleteOneTenant = async (input: DeleteTenantInput) => {
     const result = await apolloClient.mutate({ mutation: DeleteTenantDocument, variables: { input }, context: { uiTarget: 'tenant-delete' } })
     if (result.data?.deleteOneTenant?.id) {
-      ui.addMessage('Tenant removed successfully', EMessageType.Success)
+      const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+      ui.addMessage(tt('tenant.deleteSuccess'), EMessageType.Success)
       await fetchAllTenants()
       return true
     }

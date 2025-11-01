@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import apolloClient from '@/plugins/apollo'
 import { useInterfaceStore, EMessageType } from '@/stores/interfaceStore'
+import { i18n } from '@/plugins/i18n'
 import {
   type GetAllBrandsQuery,
   type GetBrandQuery,
@@ -65,7 +66,8 @@ type DeleteBrandInput = { id: string }
 const createBrand = async (brandData: CreateBrandInput) => {
   const result = await apolloClient.mutate({ mutation: CreateOneBrandDocument, variables: { input: brandData }, context: { uiTarget: 'brand-save' } })
   if (result.data?.createOneBrand) {
-    ui.addMessage('Brand created successfully', EMessageType.Success)
+    const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+    ui.addMessage(tt('brand.createSuccess'), EMessageType.Success)
     await fetchAllBrands()
     return result.data.createOneBrand
   }
@@ -76,7 +78,8 @@ const createBrand = async (brandData: CreateBrandInput) => {
 const updateBrand = async (brandData: UpdateBrandInput) => {
   const result = await apolloClient.mutate({ mutation: UpdateOneBrandDocument, variables: { input: brandData }, context: { uiTarget: 'brand-save' } })
   if (result.data?.updateOneBrand) {
-    ui.addMessage('Brand updated successfully', EMessageType.Success)
+    const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+    ui.addMessage(tt('brand.updateSuccess'), EMessageType.Success)
     await fetchAllBrands()
     return result.data.updateOneBrand
   }
@@ -87,7 +90,8 @@ const updateBrand = async (brandData: UpdateBrandInput) => {
 const removeBrand = async (id: number | string) => {
   const result = await apolloClient.mutate({ mutation: DeleteOneBrandDocument, variables: { input: { id: String(id) } }, context: { uiTarget: 'brand-delete' } })
   if (result.data?.deleteOneBrand?.id) {
-    ui.addMessage('Brand removed successfully', EMessageType.Success)
+    const tt = (key: string): string => ((i18n as any).global.t(key) as string)
+    ui.addMessage(tt('brand.deleteSuccess'), EMessageType.Success)
     await fetchAllBrands()
     return true
   }
