@@ -17,6 +17,9 @@ export default {
     roles: 'Papéis',
     tenants: 'Locatários',
     permissions: 'Permissões',
+    more: 'Mais',
+    settings: 'Configurações',
+    account: 'Conta',
   },
   app: {
     switchMenu: 'Alternar menu',
@@ -174,5 +177,11 @@ export default {
       favorite: 'Favoritar',
       unfavorite: 'Desfavoritar'
     }
+  },
+  settings: {
+    title: 'Configurações',
+    ownerTenants: 'Tenants onde é owner',
+    tenantId: 'Tenant ID',
+    registeredUsers: 'Usuários registrados'
   }
 }

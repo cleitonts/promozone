@@ -22,6 +22,20 @@ export const backOfficeRoutes: RouteRecordRaw = {
       ],
     },
     {
+      path: 'settings',
+      component: TheMainLayout,
+      children: [
+        {
+          path: '',
+          name: 'settingsDashboard',
+          component: () => import('@/views/backOffice/settings/SettingsDashboard.vue'),
+          meta: {
+            pageTitle: 'Settings',
+          },
+        },
+      ],
+    },
+    {
       path: 'users',
       component: TheMainLayout,
       children: [

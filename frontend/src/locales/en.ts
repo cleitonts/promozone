@@ -17,6 +17,9 @@ export default {
     roles: 'Roles',
     tenants: 'Tenants',
     permissions: 'Permissions',
+    more: 'More',
+    settings: 'Settings',
+    account: 'Account',
   },
   app: {
     switchMenu: 'Switch menu',
@@ -174,5 +177,11 @@ export default {
       favorite: 'Favorite',
       unfavorite: 'Unfavorite'
     }
+  },
+  settings: {
+    title: 'Settings',
+    ownerTenants: 'Owned tenants',
+    tenantId: 'Tenant ID',
+    registeredUsers: 'Registered users'
   }
 }

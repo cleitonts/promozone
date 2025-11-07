@@ -31,17 +31,23 @@ const menuItemsConfig = (t: (key: string) => string): IMenuItem[] => [
   {
     title: t('menu.products'),
     icon: 'mdi-package-variant',
-    to: '/bo/products'
-  },
-  {
-    title: t('menu.brands'),
-    icon: 'mdi-tag',
-    to: '/bo/brands'
-  },
-  {
-    title: t('menu.categories'),
-    icon: 'mdi-shape',
-    to: '/bo/categories'
+    children: [
+      {
+        title: t('menu.products'),
+        icon: 'mdi-package-variant',
+        to: '/bo/products'
+      },
+      {
+        title: t('menu.brands'),
+        icon: 'mdi-tag',
+        to: '/bo/brands'
+      },
+      {
+        title: t('menu.categories'),
+        icon: 'mdi-shape',
+        to: '/bo/categories'
+      }
+    ]
   },
   {
     title: t('menu.administration'),

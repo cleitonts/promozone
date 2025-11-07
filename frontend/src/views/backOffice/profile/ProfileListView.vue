@@ -6,6 +6,17 @@
       bg-color="bg-secondary-gradient"
       text-color="white"
     >
+      <template #after>
+        <v-col cols="6" class="pa-0 d-flex justify-end">
+          <v-btn
+            rounded
+            color="secondary"
+            icon="fa6-solid:plus"
+            class="position-absolute mt-n5 mb-3"
+            :to="{ name: 'profileNew' }"
+          />
+        </v-col>
+      </template>
     </the-card-title>
 
     <v-card-text>

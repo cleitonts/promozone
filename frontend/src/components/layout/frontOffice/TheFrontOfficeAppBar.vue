@@ -1,6 +1,8 @@
 <template>
   <v-app-bar class="bg-primary-gradient">
-    <img :width="120" :src="imgUrl" />
+    <div class="app-title">
+      <span class="promo">Promo</span><span class="zone">Zone</span>
+    </div>
     <v-spacer />
     <router-link :to="{ name: 'FOCreatePost' }">
       <v-btn class="fa fa-plus info mr-3" size="small" icon title="New" />
@@ -11,5 +13,20 @@
 </template>
 
 <script setup lang="ts">
-const imgUrl = new URL('/logo.png', import.meta.url).href
 </script>
+
+<style scoped>
+.app-title {
+  min-width: 150px;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+}
+.promo {
+  color: var(--v-theme-primary);
+}
+.zone {
+  color: var(--v-theme-secondary);
+}
+</style>
