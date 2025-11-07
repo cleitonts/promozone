@@ -24,10 +24,10 @@ export class ProductEntity extends BaseEntity {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price!: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'char', length: 26, nullable: true })
   categoryId!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'char', length: 26, nullable: true })
   brandId!: string;
 
   @Column({ default: true })

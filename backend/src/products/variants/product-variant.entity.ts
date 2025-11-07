@@ -11,7 +11,7 @@ import { ProductEntity } from '../products/product.entity';
 
 @Entity({ name: 'product_variants', schema: 'products' })
 export class ProductVariantEntity extends BaseEntity{
-  @Column()
+  @Column({ type: 'char', length: 26 })
   productId!: string;
 
   @Column({ unique: true })

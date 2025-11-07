@@ -11,7 +11,7 @@ import { AttributeEntity } from './attribute.entity';
 
 @Entity({ name: 'attribute_values', schema: 'products' })
 export class AttributeValueEntity extends BaseEntity {
-  @Column()
+  @Column({ type: 'char', length: 26 })
   attributeId!: string;
 
   @Column()
