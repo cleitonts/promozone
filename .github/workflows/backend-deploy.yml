@@ -56,11 +56,6 @@ jobs:
           docker rmi $IMAGE_URI $REGISTRY/$ECR_REPOSITORY:latest || true
           echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
 
-      - name: Prepare ECS task definition
-        run: |
-          mkdir -p .aws
-          sed "s|<IMAGE_URI>|${{ steps.build-image.outputs.image }}|g" .aws/backend-task-definition.json > .aws/final-task-definition.json
-
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
