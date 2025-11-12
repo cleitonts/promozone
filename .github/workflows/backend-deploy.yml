@@ -1,4 +1,4 @@
-name: Deploy Backend to AWS ECS
+name: Build and Push Backend Image to ECR
 
 on:
   workflow_dispatch:
@@ -14,15 +14,12 @@ permissions:
 
 env:
   AWS_REGION: eu-west-1
-  ECR_REPOSITORY: my-backend-repo
-  ECS_CLUSTER: my-ecs-cluster
-  ECS_SERVICE: my-backend-service
-  CONTAINER_NAME: backend
+  ECR_REPOSITORY: promozone
   ROLE_NAME: github-actions-deploy-role
 
 jobs:
-  deploy:
-    name: Build, Push and Deploy
+  build-and-push:
+    name: Build and Push to Amazon ECR
     runs-on: ubuntu-latest
 
     steps:
@@ -43,13 +40,9 @@ jobs:
         run: |
           cd backend
           IMAGE_TAG=${{ github.sha }}
+          REGISTRY=${{ steps.login-ecr.outputs.registry }}
           docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REPOSITORY:$IMAGE_TAG ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
-
-      - name: Update ECS service with new image
-        run: |
-          aws ecs update-service \
-            --cluster $ECS_CLUSTER \
-            --service $ECS_SERVICE \
-            --force-new-deployment
+          docker tag $ECR_REPOSITORY:$IMAGE_TAG $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REPOSITORY:$IMAGE_TAG $REGISTRY/$ECR_REPOSITORY:latest
+          docker push $REGISTRY/$ECR_REPOSITORY:latest
