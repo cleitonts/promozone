@@ -13,7 +13,7 @@ permissions:
   contents: read 
 
 env:
-  AWS_REGION: eu-west-1
+  AWS_REGION: us-east-1
   ECR_REPOSITORY: promozone
   ROLE_NAME: github-actions-deploy-role
 
