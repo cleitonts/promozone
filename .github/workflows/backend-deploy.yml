@@ -18,7 +18,7 @@ env:
   ROLE_NAME: github-actions-deploy-role
   ECS_CLUSTER: promozone
   ECS_SERVICE: backend-service
-  ECS_task: backend-task:1
+  ECS_task: backend-task
 
 jobs:
   build-and-push:
@@ -65,35 +65,28 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ env.ROLE_NAME }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Download current ECS task definition
-        id: task-def
-        run: |
-          aws ecs describe-task-definition \
-            --task-definition ${{ env.ECS_task }} \
-            --query taskDefinition > task-def.json
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Clean task definition JSON
+      - name: Build and push image to Amazon ECR
+        id: build-image
         run: |
-          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-def.json > clean-task-def.json
+          cd backend
+          IMAGE_TAG=${{ github.sha }}
+          REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          IMAGE_URI=$REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
 
-      - name: Update task definition with new image
-        id: update-task-def
-        run: |
-          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI' task-def.json > new-task-def.json
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
 
-      - name: Register new ECS task definition revision
-        id: register-task-def
-        run: |
-          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
-            --cli-input-json file://new-task-def.json \
-            --query 'taskDefinition.taskDefinitionArn' \
-            --output text)
-          echo "taskDefinitionArn=$NEW_TASK_DEF_ARN" >> $GITHUB_ENV
+          echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
 
-      - name: Deploy new task definition to ECS service
-        run: |
-          aws ecs update-service \
-            --cluster ${{ env.ECS_CLUSTER }} \
-            --service ${{ env.ECS_SERVICE }} \
-            --task-definition ${{ env.taskDefinitionArn }}
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: .aws/backend-task-definition.json
+          container-name: backend
+          image: ${{ steps.build-image.outputs.image }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          service: ${{ env.ECS_SERVICE }}
