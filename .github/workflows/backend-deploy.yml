@@ -72,6 +72,10 @@ jobs:
             --task-definition ${{ env.ECS_task }} \
             --query taskDefinition > task-def.json
 
+      - name: Clean task definition JSON
+        run: |
+          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-def.json > clean-task-def.json
+
       - name: Update task definition with new image
         id: update-task-def
         run: |
