@@ -27,16 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Debug OIDC Token
-        run: |
-          echo "Solicitando token..."
-          TOKEN=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-                      "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value')
-
-          echo "Decodificando payload:"
-          echo $TOKEN | cut -d "." -f2 | base64 -d | jq .
-        shell: bash
-
       - name: Configure AWS (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:

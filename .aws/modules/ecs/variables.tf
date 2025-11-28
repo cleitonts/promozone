@@ -27,3 +27,7 @@ variable "db_host" { type = string }
 variable "db_username" { type = string }
 variable "db_name" { type = string }
 variable "db_password_param_arn" { type = string }
+variable "pg_sslmode" {
+  type    = string
+  default = "require"
+}

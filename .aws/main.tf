@@ -56,7 +56,7 @@ module "iam" {
 
   prefix = var.prefix
   github_deploy_role_name    = "github-backend-deploy"
-  github_org                 = "cleitonrc"
+  github_org                 = "cleitonts"
   github_repo                = "promozone"
   github_ref                 = "refs/heads/main"
   github_oidc_provider_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
@@ -104,6 +104,7 @@ module "ecs" {
   db_username           = var.db_username
   db_name               = var.db_name
   db_password_param_arn = module.ssm.db_password_param_arn
+  pg_sslmode            = "require"
 
   depends_on = [module.alb]
 }

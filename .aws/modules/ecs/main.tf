@@ -34,7 +34,9 @@ resource "aws_ecs_task_definition" "task" {
         { name = "PORT", value = tostring(var.app_port) },
         { name = "DATABASE_HOST", value = var.db_host },
         { name = "DATABASE_USER", value = var.db_username },
-        { name = "DATABASE_NAME", value = var.db_name }
+        { name = "DATABASE_NAME", value = var.db_name },
+        { name = "DATABASE_SSL", value = "true" },
+        { name = "PGSSLMODE", value = var.pg_sslmode }
       ],
       secrets = [
         {
@@ -45,9 +47,10 @@ resource "aws_ecs_task_definition" "task" {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.app.name,
-          awslogs-region        = var.region,
-          awslogs-stream-prefix = "app"
+          awslogs-group         = "/ecs/promozone",
+          awslogs-region        = "eu-west-1",
+          awslogs-stream-prefix = "ecs",
+          awslogs-multiline-pattern = "^\\d{4}-\\d{2}-\\d{2}T"
         }
       }
     }
