@@ -1,64 +1,45 @@
-name: Build and Push Backend Image to ECR
+name: Deploy Backend
 
 on:
-  workflow_dispatch:
   push:
     paths:
-      - 'backend/**'
-    branches:
-      - main
-
-permissions:
-  id-token: write 
-  contents: read 
+      - "backend/**"
 
 env:
-  AWS_REGION: us-east-1
-  ECR_REPOSITORY: promozone
-  ROLE_NAME: github-actions-deploy-role
-  ECS_CLUSTER: promozone
-  ECS_SERVICE: backend-service
-  ECS_task: backend-task
+  AWS_REGION: eu-west-1
+  ECR_REPO: promozone-backend
+  ECS_CLUSTER: promozone-cluster
+  ECS_SERVICE: promozone-svc
 
-jobs:          
-  build-and-deploy:
-    name: Build and deploy to Amazon ECS
+jobs:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Configure AWS credentials using OIDC
+      - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ env.ROLE_NAME }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
+      - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push image to Amazon ECR
-        id: build-image
+      - name: Build & push image
         run: |
-          cd backend
-          IMAGE_TAG=${{ github.sha }}
-          REGISTRY=${{ steps.login-ecr.outputs.registry }}
-          IMAGE_URI=$REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
+          set -e
+          ECR_URI=$(aws ecr describe-repositories --repository-names "$ECR_REPO" --query 'repositories[0].repositoryUri' --output text --region "$AWS_REGION")
+          docker build -t "$ECR_REPO" backend/
+          docker tag "$ECR_REPO:latest" "$ECR_URI:latest"
+          docker push "$ECR_URI:latest"
 
-          docker build -t $IMAGE_URI .
-          docker push $IMAGE_URI
-          
-          docker tag $IMAGE_URI $REGISTRY/$ECR_REPOSITORY:latest
-          docker push $REGISTRY/$ECR_REPOSITORY:latest
-
-          docker rmi $IMAGE_URI $REGISTRY/$ECR_REPOSITORY:latest || true
-          echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
-
-      - name: Deploy to Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: .aws/backend-task-definition.json
-          cluster: ${{ env.ECS_CLUSTER }}
-          service: ${{ env.ECS_SERVICE }}
+      - name: Force new ECS deploy
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --force-new-deployment \
+            --region "$AWS_REGION"

@@ -11,6 +11,7 @@ import { AuthModule } from './authorization/auth.module'
 import { SeedComposite } from '@/seed/seed.composite'
 import typeorm, { envFiles } from './data-source';
 import { ProfileModule } from './profile/profile.module'
+import { LoggerModule } from 'nestjs-pino'
 
 @Module({
   imports: [
@@ -18,6 +19,14 @@ import { ProfileModule } from './profile/profile.module'
       isGlobal: true,
       envFilePath: envFiles,
       load: [typeorm],
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: process.env.LOG_LEVEL || 'info',
+        transport: process.env.NODE_ENV === 'development' ? { target: 'pino-pretty', options: { singleLine: true } } : undefined,
+        redact: ['req.headers.authorization'],
+        autoLogging: true,
+      },
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

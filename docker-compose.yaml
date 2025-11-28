@@ -12,11 +12,5 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data:rw
 
-  sckeledraw:
-    image: excalidraw/excalidraw:latest
-    container_name: sckeledraw
-    ports:
-      - "8091:80"
-
 volumes:
   db_data:

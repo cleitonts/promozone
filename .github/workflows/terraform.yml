@@ -1,0 +1,85 @@
+name: Terraform IaC
+
+on:
+  push:
+    paths:
+      - '.aws/**'
+  pull_request:
+    paths:
+      - '.aws/**'
+
+jobs:
+  terraform:
+    name: Terraform Pipeline
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-terraform
+          aws-region: eu-west-1
+
+      - name: Terraform Init
+        working-directory: .aws
+        run: terraform init
+
+      - name: Terraform Format
+        working-directory: .aws
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        working-directory: .aws
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: .aws
+        run: terraform plan -refresh=false -var db_password_param_name="/promozone/db/password" -var db_password_param_value="${{ secrets.DB_PASSWORD_PARAM_VALUE }}" -out=tfplan
+
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: .aws/tfplan
+
+  apply:
+    needs: terraform
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-terraform
+          aws-region: eu-west-1
+
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan
+          path: .aws
+
+      - name: Terraform Apply
+        working-directory: .aws
+        run: terraform apply -auto-approve tfplan

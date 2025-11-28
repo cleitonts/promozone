@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { Logger } from 'nestjs-pino'
 
 async function bootstrap() {
   const corsOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174')
@@ -14,7 +15,10 @@ async function bootstrap() {
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
     },
+    bufferLogs: true,
   });
+
+  app.useLogger(app.get(Logger))
 
   await app.listen(process.env.PORT ?? 3000);
 }
