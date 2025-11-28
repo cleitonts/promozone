@@ -20,6 +20,9 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +33,7 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-backend-deploy
           aws-region: ${{ env.AWS_REGION }}
           audience: sts.amazonaws.com
-          output-env-credentials: true
+          output-credentials: true
         env:
           AWS_REGION: ${{ env.AWS_REGION }}
 
