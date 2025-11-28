@@ -4,6 +4,12 @@ on:
   push:
     paths:
       - "backend/**"
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Tag da imagem para deploy"
+        required: false
+        default: "latest"
 
 env:
   AWS_REGION: eu-west-1
@@ -25,6 +31,8 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           audience: sts.amazonaws.com
           output-env-credentials: true
+        env:
+          AWS_REGION: ${{ env.AWS_REGION }}
 
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2

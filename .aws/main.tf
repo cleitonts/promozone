@@ -9,6 +9,8 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_caller_identity" "current" {}
+
 data "aws_availability_zones" "available" {}
 
 module "vpc" {
@@ -53,6 +55,11 @@ module "iam" {
   source = "./modules/iam"
 
   prefix = var.prefix
+  github_deploy_role_name    = "github-backend-deploy"
+  github_org                 = "cleitonrc"
+  github_repo                = "promozone"
+  github_ref                 = "refs/heads/main"
+  github_oidc_provider_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
 }
 
 module "rds" {

@@ -7,6 +7,12 @@ on:
   pull_request:
     paths:
       - '.aws/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Ação: plan ou apply"
+        required: false
+        default: "plan"
 
 jobs:
   terraform:
