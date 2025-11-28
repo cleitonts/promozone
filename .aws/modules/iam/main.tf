@@ -16,8 +16,8 @@ data "aws_iam_policy_document" "ecs_assume" {
 }
 
 locals {
-  github_sub     = "repo:${var.github_org}/${var.github_repo}:ref:${var.github_ref}"
-  oidc_provider  = var.github_oidc_provider_arn
+  github_sub     = "repo:${var.github_org}/${var.github_repo}:*"
+  oidc_provider  = var.create_github_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : var.github_oidc_provider_arn
 }
 
 data "aws_iam_policy_document" "github_assume" {
@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "github_assume" {
     }
     actions = ["sts:AssumeRoleWithWebIdentity"]
     condition {
-      test     = "StringEquals"
+      test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
       values   = [local.github_sub]
     }
@@ -39,6 +39,13 @@ data "aws_iam_policy_document" "github_assume" {
       values   = ["sts.amazonaws.com"]
     }
   }
+}
+
+resource "aws_iam_openid_connect_provider" "github" {
+  count            = var.create_github_oidc_provider ? 1 : 0
+  url              = "https://token.actions.githubusercontent.com"
+  client_id_list   = ["sts.amazonaws.com"]
+  thumbprint_list  = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
 }
 
 resource "aws_iam_role" "github_backend_deploy" {
