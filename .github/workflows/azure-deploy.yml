@@ -23,6 +23,7 @@ env:
   IMAGE_NAME: promozone-backend
   PROD_TAG: prod
   STAG_TAG: stag
+  ACR_NAME: ${{ env.PREFIX }}
 
 jobs:
   build-and-push:
@@ -51,13 +52,12 @@ jobs:
         id: acr
         run: |
           RG="${{ env.PREFIX }}"
-          ACR_NAME="${{ env.PREFIX }}acr"
-          LOGIN_SERVER=$(az acr show --name "$ACR_NAME" --resource-group "$RG" --query loginServer -o tsv)
+          LOGIN_SERVER=$(az acr show --name "${{ env.ACR_NAME }}" --resource-group "$RG" --query loginServer -o tsv)
           echo "login_server=$LOGIN_SERVER" >> $GITHUB_OUTPUT
 
       - name: ACR login
         run: |
-          az acr login --name "${{ env.PREFIX }}acr"
+          az acr login --name "${{ env.ACR_NAME }}"
 
       - name: Tag and push image to ACR
         run: |
@@ -83,14 +83,13 @@ jobs:
         id: acr
         run: |
           RG="${{ env.PREFIX }}"
-          ACR_NAME="${{ env.PREFIX }}acr"
-          LOGIN_SERVER=$(az acr show --name "$ACR_NAME" --resource-group "$RG" --query loginServer -o tsv)
+          LOGIN_SERVER=$(az acr show --name "${{ env.ACR_NAME }}" --resource-group "$RG" --query loginServer -o tsv)
           echo "login_server=$LOGIN_SERVER" >> $GITHUB_OUTPUT
 
       - name: Promote tag in ACR
         run: |
           LOGIN_SERVER='${{ steps.acr.outputs.login_server }}'
           az acr import \
-            --name "${{ env.PREFIX }}acr" \
+            --name "${{ env.ACR_NAME }}" \
             --source "$LOGIN_SERVER/${{ env.IMAGE_NAME }}:${{ inputs.source_tag }}" \
             --image "${{ env.IMAGE_NAME }}:${{ inputs.target_tag }}"
