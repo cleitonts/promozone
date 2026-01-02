@@ -23,7 +23,7 @@ env:
   IMAGE_NAME: promozone-backend
   PROD_TAG: prod
   STAG_TAG: stag
-  ACR_NAME: ${{ env.PREFIX }}
+  ACR_NAME: promozone
 
 jobs:
   build-and-push:
