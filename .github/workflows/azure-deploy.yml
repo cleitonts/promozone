@@ -50,7 +50,7 @@ jobs:
       - name: Azure CLI - Fetch ACR info
         id: acr
         run: |
-          RG="${{ env.PREFIX }}-rg"
+          RG="${{ env.PREFIX }}"
           ACR_NAME="${{ env.PREFIX }}acr"
           LOGIN_SERVER=$(az acr show --name "$ACR_NAME" --resource-group "$RG" --query loginServer -o tsv)
           echo "login_server=$LOGIN_SERVER" >> $GITHUB_OUTPUT
@@ -82,7 +82,7 @@ jobs:
       - name: Azure CLI - Fetch ACR info
         id: acr
         run: |
-          RG="${{ env.PREFIX }}-rg"
+          RG="${{ env.PREFIX }}"
           ACR_NAME="${{ env.PREFIX }}acr"
           LOGIN_SERVER=$(az acr show --name "$ACR_NAME" --resource-group "$RG" --query loginServer -o tsv)
           echo "login_server=$LOGIN_SERVER" >> $GITHUB_OUTPUT
