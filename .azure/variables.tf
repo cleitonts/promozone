@@ -22,3 +22,8 @@ variable "free_tier" {
   type    = bool
   default = true
 }
+
+variable "github_actions_client_id" {
+  type    = string
+  default = ""
+}
