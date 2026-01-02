@@ -1,10 +1,10 @@
 .history
-.aws/.terraform
+.azure/.terraform
 terraform.tfstate
 terraform.tfstate.backup
 *.tfvars
 crash.log
 *.tfplan
-.aws/.terraform.lock.hcl
-.aws/.terraform.tfstate*
-.aws/.terraformrc
+.azure/.terraform.lock.hcl
+.azure/.terraform.tfstate*
+.azure/.terraformrc
