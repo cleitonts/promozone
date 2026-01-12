@@ -51,8 +51,7 @@ jobs:
       - name: Azure CLI - Fetch ACR info
         id: acr
         run: |
-          RG="${{ env.PREFIX }}"
-          LOGIN_SERVER=$(az acr show --name "${{ env.ACR_NAME }}" --resource-group "$RG" --query loginServer -o tsv)
+          LOGIN_SERVER=$(az acr show --name "${{ env.ACR_NAME }}" --query loginServer -o tsv || echo "${{ env.ACR_NAME }}.azurecr.io")
           echo "login_server=$LOGIN_SERVER" >> $GITHUB_OUTPUT
 
       - name: ACR login
@@ -82,8 +81,7 @@ jobs:
       - name: Azure CLI - Fetch ACR info
         id: acr
         run: |
-          RG="${{ env.PREFIX }}"
-          LOGIN_SERVER=$(az acr show --name "${{ env.ACR_NAME }}" --resource-group "$RG" --query loginServer -o tsv)
+          LOGIN_SERVER=$(az acr show --name "${{ env.ACR_NAME }}" --query loginServer -o tsv || echo "${{ env.ACR_NAME }}.azurecr.io")
           echo "login_server=$LOGIN_SERVER" >> $GITHUB_OUTPUT
 
       - name: Promote tag in ACR
