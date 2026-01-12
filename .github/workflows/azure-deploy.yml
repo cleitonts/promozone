@@ -19,7 +19,6 @@ permissions:
   contents: read
 
 env:
-  PREFIX: promozone
   IMAGE_NAME: promozone-backend
   PROD_TAG: prod
   STAG_TAG: stag
@@ -72,14 +71,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     steps:
-      - name: Azure lo      client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Azure CLI - Fetch ACR info
         id: acr
         run: |
-          RG="${{ env.PREFIX }}"
           LOGIN_SERVER=$(az acr show --name "${{ env.ACR_NAME }}" --resource-group "${{ env.RG }}" --query loginServer -o tsv)
           echo "login_server=$LOGIN_SERVER" >> $GITHUB_OUTPUT
 
