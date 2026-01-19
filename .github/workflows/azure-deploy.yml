@@ -6,13 +6,8 @@ on:
   workflow_dispatch:
     inputs:
       source_tag:
-        description: "Tag de origem para promoção"
-        required: false
-        default: "stag"
-      target_tag:
-        description: "Tag de destino (promoção)"
-        required: false
-        default: "prod"
+        description: "Tag de origem para promoção (ex.: GIT_SHA)"
+        required: true
 
 permissions:
   id-token: write
@@ -21,7 +16,6 @@ permissions:
 env:
   IMAGE_NAME: promozone-backend
   PROD_TAG: prod
-  STAG_TAG: stag
   ACR_NAME: promozone
   RG: promozone-prod
 
@@ -62,9 +56,7 @@ jobs:
         run: |
           LOGIN_SERVER='${{ steps.acr.outputs.login_server }}'
           GIT_SHA=${GITHUB_SHA::7}
-          docker tag $IMAGE_NAME:latest $LOGIN_SERVER/$IMAGE_NAME:${{ env.STAG_TAG }}
           docker tag $IMAGE_NAME:latest $LOGIN_SERVER/$IMAGE_NAME:$GIT_SHA
-          docker push $LOGIN_SERVER/$IMAGE_NAME:${{ env.STAG_TAG }}
           docker push $LOGIN_SERVER/$IMAGE_NAME:$GIT_SHA
 
   promote:
@@ -90,4 +82,4 @@ jobs:
           az acr import \
             --name "${{ env.ACR_NAME }}" \
             --source "$LOGIN_SERVER/${{ env.IMAGE_NAME }}:${{ inputs.source_tag }}" \
-            --image "${{ env.IMAGE_NAME }}:${{ inputs.target_tag }}"
+            --image "${{ env.IMAGE_NAME }}:${{ env.PROD_TAG }}"
