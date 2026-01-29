@@ -17,7 +17,7 @@ env:
   IMAGE_NAME: promozone-backend
   PROD_TAG: prod
   ACR_NAME: promozone
-  RG: promozone-prod
+  RG: promozone
 
 jobs:
   build-and-push:
